@@ -19,6 +19,9 @@
     "release-dry": "release-it --dry-run",
     "release-beta": "release-it --preRelease=beta"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@babel/cli": "^7.5.5",
     "@babel/core": "^7.5.5",
