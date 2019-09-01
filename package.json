@@ -1,6 +1,6 @@
 {
   "name": "@wwwoda/gulp-tasks",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "license": "MIT",
   "author": "Woda Digital",
   "description": "Collection of gulp tasks used in web development projects",
