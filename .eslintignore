@@ -1,0 +1,3 @@
+# ESLint: Ignore files.
+assets
+node_modules
