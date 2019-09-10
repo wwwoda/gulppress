@@ -6,12 +6,13 @@
     "declaration": true,
     "outDir": "./dist",
     "strict": true,
-    "noImplicitAny": false,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "noImplicitThis": false
   },
   "exclude": [
     "node_modules",
     "assets",
-    "gulpfile.ts"
+    "gulpfile.ts",
+    "dist"
   ]
 }

@@ -10,6 +10,11 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 indent_style = tab
 
+[{*.js,*.ts}]
+indent_style = space
+indent_size = 2
+quote_type = single
+
 [{*.json,*.yml}]
 indent_style = space
 indent_size = 2

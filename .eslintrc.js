@@ -10,16 +10,14 @@ module.exports = {
 		'project': './tsconfig.json',
 	},
 	'plugins': [
-		'@typescript-eslint',
+    '@typescript-eslint',
 	],
 	'extends': [
-		'plugin:@typescript-eslint/eslint-recommended',
-		'plugin:@typescript-eslint/recommended',
-		// 'plugin:@typescript-eslint/recommended-requiring-type-checking',
-		// 'wordpress',
+    'airbnb-typescript/base',
+    "plugin:@typescript-eslint/recommended",
 	],
 	'rules': {
-		'@typescript-eslint/explicit-function-return-type': 'off',
-		'comma-dangle': ['error', 'always-multiline'],
+    'no-restricted-syntax': 'off',
+    '@typescript-eslint/no-var-requires': 'off',
 	},
 };

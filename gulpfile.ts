@@ -4,7 +4,6 @@ const themeName = 'assets';
 // *****************************************************************************
 
 import { parallel, series, task, watch } from 'gulp';
-import nodeEnvFile from 'node-env-file';
 import path from 'path';
 import {
 	cleanTasks,
@@ -22,15 +21,16 @@ import {
 	stylesTask,
 } from './src/index';
 
+const nodeEnvFile = require('node-env-file');
 const argv = require('yargs').argv;
 nodeEnvFile(path.join(__dirname, './.env'), { raise: false });
 
 const theme = getTheme(themeName);
 
 const paths = {
-  theme: path.resolve(__dirname, `./${theme}`),
-  src: path.resolve(__dirname, `./${theme}/src`),
-  dist: path.resolve(__dirname, `./${theme}/dist`),
+  theme: path.relative(__dirname, `./${theme}`),
+  src: path.relative(__dirname, `./${theme}/src`),
+  dist: path.relative(__dirname, `./${theme}/dist`),
 };
 
 const browserSyncConfig = {
@@ -87,7 +87,6 @@ const taskConfigs = {
     includePaths: [
       './node_modules',
     ],
-    busterRelativePath: `./${theme}/dist/styles`,
   },
 };
 
@@ -101,7 +100,7 @@ const processImages = imagesTask(taskConfigs.images);
 const modernizr = modernizrTask(taskConfigs.modernizr);
 const startServer = serveTask(browserSyncConfig);
 
-task('watch', () => {
+task('watch', function(this: any) {
   const watchers = getWatchers();
 
   if (watchers.scripts) {

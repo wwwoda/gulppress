@@ -1,75 +1,81 @@
+import { TaskFunction } from 'gulp';
+
+import del = require('del');
+
+type AssetItemType = string | {
+  dest: string;
+};
+
 interface CleanConfig {
-	favicon?: string | {
-		dest: string;
-	};
-	fonts?: string | {
-		dest: string;
-	};
-	icons?: string | {
-		dest: string;
-	};
-	images?: string | {
-		dest: string;
-	};
-	scripts?: string | {
-		dest: string;
-	};
-	styles?: string | {
-		dest: string;
-	};
+  assets? : string | string[];
+  favicon? : AssetItemType;
+  fonts? : AssetItemType;
+  icons? : AssetItemType;
+  images? : AssetItemType;
+  scripts? : AssetItemType;
+  styles? : AssetItemType;
 }
 
-import del = require( 'del' );
-
-function getDestPaths( config: CleanConfig ): { [key: string]: string } {
-	const dests: { [key: string]: string } = {};
-	for ( const [key, value] of Object.entries(config)) {
-		if (typeof value === 'object' && 'dest' in value) {
-			dests[key] = value['dest'];
-		}
-	}
-	return dests;
+function getDestPaths(config: CleanConfig): {
+  [key: string]: string;
+} {
+  const dests: {
+    [key: string]: string;
+  } = {};
+  for (const [key, value] of Object.entries(config)) {
+    if (typeof value === 'object' && value.dest) {
+      dests[key] = value.dest;
+    }
+  }
+  return dests;
 }
 
-export default function (config: CleanConfig) {
-	const dests = getDestPaths(config);
-	console.log(dests);
+export default function (config: CleanConfig): {
+  scriptsStyles: TaskFunction;
+  assets: TaskFunction;
+  all: TaskFunction;
+} {
+  const dests = getDestPaths(config);
 
-	function scriptsStyles() {
-		return del(
-			[
-				dests.scripts || '',
-				dests.styles || '',
-			], {
-				force: true,
-			},
-		);
-	}
+  function scriptsStyles(): Promise<string[]> {
+    return del(
+      [
+        dests.scripts || '',
+        dests.styles || '',
+      ], {
+        force: true,
+      },
+    );
+  }
 
-	function assets() {
-		return del(
-			[
-				dests.favicon || '',
-				dests.fonts || '',
-				dests.icons || '',
-				dests.images || '',
-			], {
-				force: true,
-			},
-		);
-	}
+  function assets(): Promise<string[]> {
+    const assetsArray = typeof dests.assets === 'string' ? [dests.assets] : dests.assets;
 
-	function all() {
-		return del(
-			Object.values(dests), {
-				force: true,
-			},
-		);
-	}
+    return del(
+      [
+        ...assetsArray,
+        dests.favicon || '',
+        dests.fonts || '',
+        dests.icons || '',
+        dests.images || '',
+      ], {
+        force: true,
+      },
+    );
+  }
+  // 'no-restricted-syntax': 'off',
 
-	return {
-		scriptsStyles,
-		assets,
-		all,
-	};
+  function all(): Promise<string[]> {
+    return del(
+      Object.values(dests), {
+        force: true,
+      },
+    );
+  }
+
+  return {
+    scriptsStyles,
+    assets,
+    all,
+  };
 }

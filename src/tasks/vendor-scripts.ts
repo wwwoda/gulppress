@@ -1,15 +1,19 @@
+import {
+  dest,
+  parallel,
+  src,
+  TaskFunction,
+} from 'gulp';
+
 interface VendorScriptsConfig {
-	src: string | Array < string > ;
-	dest: string;
+  src: string | string[];
+  dest: string;
 }
 
-import { dest, parallel, src } from 'gulp';
+export default function (config: VendorScriptsConfig): TaskFunction {
+  function processVendorScripts(): NodeJS.ReadWriteStream {
+    return src(config.src).pipe(dest(config.dest));
+  }
 
-export default function (config: VendorScriptsConfig) {
-	function processVendorScripts() {
-		return src(config.src)
-			.pipe(dest(config.dest));
-	}
-
-	return parallel(processVendorScripts);
+  return parallel(processVendorScripts);
 }
