@@ -6,17 +6,12 @@ import {
 } from 'gulp';
 import modernizr from 'gulp-modernizr';
 import uglify from 'gulp-uglify';
+import gulpPress from '../interfaces';
 
-interface ModernizrConfig {
-  src: string | string[];
-  dest: string;
-  options: modernizr.Params;
-}
-
-export default function (config: ModernizrConfig): TaskFunction {
+export default function (config: gulpPress.ModernizrConfig): TaskFunction {
   function generateModernizr(): NodeJS.ReadWriteStream {
     return src(config.src)
-      .pipe(modernizr(config.options))
+      .pipe(modernizr(config.modernizrOptions))
       .pipe(uglify())
       .pipe(dest(config.dest));
   }

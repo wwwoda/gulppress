@@ -1,36 +1,53 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var del = require("del");
+const del = require("del");
 function getDestPaths(config) {
-    var dests = {};
-    for (var _i = 0, _a = Object.entries(config); _i < _a.length; _i++) {
-        var _b = _a[_i], key = _b[0], value = _b[1];
-        if (typeof value === 'object' && 'dest' in value) {
-            dests[key] = value['dest'];
+    const dests = {};
+    for (const [key, value] of Object.entries(config)) {
+        if (typeof value === 'object' && value.dest) {
+            dests[key] = value.dest;
         }
     }
     return dests;
 }
 function default_1(config) {
-    var dests = getDestPaths(config);
-    console.log(dests);
+    const dests = getDestPaths(config);
     function scriptsStyles() {
-        return del([
-            dests.scripts || '',
-            dests.styles || '',
-        ], {
-            force: true,
-        });
+        const scriptsStylesArray = [];
+        if (dests.scripts) {
+            scriptsStylesArray.push(dests.scripts);
+        }
+        if (dests.styles) {
+            scriptsStylesArray.push(dests.styles);
+        }
+        return del(scriptsStylesArray, { force: true });
     }
     function assets() {
-        return del([
-            dests.favicon || '',
-            dests.fonts || '',
-            dests.icons || '',
-            dests.images || '',
-        ], {
-            force: true,
-        });
+        const assetsArray = [];
+        if (config.assets) {
+            if (typeof config.assets === 'string') {
+                assetsArray.push(config.assets);
+            }
+            else if (Array.isArray(config.assets)) {
+                assetsArray.push(...config.assets);
+            }
+        }
+        if (dests.favicon) {
+            assetsArray.push(dests.favicon);
+        }
+        if (dests.fonts) {
+            assetsArray.push(dests.fonts);
+        }
+        if (dests.icons) {
+            assetsArray.push(dests.icons);
+        }
+        if (dests.images) {
+            assetsArray.push(dests.images);
+        }
+        if (typeof config.images === 'object' && config.images.destPhpPartials) {
+            assetsArray.push(config.images.destPhpPartials);
+        }
+        return del(assetsArray, { force: true });
     }
     function all() {
         return del(Object.values(dests), {
@@ -38,9 +55,9 @@ function default_1(config) {
         });
     }
     return {
-        scriptsStyles: scriptsStyles,
-        assets: assets,
-        all: all,
+        scriptsStyles,
+        assets,
+        all,
     };
 }
 exports.default = default_1;

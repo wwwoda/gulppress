@@ -11,7 +11,10 @@ interface CleanConfig {
   favicon? : AssetItemType;
   fonts? : AssetItemType;
   icons? : AssetItemType;
-  images? : AssetItemType;
+  images? : string | {
+    dest: string;
+    destPhpPartials?: string;
+  };
   scripts? : AssetItemType;
   styles? : AssetItemType;
 }
@@ -38,32 +41,34 @@ export default function (config: CleanConfig): {
   const dests = getDestPaths(config);
 
   function scriptsStyles(): Promise<string[]> {
-    return del(
-      [
-        dests.scripts || '',
-        dests.styles || '',
-      ], {
-        force: true,
-      },
-    );
+    const scriptsStylesArray: string[] = [];
+
+    if (dests.scripts) { scriptsStylesArray.push(dests.scripts); }
+    if (dests.styles) { scriptsStylesArray.push(dests.styles); }
+
+    return del(scriptsStylesArray, { force: true });
   }
 
   function assets(): Promise<string[]> {
-    const assetsArray = typeof dests.assets === 'string' ? [dests.assets] : dests.assets;
+    const assetsArray: string[] = [];
+    if (config.assets) {
+      if (typeof config.assets === 'string') {
+        assetsArray.push(config.assets);
+      } else if (Array.isArray(config.assets)) {
+        assetsArray.push(...config.assets);
+      }
+    }
 
-    return del(
-      [
-        ...assetsArray,
-        dests.favicon || '',
-        dests.fonts || '',
-        dests.icons || '',
-        dests.images || '',
-      ], {
-        force: true,
-      },
-    );
+    if (dests.favicon) { assetsArray.push(dests.favicon); }
+    if (dests.fonts) { assetsArray.push(dests.fonts); }
+    if (dests.icons) { assetsArray.push(dests.icons); }
+    if (dests.images) { assetsArray.push(dests.images); }
+    if (typeof config.images === 'object' && config.images.destPhpPartials) {
+      assetsArray.push(config.images.destPhpPartials);
+    }
+
+    return del(assetsArray, { force: true });
   }
-  // 'no-restricted-syntax': 'off',
 
   function all(): Promise<string[]> {
     return del(

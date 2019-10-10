@@ -1,6 +1,6 @@
-/// <reference types="undertaker" />
+import { TaskFunction } from 'gulp';
 interface TranslateConfig {
-    src: string | Array<string>;
+    src: string | string[];
     dest: string;
     filename: string;
     options: {
@@ -11,5 +11,5 @@ interface TranslateConfig {
         team: string;
     };
 }
-export default function (config: TranslateConfig): import("undertaker").TaskFunction;
+export default function (config: TranslateConfig): TaskFunction;
 export {};

@@ -1,8 +1,3 @@
-/// <reference types="undertaker" />
-interface ScriptCompilerConfig {
-    src: string | Array<string>;
-    dest: string;
-    assets: string;
-}
-export default function (config: ScriptCompilerConfig): import("undertaker").TaskFunction;
-export {};
+import { TaskFunction } from 'gulp';
+import gulpPress from '../interfaces';
+export default function (config: gulpPress.ScriptConfig, createSeparateMinFiles: boolean): TaskFunction;

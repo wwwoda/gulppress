@@ -1,7 +1,7 @@
-/// <reference types="undertaker" />
+import { TaskFunction } from 'gulp';
 interface IconsConfig {
-    src: string | Array<string>;
+    src: string | string[];
     dest: string;
 }
-export default function (config: IconsConfig): import("undertaker").TaskFunction;
+export default function (config: IconsConfig): TaskFunction;
 export {};

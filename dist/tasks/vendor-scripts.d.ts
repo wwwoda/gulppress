@@ -1,7 +1,7 @@
-/// <reference types="undertaker" />
+import { TaskFunction } from 'gulp';
 interface VendorScriptsConfig {
-    src: string | Array<string>;
+    src: string | string[];
     dest: string;
 }
-export default function (config: VendorScriptsConfig): import("undertaker").TaskFunction;
+export default function (config: VendorScriptsConfig): TaskFunction;
 export {};

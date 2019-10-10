@@ -17,7 +17,10 @@ module.exports = {
     "plugin:@typescript-eslint/recommended",
 	],
 	'rules': {
+    'no-console': 'off',
     'no-restricted-syntax': 'off',
     '@typescript-eslint/no-var-requires': 'off',
+    '@typescript-eslint/no-namespace': 'off',
+    '@typescript-eslint/no-empty-interface': 'off',
 	},
 };

@@ -3,9 +3,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var browserSync = require("browser-sync");
-var fancy_log_1 = __importDefault(require("fancy-log"));
-var argv = require('yargs').argv;
+const fancy_log_1 = __importDefault(require("fancy-log"));
+const browserSync = require("browser-sync");
+const { argv } = require('yargs');
+function getArgv() {
+    return argv;
+}
+exports.getArgv = getArgv;
 function getProxyUrl(url) {
     return process.env.WP_HOME || url || '';
 }
@@ -15,7 +19,7 @@ function getTheme(theme) {
 }
 exports.getTheme = getTheme;
 function getWatchers() {
-    var watchers = {
+    const watchers = {
         icons: false,
         images: false,
         scripts: false,
@@ -24,7 +28,7 @@ function getWatchers() {
         vendorScripts: false,
     };
     if (argv.watch) {
-        argv.watch.split(',').forEach(function (watcher) {
+        argv.watch.split(',').forEach((watcher) => {
             if (!(watcher in watchers)) {
                 fancy_log_1.default.error('--watch argument contains unkonwn entries.  (--watch=icons,images,scripts,styles,svg,vendorScripts)');
             }
@@ -46,7 +50,9 @@ function isDev() {
     if (argv.env !== undefined) {
         return argv.env === 'development';
     }
-    return process.env.WP_ENV !== undefined ? process.env.WP_ENV === 'development' : false;
+    return process.env.WP_ENV !== undefined
+        ? process.env.WP_ENV === 'development'
+        : false;
 }
 exports.isDev = isDev;
 function reload(done) {

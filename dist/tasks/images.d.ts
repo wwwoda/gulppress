@@ -1,7 +1,8 @@
-/// <reference types="undertaker" />
+import { TaskFunction } from 'gulp';
 interface ImagesConfig {
-    src: string | Array<string>;
+    src: string | string[];
     dest: string;
+    phpPartialsDest?: string | null | undefined;
 }
-export default function (config: ImagesConfig): import("undertaker").TaskFunction;
+export default function (config: ImagesConfig): TaskFunction;
 export {};

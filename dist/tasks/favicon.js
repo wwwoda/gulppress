@@ -3,17 +3,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var gulp_1 = require("gulp");
-var gulp_filter_1 = __importDefault(require("gulp-filter"));
-var gulp_to_ico_1 = __importDefault(require("gulp-to-ico"));
-var gulp_imagemin_1 = __importDefault(require("gulp-imagemin"));
-var gulp_responsive_1 = __importDefault(require("gulp-responsive"));
-var pngFilter = gulp_filter_1.default('**/*.png');
+const gulp_1 = require("gulp");
+const gulp_filter_1 = __importDefault(require("gulp-filter"));
+const gulp_imagemin_1 = __importDefault(require("gulp-imagemin"));
+const responsive = require('gulp-responsive');
+const ico = require('gulp-to-ico');
+const pngFilter = gulp_filter_1.default('**/*.png');
 function default_1(config) {
     function faviconToIco() {
         return gulp_1.src(config.src)
             .pipe(pngFilter)
-            .pipe(gulp_to_ico_1.default('favicon.ico', {
+            .pipe(ico('favicon.ico', {
             resize: true,
             sizes: [32],
         }))
@@ -21,7 +21,7 @@ function default_1(config) {
     }
     function faviconToImages() {
         return gulp_1.src(config.src)
-            .pipe(gulp_responsive_1.default({
+            .pipe(responsive({
             'favicon.png': [{
                     width: 16,
                     height: 16,

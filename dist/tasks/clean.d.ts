@@ -1,26 +1,22 @@
+import { TaskFunction } from 'gulp';
+declare type AssetItemType = string | {
+    dest: string;
+};
 interface CleanConfig {
-    favicon?: string | {
-        dest: string;
-    };
-    fonts?: string | {
-        dest: string;
-    };
-    icons?: string | {
-        dest: string;
-    };
+    assets?: string | string[];
+    favicon?: AssetItemType;
+    fonts?: AssetItemType;
+    icons?: AssetItemType;
     images?: string | {
         dest: string;
+        destPhpPartials?: string;
     };
-    scripts?: string | {
-        dest: string;
-    };
-    styles?: string | {
-        dest: string;
-    };
+    scripts?: AssetItemType;
+    styles?: AssetItemType;
 }
 export default function (config: CleanConfig): {
-    scriptsStyles: () => Promise<string[]>;
-    assets: () => Promise<string[]>;
-    all: () => Promise<string[]>;
+    scriptsStyles: TaskFunction;
+    assets: TaskFunction;
+    all: TaskFunction;
 };
 export {};
