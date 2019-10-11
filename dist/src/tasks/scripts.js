@@ -14,7 +14,7 @@ const HashAssetsPlugin = require('hash-assets-webpack-plugin');
 const named = require('vinyl-named');
 const notify = require('gulp-notify');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-function default_1(config, createSeparateMinFiles) {
+function default_1(config, project) {
     const source = {};
     if (Array.isArray(config.src)) {
         config.src.forEach((entry) => {
@@ -22,7 +22,7 @@ function default_1(config, createSeparateMinFiles) {
                 const extension = path_1.default.extname(result);
                 const file = path_1.default.basename(result, extension);
                 source[file] = result;
-                if (createSeparateMinFiles) {
+                if (project.createSeparateMinFiles) {
                     source[`${file}.min`] = result;
                 }
             });
@@ -33,7 +33,7 @@ function default_1(config, createSeparateMinFiles) {
             const extension = path_1.default.extname(result);
             const file = path_1.default.basename(result, extension);
             source[file] = result;
-            if (createSeparateMinFiles) {
+            if (project.createSeparateMinFiles) {
                 source[`${file}.min`] = result;
             }
         });
@@ -90,7 +90,7 @@ function default_1(config, createSeparateMinFiles) {
         cache: {},
     };
     if (!utils_1.isDev()) {
-        const uglifyJsPluginConfig = createSeparateMinFiles ? { include: /\.min\.js$/ } : {};
+        const uglifyJsPluginConfig = project.createSeparateMinFiles ? { include: /\.min\.js$/ } : {};
         webpackConfig.optimization = {
             minimize: true,
             minimizer: [new UglifyJsPlugin(uglifyJsPluginConfig)],

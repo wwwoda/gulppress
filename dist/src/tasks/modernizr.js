@@ -9,7 +9,7 @@ const gulp_uglify_1 = __importDefault(require("gulp-uglify"));
 function default_1(config) {
     function generateModernizr() {
         return gulp_1.src(config.src)
-            .pipe(gulp_modernizr_1.default(config.options))
+            .pipe(gulp_modernizr_1.default(config.modernizrOptions))
             .pipe(gulp_uglify_1.default())
             .pipe(gulp_1.dest(config.dest));
     }

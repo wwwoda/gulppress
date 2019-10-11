@@ -7,7 +7,7 @@ import modernizr from './tasks/modernizr';
 import scripts from './tasks/scripts';
 import serve from './tasks/serve';
 import styles from './tasks/styles';
-import languages from './tasks/translate';
+import translate from './tasks/translate';
 import vendorScripts from './tasks/vendor-scripts';
 // import watcher from './tasks/watcher';
 
@@ -25,12 +25,12 @@ export {
   fonts as fontsTask,
   icons as iconsTask,
   images as imagesTask,
-  languages as languagesTask,
   modernizr as modernizrTask,
   scripts as scriptsTask,
   serve as serveTask,
   styles as stylesTask,
   vendorScripts as vendorScriptsTask,
+  translate as translationTask,
   // watcher as watcherTask,
   getProxyUrl,
   getTheme,

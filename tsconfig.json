@@ -12,7 +12,7 @@
   "exclude": [
     "node_modules",
     "assets",
-    "gulpfile.ts",
+    // "gulpfile.ts",
     "dist"
   ]
 }

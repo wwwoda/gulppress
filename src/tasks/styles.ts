@@ -44,7 +44,7 @@ export default function (
         .pipe(
           sass(config.sassOptions).on('error', sass.logError),
         )
-        .pipe(postcss(postcssPlugins))
+        .pipe(postcss([...postcssPlugins, ...config.postcssPlugins]))
         .pipe(gulpif(isDev(), sourcemaps.write({ includeContent: false })))
         .pipe(dest(config.dest))
         .pipe(stream())

@@ -19,20 +19,16 @@ import {
   scriptsTask,
   serveTask,
   stylesTask,
+  translationTask,
 } from './src/index';
-import gulpPress from './src/interfaces';
+import config from './gulppress.config';
 
 const nodeEnvFile = require('node-env-file');
-const config: gulpPress.MainConfig = require('./config.js');
-
-console.log(config.project.envFile);
-console.log(typeof config.project.envFile);
 
 if (typeof config.project.envFile === 'string' && config.project.envFile) {
   try {
     if (fs.existsSync(config.project.envFile)) {
       nodeEnvFile(config.project.envFile, { raise: false });
-      console.log(process.env);
     }
   } catch (err) {
     console.error('.env file not found, please check your configuration');
@@ -44,9 +40,9 @@ const browserSyncConfig = Object.assign({
 }, config.browserSync);
 
 const clean = cleanTasks(config);
-config.scripts.dest = path.resolve(__dirname, `./${config.project.basePath}/dist/scripts`);
+config.scripts.dest = path.resolve(__dirname, config.scripts.dest);
 const compileScripts = scriptsTask(config.scripts, config.project);
-config.styles.dest = path.relative(__dirname, `./${config.project.basePath}/dist/styles`);
+config.styles.dest = path.relative(__dirname, config.styles.dest);
 const compileStyles = stylesTask(config.styles, config.project);
 const processFavicon = faviconTask(config.favicon);
 const processFonts = fontsTask(config.fonts);
@@ -54,6 +50,7 @@ const processIcons = iconsTask(config.icons);
 const processImages = imagesTask(config.images);
 const modernizr = modernizrTask(config.modernizr);
 const startServer = serveTask(browserSyncConfig);
+const processTranslations = translationTask(config.translation);
 
 // task('watch', function (this: any) {
 task('watch', () => {
@@ -90,6 +87,7 @@ task('assets', series(
     processFonts,
     processIcons,
     processImages,
+    processTranslations,
   ),
 ));
 
@@ -112,4 +110,5 @@ task('modernizr', modernizr);
 task('scripts', compileScripts);
 task('serve', startServer);
 task('styles', compileStyles);
+task('translate', processTranslations);
 task('clean', series(clean.all));

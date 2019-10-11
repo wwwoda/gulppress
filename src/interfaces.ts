@@ -14,6 +14,7 @@ declare namespace gulpPress {
   }
 
   interface MainConfig {
+    assets? : string | string[];
     project: ProjectConfig;
     browserSync: browserSync.Options;
     scripts: ScriptConfig;
@@ -28,10 +29,10 @@ declare namespace gulpPress {
 
   interface ProjectConfig {
     basePath: string;
-    envFile: string | false | undefined | null;
+    envFile: string | false;
     createSeparateMinFiles: boolean;
     projectURL: string;
-    environment: string | false | undefined | null;
+    environment: string | false;
   }
 
   interface CleanConfig {
@@ -39,7 +40,10 @@ declare namespace gulpPress {
     favicon? : AssetItemType;
     fonts? : AssetItemType;
     icons? : AssetItemType;
-    images? : AssetItemType;
+    images? : string | {
+      dest: string;
+      destPhpPartials: string;
+    };
     scripts? : AssetItemType;
     styles? : AssetItemType;
   }
@@ -53,7 +57,7 @@ declare namespace gulpPress {
   interface IconsConfig extends BaseConfig {}
 
   interface ImagesConfig extends BaseConfig {
-    phpPartialsDest?: string | null | undefined;
+    destPhpPartials?: string | null | undefined;
   }
 
   interface ModernizrConfig extends BaseConfig {
@@ -67,6 +71,7 @@ declare namespace gulpPress {
   interface StylesConfig extends BaseConfig {
     sassOptions: SassOptions;
     autoprefixerOptions: autoprefixer.Options;
+    postcssPlugins: [] | Array<CallableFunction>;
   }
 
   interface TranslationConfig extends BaseConfig {
@@ -90,4 +95,4 @@ declare namespace gulpPress {
   interface VendorScriptsConfig extends BaseConfig {}
 }
 
-export = gulpPress;
+export default gulpPress;

@@ -11,12 +11,9 @@ declare namespace gulpPress {
         dest: string;
     }
     interface MainConfig {
-        basePath: string;
-        useDotEnv: string | false | undefined | null;
-        createSeparateDotMinFiles: boolean;
-        projectURL: string;
-        browserSyncOptions: browserSync.Options;
-        environment: string | false | undefined | null;
+        test: string;
+        project: ProjectConfig;
+        browserSync: browserSync.Options;
         scripts: ScriptConfig;
         styles: StylesConfig;
         favicon: FaviconConfig;
@@ -25,6 +22,13 @@ declare namespace gulpPress {
         icons: IconsConfig;
         modernizr: ModernizrConfig;
         translation: TranslationConfig;
+    }
+    interface ProjectConfig {
+        basePath: string;
+        envFile: string | false;
+        createSeparateMinFiles: boolean;
+        projectURL: string;
+        environment: string | false;
     }
     interface CleanConfig {
         assets?: string | string[];
@@ -46,7 +50,7 @@ declare namespace gulpPress {
         phpPartialsDest?: string | null | undefined;
     }
     interface ModernizrConfig extends BaseConfig {
-        options: modernizr.Params;
+        modernizrOptions: modernizr.Params;
     }
     interface ScriptConfig extends BaseConfig {
         targets: string | Array<string> | {
@@ -58,13 +62,26 @@ declare namespace gulpPress {
         autoprefixerOptions: autoprefixer.Options;
     }
     interface TranslationConfig extends BaseConfig {
-        filename: string;
-        options: {
-            textDomain: string;
-            packageName: string;
-            bugReport: string;
-            lastTranslator: string;
-            team: string;
+        wpPotOptions: {
+            bugReport?: string;
+            commentKeyword?: string;
+            domain?: string;
+            headers?: {
+                [key: string]: string;
+            } | boolean;
+            gettextFunctions?: {
+                [key: string]: string;
+            };
+            lastTranslator?: string;
+            metadataFile?: string;
+            noFilePaths?: boolean;
+            package?: string;
+            relativeTo?: string;
+            globOpts?: {
+                [key: string]: string;
+            };
+            team?: string;
+            ignoreTemplateNameHeader?: boolean;
         };
     }
     interface VendorScriptsConfig extends BaseConfig {

@@ -7,14 +7,8 @@ function default_1(config) {
     function translate() {
         return gulp_1.src(config.src)
             .pipe(sort())
-            .pipe(wpPot({
-            domain: config.options.textDomain,
-            package: config.options.packageName,
-            bugReport: config.options.bugReport,
-            lastTranslator: config.options.lastTranslator,
-            team: config.options.team,
-        }))
-            .pipe(gulp_1.dest(`${config.dest}/${config.filename}`));
+            .pipe(wpPot(config.wpPotOptions))
+            .pipe(gulp_1.dest(`${config.dest}`));
     }
     return gulp_1.parallel(translate);
 }

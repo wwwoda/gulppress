@@ -1,3 +1,5 @@
+import gulpPress from './src/interfaces';
+
 /* eslint max-len: ["off"] */
 /**
  * GulpPress Configuration File
@@ -5,7 +7,7 @@
  * @package GulpPress
  */
 
-const basePath = './';
+const basePath = '.';
 
 // Browsers to consider for autoprefixing (https://github.com/ai/browserslist)
 // The following list is set as per WordPress requirements:
@@ -23,14 +25,14 @@ const browserList = [
   'last 2 Opera versions',
 ];
 
-module.exports = {
+const config: gulpPress.MainConfig = {
   // Project Options
   project: {
     basePath,
-    envFile: [],
-    createSeparateMinFiles: true,
     projectURL: '',
-    environment: false, // Override .env option. Available options → 'development' or 'staging' or 'production'
+    environment: 'development', // Override .env option. Available options → 'development' or 'staging' or 'production'
+    envFile: './.env',
+    createSeparateMinFiles: true,
   },
   // https://www.browsersync.io/docs/options
   browserSync: {
@@ -42,14 +44,16 @@ module.exports = {
   // Script Options
   scripts: {
     src: `${basePath}/assets/src/scripts/*.+(js|ts)`,
-    dest: `./${basePath}/assets/dist/scripts`,
+    dest: `${basePath}/assets/dist/scripts`,
     targets: browserList,
   },
   // Style options
   styles: {
     src: `${basePath}/assets/src/styles/*.scss`,
-    dest: `/${basePath}/assets/dist/styles`,
-    autoprefixerOptions: browserList,
+    dest: `${basePath}/assets/dist/styles`,
+    autoprefixerOptions: {
+      overrideBrowserslist: browserList,
+    },
     postcssPlugins: [],
     sassOptions: {
       includePaths: [
@@ -109,3 +113,5 @@ module.exports = {
     },
   },
 };
+
+export default config;

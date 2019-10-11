@@ -19,7 +19,7 @@ const gulpBuster = require('gulp-buster');
 const cssVariables = require('postcss-css-variables');
 const postcssEasingGradients = require('postcss-easing-gradients');
 const { stream } = browser_sync_1.default;
-function default_1(config, createSeparateMinFiles) {
+function default_1(config, project) {
     const postcssPlugins = [
         autoprefixer_1.default(config.autoprefixerOptions),
         cssVariables({
@@ -29,7 +29,7 @@ function default_1(config, createSeparateMinFiles) {
         postcssEasingGradients(),
     ];
     function compileStyles() {
-        if (createSeparateMinFiles === true) {
+        if (project.createSeparateMinFiles === true) {
             return gulp_1.src(config.src)
                 .pipe(gulp_plumber_1.default())
                 .pipe(gulp_if_1.default(utils_1.isDev(), gulp_sourcemaps_1.default.init()))
