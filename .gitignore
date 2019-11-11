@@ -1,6 +1,5 @@
 node_modules/
 *.log
 
-
-/gulpfile.ts
-/gulp-config.ts
+gulpfile.ts
+gulp.config.ts
