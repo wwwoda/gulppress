@@ -1,14 +1,14 @@
 {
-  "name": "@wwwoda/gulp-tasks",
+  "name": "@wwwoda/gulppress",
   "version": "0.0.2",
-  "license": "MIT",
+  "license": "GPL-3.0-or-later",
   "author": "Woda Digital",
   "description": "Collection of gulp tasks used in web development projects",
   "keywords": [
     "wordpress",
     "eslint"
   ],
-  "homepage": "https://github.com/wwwoda/gulp-tasks",
+  "homepage": "https://github.com/wwwoda/gulppress",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
