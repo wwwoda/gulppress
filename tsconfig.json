@@ -14,8 +14,9 @@
   ],
   "exclude": [
     "node_modules",
-    "assets",
     "dist",
-    "gulpfile.ts"
+    "files",
+    "gulpfile.ts",
+    "gulp.config.ts"
   ]
 }
