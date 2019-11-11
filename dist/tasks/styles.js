@@ -34,7 +34,7 @@ function default_1(config, project) {
                 .pipe(gulp_plumber_1.default())
                 .pipe(gulp_if_1.default(utils_1.isDev(), gulp_sourcemaps_1.default.init()))
                 .pipe(gulp_sass_1.default(config.sassOptions).on('error', gulp_sass_1.default.logError))
-                .pipe(gulp_postcss_1.default(postcssPlugins))
+                .pipe(gulp_postcss_1.default([...postcssPlugins, ...config.postcssPlugins]))
                 .pipe(gulp_if_1.default(utils_1.isDev(), gulp_sourcemaps_1.default.write({ includeContent: false })))
                 .pipe(gulp_1.dest(config.dest))
                 .pipe(stream())

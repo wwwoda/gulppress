@@ -9,10 +9,13 @@
     "esModuleInterop": true,
     "noImplicitThis": false
   },
+  "include": [
+    "src/**/*"
+  ],
   "exclude": [
     "node_modules",
     "assets",
-    // "gulpfile.ts",
-    "dist"
+    "dist",
+    "gulpfile.ts"
   ]
 }

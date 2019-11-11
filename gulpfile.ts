@@ -21,7 +21,7 @@ import {
   stylesTask,
   translationTask,
 } from './src/index';
-import config from './gulppress.config';
+import config from './gulp.config';
 
 const nodeEnvFile = require('node-env-file');
 

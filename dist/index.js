@@ -22,7 +22,7 @@ exports.serveTask = serve_1.default;
 const styles_1 = __importDefault(require("./tasks/styles"));
 exports.stylesTask = styles_1.default;
 const translate_1 = __importDefault(require("./tasks/translate"));
-exports.languagesTask = translate_1.default;
+exports.translationTask = translate_1.default;
 const vendor_scripts_1 = __importDefault(require("./tasks/vendor-scripts"));
 exports.vendorScriptsTask = vendor_scripts_1.default;
 // import watcher from './tasks/watcher';
