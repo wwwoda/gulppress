@@ -1,5 +1,6 @@
-/assets/
 node_modules/
 *.log
-php
-local-notes.txt
+
+
+/gulpfile.ts
+/gulp-config.ts
