@@ -11,7 +11,7 @@ const gulp_if_1 = __importDefault(require("gulp-if"));
 const gulp_imagemin_1 = __importDefault(require("gulp-imagemin"));
 const gulp_rename_1 = __importDefault(require("gulp-rename"));
 function shouldCreatePhpPartials(config) {
-    return !!config.phpPartialsDest;
+    return !!config.destPhpPartials;
 }
 function default_1(config) {
     function processImages() {
@@ -43,8 +43,8 @@ function default_1(config) {
             .pipe(gulp_if_1.default(shouldCreatePhpPartials(config), gulp_rename_1.default({
             extname: '.php',
         })))
-            .pipe(gulp_if_1.default(shouldCreatePhpPartials(config), gulp_changed_1.default(config.phpPartialsDest || config.dest)))
-            .pipe(gulp_if_1.default(shouldCreatePhpPartials(config), gulp_1.dest(config.phpPartialsDest || config.dest)));
+            .pipe(gulp_if_1.default(shouldCreatePhpPartials(config), gulp_changed_1.default(config.destPhpPartials || config.dest)))
+            .pipe(gulp_if_1.default(shouldCreatePhpPartials(config), gulp_1.dest(config.destPhpPartials || config.dest)));
     }
     return gulp_1.parallel(processImages);
 }

@@ -9,5 +9,6 @@ import serve from './tasks/serve';
 import styles from './tasks/styles';
 import translate from './tasks/translate';
 import vendorScripts from './tasks/vendor-scripts';
+import gulppress from './interfaces';
 import { getProxyUrl, getTheme, getWatchers, isDev, reload } from './utils';
-export { clean as cleanTasks, favicon as faviconTask, fonts as fontsTask, icons as iconsTask, images as imagesTask, modernizr as modernizrTask, scripts as scriptsTask, serve as serveTask, styles as stylesTask, vendorScripts as vendorScriptsTask, translate as translationTask, getProxyUrl, getTheme, getWatchers, isDev, reload, };
+export { clean as cleanTasks, favicon as faviconTask, fonts as fontsTask, icons as iconsTask, images as imagesTask, modernizr as modernizrTask, scripts as scriptsTask, serve as serveTask, styles as stylesTask, vendorScripts as vendorScriptsTask, translate as translationTask, gulppress, getProxyUrl, getTheme, getWatchers, isDev, reload, };

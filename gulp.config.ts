@@ -1,4 +1,4 @@
-import gulpPress from './src/interfaces';
+import { gulppress } from './src/index';
 
 /* eslint max-len: ["off"] */
 /**
@@ -25,7 +25,7 @@ const browserList = [
   'last 2 Opera versions',
 ];
 
-const config: gulpPress.MainConfig = {
+const config: gulppress.MainConfig = {
   // Project Options
   project: {
     basePath,

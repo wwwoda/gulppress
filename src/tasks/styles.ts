@@ -14,7 +14,7 @@ import rename from 'gulp-rename';
 import sass from 'gulp-sass';
 import sourcemaps from 'gulp-sourcemaps';
 import postcssCalc from 'postcss-calc';
-import gulpPress from '../interfaces';
+import gulpress from '../interfaces';
 import { isDev } from '../utils';
 
 const gulpBuster = require('gulp-buster');
@@ -24,8 +24,8 @@ const postcssEasingGradients = require('postcss-easing-gradients');
 const { stream } = browserSync;
 
 export default function (
-  config: gulpPress.StylesConfig,
-  project: gulpPress.ProjectConfig,
+  config: gulpress.StylesConfig,
+  project: gulpress.ProjectConfig,
 ): TaskFunction {
   const postcssPlugins = [
     autoprefixer(config.autoprefixerOptions),

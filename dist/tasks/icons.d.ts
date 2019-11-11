@@ -1,7 +1,3 @@
 import { TaskFunction } from 'gulp';
-interface IconsConfig {
-    src: string | string[];
-    dest: string;
-}
-export default function (config: IconsConfig): TaskFunction;
-export {};
+import gulpress from '../interfaces';
+export default function (config: gulpress.IconsConfig): TaskFunction;

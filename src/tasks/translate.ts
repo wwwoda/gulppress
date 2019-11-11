@@ -4,12 +4,12 @@ import {
   src,
   TaskFunction,
 } from 'gulp';
-import gulpPress from '../interfaces';
+import gulpress from '../interfaces';
 
 const sort = require('gulp-sort');
 const wpPot = require('gulp-wp-pot');
 
-export default function (config: gulpPress.TranslationConfig): TaskFunction {
+export default function (config: gulpress.TranslationConfig): TaskFunction {
   function translate(): NodeJS.ReadWriteStream {
     return src(config.src)
       .pipe(sort())

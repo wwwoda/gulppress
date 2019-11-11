@@ -1,7 +1,3 @@
 import { TaskFunction } from 'gulp';
-interface FaviconConfig {
-    src: string | string[];
-    dest: string;
-}
-export default function (config: FaviconConfig): TaskFunction;
-export {};
+import gulpress from '../interfaces';
+export default function (config: gulpress.FaviconConfig): TaskFunction;

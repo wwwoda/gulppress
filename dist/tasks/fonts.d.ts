@@ -1,8 +1,3 @@
 import { TaskFunction } from 'gulp';
-interface FontsConfig {
-    srcPath: string;
-    src: string | string[];
-    dest: string;
-}
-export default function (config: FontsConfig): TaskFunction;
-export {};
+import gulpress from '../interfaces';
+export default function (config: gulpress.FontsConfig): TaskFunction;

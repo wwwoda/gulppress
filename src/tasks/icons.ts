@@ -8,13 +8,9 @@ import cache from 'gulp-cache';
 import changed from 'gulp-changed';
 import imagemin from 'gulp-imagemin';
 import rename from 'gulp-rename';
+import gulpress from '../interfaces';
 
-interface IconsConfig {
-  src: string | string[];
-  dest: string;
-}
-
-export default function (config: IconsConfig): TaskFunction {
+export default function (config: gulpress.IconsConfig): TaskFunction {
   function processIcons(): NodeJS.ReadWriteStream {
     return src(config.src)
       .pipe(

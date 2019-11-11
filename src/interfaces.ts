@@ -3,7 +3,7 @@ import browserSync from 'browser-sync';
 import modernizr from 'gulp-modernizr';
 import { Options as SassOptions } from 'node-sass';
 
-declare namespace gulpPress {
+declare namespace gulppress {
   type AssetItemType = string | {
     dest: string;
   };
@@ -95,4 +95,4 @@ declare namespace gulpPress {
   interface VendorScriptsConfig extends BaseConfig {}
 }
 
-export default gulpPress;
+export default gulppress;

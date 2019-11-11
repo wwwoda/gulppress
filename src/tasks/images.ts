@@ -10,18 +10,13 @@ import filter from 'gulp-filter';
 import gulpif from 'gulp-if';
 import imagemin from 'gulp-imagemin';
 import rename from 'gulp-rename';
+import gulpress from '../interfaces';
 
-interface ImagesConfig {
-  src: string | string[];
-  dest: string;
-  phpPartialsDest?: string | null | undefined;
+function shouldCreatePhpPartials(config: gulpress.ImagesConfig): boolean {
+  return !!config.destPhpPartials;
 }
 
-function shouldCreatePhpPartials(config: ImagesConfig): boolean {
-  return !!config.phpPartialsDest;
-}
-
-export default function (config: ImagesConfig): TaskFunction {
+export default function (config: gulpress.ImagesConfig): TaskFunction {
   function processImages(): NodeJS.ReadWriteStream {
     return src(config.src)
       .pipe(
@@ -55,8 +50,8 @@ export default function (config: ImagesConfig): TaskFunction {
       .pipe(gulpif(shouldCreatePhpPartials(config), rename({
         extname: '.php',
       })))
-      .pipe(gulpif(shouldCreatePhpPartials(config), changed(config.phpPartialsDest || config.dest)))
-      .pipe(gulpif(shouldCreatePhpPartials(config), dest(config.phpPartialsDest || config.dest)));
+      .pipe(gulpif(shouldCreatePhpPartials(config), changed(config.destPhpPartials || config.dest)))
+      .pipe(gulpif(shouldCreatePhpPartials(config), dest(config.destPhpPartials || config.dest)));
   }
 
   return parallel(processImages);

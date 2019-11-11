@@ -6,18 +6,14 @@ import {
 } from 'gulp';
 import filter from 'gulp-filter';
 import imagemin from 'gulp-imagemin';
+import gulpress from '../interfaces';
 
 const responsive = require('gulp-responsive');
 const ico = require('gulp-to-ico');
 
-interface FaviconConfig {
-  src: string | string[];
-  dest: string;
-}
-
 const pngFilter = filter('**/*.png');
 
-export default function (config: FaviconConfig): TaskFunction {
+export default function (config: gulpress.FaviconConfig): TaskFunction {
   function faviconToIco(): NodeJS.ReadWriteStream {
     return src(config.src)
       .pipe(pngFilter)

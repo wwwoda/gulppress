@@ -1,7 +1,3 @@
 import { TaskFunction } from 'gulp';
-interface VendorScriptsConfig {
-    src: string | string[];
-    dest: string;
-}
-export default function (config: VendorScriptsConfig): TaskFunction;
-export {};
+import gulpress from '../interfaces';
+export default function (config: gulpress.VendorScriptsConfig): TaskFunction;

@@ -9,6 +9,7 @@ import serve from './tasks/serve';
 import styles from './tasks/styles';
 import translate from './tasks/translate';
 import vendorScripts from './tasks/vendor-scripts';
+import gulppress from './interfaces';
 // import watcher from './tasks/watcher';
 
 import {
@@ -32,6 +33,7 @@ export {
   vendorScripts as vendorScriptsTask,
   translate as translationTask,
   // watcher as watcherTask,
+  gulppress,
   getProxyUrl,
   getTheme,
   getWatchers,

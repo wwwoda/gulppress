@@ -1,9 +1,9 @@
 import { TaskFunction } from 'gulp';
-import gulpPress from '../interfaces';
+import gulpress from '../interfaces';
 
 import del = require('del');
 
-function getDestPaths(config: gulpPress.MainConfig): {
+function getDestPaths(config: gulpress.MainConfig): {
   [key: string]: string;
 } {
   const dests: {
@@ -17,7 +17,7 @@ function getDestPaths(config: gulpPress.MainConfig): {
   return dests;
 }
 
-export default function (config: gulpPress.MainConfig): {
+export default function (config: gulpress.MainConfig): {
   scriptsStyles: TaskFunction;
   assets: TaskFunction;
   all: TaskFunction;

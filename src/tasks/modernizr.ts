@@ -6,9 +6,9 @@ import {
 } from 'gulp';
 import modernizr from 'gulp-modernizr';
 import uglify from 'gulp-uglify';
-import gulpPress from '../interfaces';
+import gulpress from '../interfaces';
 
-export default function (config: gulpPress.ModernizrConfig): TaskFunction {
+export default function (config: gulpress.ModernizrConfig): TaskFunction {
   function generateModernizr(): NodeJS.ReadWriteStream {
     return src(config.src)
       .pipe(modernizr(config.modernizrOptions))

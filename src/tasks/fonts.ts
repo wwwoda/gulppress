@@ -7,17 +7,12 @@ import {
 } from 'gulp';
 import changed from 'gulp-changed';
 import filter from 'gulp-filter';
+import gulpress from '../interfaces';
 
 const ttf2woff = require('gulp-ttf2woff');
 const ttf2woff2 = require('gulp-ttf2woff2');
 
-interface FontsConfig {
-  srcPath: string;
-  src: string | string[];
-  dest: string;
-}
-
-export default function (config: FontsConfig): TaskFunction {
+export default function (config: gulpress.FontsConfig): TaskFunction {
   function createWoffFromTtf(): NodeJS.ReadWriteStream {
     return src(config.src)
       .pipe(filter(file => /ttf$/.test(file.path)))

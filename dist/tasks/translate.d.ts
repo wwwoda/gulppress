@@ -1,3 +1,3 @@
 import { TaskFunction } from 'gulp';
-import gulpPress from '../interfaces';
-export default function (config: gulpPress.TranslationConfig): TaskFunction;
+import gulpress from '../interfaces';
+export default function (config: gulpress.TranslationConfig): TaskFunction;

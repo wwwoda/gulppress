@@ -11,7 +11,7 @@ import plumber from 'gulp-plumber';
 import webpackMerge from 'webpack-merge';
 import webpackStream from 'webpack-stream';
 
-import gulpPress from '../interfaces';
+import gulpress from '../interfaces';
 import { getWatchers, isDev } from '../utils';
 
 const HashAssetsPlugin = require('hash-assets-webpack-plugin');
@@ -20,8 +20,8 @@ const notify = require('gulp-notify');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 export default function (
-  config: gulpPress.ScriptConfig,
-  project: gulpPress.ProjectConfig,
+  config: gulpress.ScriptConfig,
+  project: gulpress.ProjectConfig,
 ): TaskFunction {
   const source: { [key: string]: string } = {};
   if (Array.isArray(config.src)) {
