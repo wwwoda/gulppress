@@ -27,4 +27,6 @@ process.on('unhandledRejection', err => {
  *
  * Runs all the functions with async/await.
  */
-run();
+console.log('gulppress');
+
+// run();
