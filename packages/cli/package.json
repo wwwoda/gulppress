@@ -15,9 +15,7 @@
   "author": "Woda Digital",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "bin": {
-    "gulppress-cli": "lib/index.js"
-  },
+  "bin": "lib/index.js",
   "files": [
     "lib"
   ],
