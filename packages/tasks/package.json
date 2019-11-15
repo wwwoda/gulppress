@@ -105,5 +105,5 @@
     "@typescript-eslint/eslint-plugin": "^2.0.0",
     "@typescript-eslint/parser": "^2.0.0"
   },
-  "gitHead": "8620bddc4575344bac852f79653e2b3df75f368e"
+  "gitHead": "b2064843da8b1f3f658e6ef19697d6b05e33dd81"
 }
