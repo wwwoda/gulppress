@@ -1,3 +1,1 @@
-# ESLint: Ignore files.
 packages/**/lib/**
-node_modules

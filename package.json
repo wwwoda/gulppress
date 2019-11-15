@@ -1,24 +1,19 @@
 {
   "name": "gulppress",
   "private": true,
-  "respository": "https://github.com/wwwoda/gulppress",
   "homepage": "https://github.com/wwwoda/gulppress",
   "author": "Woda Digital",
   "workspaces": [
     "packages/*"
   ],
-  "engines": {
-    "yarn": "^1.2.1",
-    "node": ">=8.9.0"
-  },
   "scripts": {
-    "clean": "lerna clean",
-    "type-check": "lerna run type-check",
-    "lint": "lerna run lint",
-    "test": "lerna run test",
     "build": "lerna run build",
+    "clean": "lerna clean",
     "lerna": "lerna",
-    "nuke": "rm -r node_modules; for d in packages/*/node_modules; do echo $d; rm -r $d; done"
+    "lint": "lerna run lint",
+    "nuke": "rm -r node_modules; for d in packages/*/node_modules; do echo $d; rm -r $d; done",
+    "test": "lerna run test",
+    "type-check": "lerna run type-check"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
@@ -27,13 +22,21 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-typescript": "^7.3.3",
+    "@types/node": "11.15.2",
     "@typescript-eslint/eslint-plugin": "^2.0.0",
     "@typescript-eslint/parser": "^2.0.0",
     "babel-core": "^6.26.3",
+    "cross-env": "6.0.3",
     "eslint": "^6.2.2",
     "eslint-config-airbnb-typescript": "^4.0.1",
     "eslint-plugin-import": "^2.18.2",
     "lerna": "^3.18.4",
+    "rimraf": "^3.0.0",
     "typescript": "^3.5.3"
-  }
+  },
+  "engines": {
+    "node": ">=8.9.0",
+    "yarn": "^1.2.1"
+  },
+  "respository": "https://github.com/wwwoda/gulppress"
 }

@@ -1,10 +1,4 @@
 module.exports = {
-	env: {
-		browser: true,
-		commonjs: true,
-		es6: true,
-		node: true,
-	},
 	extends: [
     'airbnb-typescript/base',
     "plugin:@typescript-eslint/recommended",
@@ -18,6 +12,10 @@ module.exports = {
     '@typescript-eslint',
 	],
 	rules: {
+		'import/named': 'off',
+		'import/no-cycle': 'off',
+		'import/no-dynamic-require': 'off',
+		'import/prefer-default-export': 'off',
     'no-console': 'off',
     'no-restricted-syntax': 'off',
     '@typescript-eslint/no-var-requires': 'off',
