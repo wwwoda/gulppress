@@ -1,6 +1,7 @@
 import fancyLog from 'fancy-log';
 
-import browserSync = require('browser-sync');
+// import browserSync = require('browser-sync');
+import browserSync from 'browser-sync';
 
 const { argv } = require('yargs');
 

@@ -4,16 +4,12 @@ import modernizr from 'gulp-modernizr';
 import { Options as SassOptions } from 'node-sass';
 
 declare namespace gulppress {
-  type AssetItemType = string | {
-    dest: string;
-  };
-
-  interface BaseConfig {
+  export interface BaseConfig {
     src: string | string[];
     dest: string;
   }
 
-  interface MainConfig {
+  export interface MainConfig {
     assets? : string | string[];
     project: ProjectConfig;
     browserSync: browserSync.Options;
@@ -27,7 +23,7 @@ declare namespace gulppress {
     translation: TranslationConfig;
   }
 
-  interface ProjectConfig {
+  export interface ProjectConfig {
     basePath: string;
     envFile: string | false;
     createSeparateMinFiles: boolean;
@@ -35,46 +31,56 @@ declare namespace gulppress {
     environment: string | false;
   }
 
-  interface CleanConfig {
+  export interface CleanConfig {
     assets? : string | string[];
-    favicon? : AssetItemType;
-    fonts? : AssetItemType;
-    icons? : AssetItemType;
+    favicon? : string | {
+      dest: string;
+    };
+    fonts? : string | {
+      dest: string;
+    };
+    icons? : string | {
+      dest: string;
+    };
     images? : string | {
       dest: string;
       destPhpPartials: string;
     };
-    scripts? : AssetItemType;
-    styles? : AssetItemType;
+    scripts? : string | {
+      dest: string;
+    };
+    styles? : string | {
+      dest: string;
+    };
   }
 
-  interface FaviconConfig extends BaseConfig {}
+  export interface FaviconConfig extends BaseConfig {}
 
-  interface FontsConfig extends BaseConfig {
+  export interface FontsConfig extends BaseConfig {
     srcPath: string;
   }
 
-  interface IconsConfig extends BaseConfig {}
+  export interface IconsConfig extends BaseConfig {}
 
-  interface ImagesConfig extends BaseConfig {
+  export interface ImagesConfig extends BaseConfig {
     destPhpPartials?: string | null | undefined;
   }
 
-  interface ModernizrConfig extends BaseConfig {
+  export interface ModernizrConfig extends BaseConfig {
     modernizrOptions: modernizr.Params;
   }
 
-  interface ScriptConfig extends BaseConfig {
+  export interface ScriptConfig extends BaseConfig {
     targets: string | Array<string> | { [key: string]: string };
   }
 
-  interface StylesConfig extends BaseConfig {
+  export interface StylesConfig extends BaseConfig {
     sassOptions: SassOptions;
     autoprefixerOptions: autoprefixer.Options;
     postcssPlugins: [] | Array<CallableFunction>;
   }
 
-  interface TranslationConfig extends BaseConfig {
+  export interface TranslationConfig extends BaseConfig {
     wpPotOptions: {
       bugReport?: string;
       commentKeyword?: string;
@@ -92,7 +98,7 @@ declare namespace gulppress {
     };
   }
 
-  interface VendorScriptsConfig extends BaseConfig {}
+  export interface VendorScriptsConfig extends BaseConfig {}
 }
 
 export default gulppress;

@@ -58,5 +58,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "respository": "https://github.com/wwwoda/gulppress"
+  "respository": "https://github.com/wwwoda/gulppress",
+  "gitHead": "8620bddc4575344bac852f79653e2b3df75f368e"
 }
