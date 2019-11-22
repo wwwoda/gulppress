@@ -16,26 +16,19 @@ module.exports = {
 		project: './tsconfig.json',
 		tsconfigRootDir: __dirname,
 		ecmaVersion: 2018,
-		ecmaFeatures: {
-			jsx: true,
-		},
 		sourceType: 'module'
   },
-  "settings": {
-    "import/resolver": {
-      "node": {
-        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+  settings: {
+    'import/resolver': {
+      node: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx']
       }
     }
   },
-	// settings: {
-	// 	'import/resolver': {
-	// 		typescript: {
-	// 			directory: __dirname,
-	// 		},
-	// 	},
-	// },
 	rules: {
+		'class-methods-use-this': 'off',
+		'import/no-dynamic-require': 'off',
+		'import/prefer-default-export': 'off',
 		'no-console': 'off',
     'no-restricted-syntax': 'off'
   }

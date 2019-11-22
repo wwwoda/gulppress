@@ -31,7 +31,7 @@ const config: gulppress.MainConfig = {
     basePath,
     projectURL: '',
     environment: 'development', // Override .env option. Available options → 'development' or 'staging' or 'production'
-    envFile: '{{envFile}}',
+    envFile: './{{envFile}}',
     createSeparateMinFiles: true,
   },
   // https://www.browsersync.io/docs/options

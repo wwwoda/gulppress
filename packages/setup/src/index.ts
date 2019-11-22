@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import chalk from 'chalk';
-import run from './modules/run';
+import { setup } from './setup';
 
 const currentNodeVersion = process.versions.node;
 const semver = currentNodeVersion.split('.');
@@ -29,4 +29,4 @@ process.on('unhandledRejection', err => {
  *
  * Runs all the functions with async/await.
  */
-run();
+setup();

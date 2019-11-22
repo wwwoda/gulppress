@@ -7,12 +7,13 @@ module.exports = {
 	},
 	extends: [
     'airbnb-typescript/base',
-    "plugin:@typescript-eslint/recommended",
 	],
 	parser: '@typescript-eslint/parser',
 	parserOptions: {
 		project: './tsconfig.json',
 		tsconfigRootDir: __dirname,
+		ecmaVersion: 2018,
+		sourceType: 'module'
 	},
 	plugins: [
     '@typescript-eslint',
@@ -24,14 +25,11 @@ module.exports = {
     '@typescript-eslint/no-namespace': 'off',
     '@typescript-eslint/no-empty-interface': 'off',
 	},
-	settings: {
-		'import/parsers': {
-			'@typescript-eslint/parser': ['.ts', '.tsx'],
-		},
-		'import/resolver': {
-			typescript: {
-				directory: __dirname,
-			},
-		},
-	},
+  settings: {
+    'import/resolver': {
+      node: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx']
+      }
+    }
+  },
 };
