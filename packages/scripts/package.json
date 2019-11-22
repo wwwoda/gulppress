@@ -1,11 +1,11 @@
 {
-  "name": "@gulppress/tasks",
+  "name": "@gulppress/scripts",
   "license": "MIT",
   "private": false,
   "respository": "https://github.com/wwwoda/gulppress",
   "homepage": "https://github.com/wwwoda/gulppress",
   "author": "Woda Digital",
-  "version": "0.1.4-alpha.0",
+  "version": "0.0.0",
   "workspaces": [
     "packages/*"
   ],

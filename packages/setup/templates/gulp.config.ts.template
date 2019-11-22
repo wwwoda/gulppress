@@ -1,4 +1,4 @@
-import { gulppress } from 'gulppress';
+import { gulppress } from '@gulppress/tasks';
 
 /* eslint max-len: ["off"] */
 /**
@@ -7,7 +7,7 @@ import { gulppress } from 'gulppress';
  * @package GulpPress
  */
 
-const basePath = '.';
+const basePath = './{{basePath}}';
 
 // Browsers to consider for autoprefixing (https://github.com/ai/browserslist)
 // The following list is set as per WordPress requirements:
@@ -31,7 +31,7 @@ const config: gulppress.MainConfig = {
     basePath,
     projectURL: '',
     environment: 'development', // Override .env option. Available options → 'development' or 'staging' or 'production'
-    envFile: './.env',
+    envFile: '{{envFile}}',
     createSeparateMinFiles: true,
   },
   // https://www.browsersync.io/docs/options

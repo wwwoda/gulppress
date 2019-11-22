@@ -1,7 +1,7 @@
 {
-  "name": "@gulppress/cli",
+  "name": "@gulppress/setup",
   "private": false,
-  "version": "0.1.7-alpha.0",
+  "version": "0.0.0",
   "description": "",
   "keywords": [
     "browser-sync",
@@ -32,6 +32,7 @@
   "dependencies": {
     "chalk": "^3.0.0",
     "download": "^7.1.0",
+    "handlebars": "^4.5.2",
     "inquirer": "^7.0.0",
     "inquirer-fuzzy-path": "^2.1.0",
     "ora": "^4.0.2",

@@ -3,8 +3,8 @@ import inquirer from 'inquirer';
 inquirer.registerPrompt('fuzzypath', require('inquirer-fuzzy-path'));
 
 
-export default function setupConfiguration(): void {
-  inquirer.prompt([{
+export default function setupConfiguration(): Promise<inquirer.Answers> {
+  return inquirer.prompt([{
     type: 'fuzzypath',
     name: 'basePath',
     excludePath: (nodePath: string): boolean => nodePath.startsWith('node_modules'),
@@ -12,7 +12,7 @@ export default function setupConfiguration(): void {
     message: 'Select you theme\'s directory',
     // default: '.',
     suggestOnly: false,
-  }]).then(answers => {
-    console.log(answers);
-  });
+  }]);
+
+  // return answers;
 }
