@@ -4,8 +4,8 @@ import {
   task,
   watch,
 } from 'gulp';
-import fs from 'fs';
-import path from 'path';
+import { existsSync } from 'fs';
+import { relative, resolve } from 'path';
 import {
   cleanTasks,
   faviconTask,
@@ -20,14 +20,14 @@ import {
   serveTask,
   stylesTask,
   translationTask,
-} from './src/index';
+} from '@gulppress/scripts';
 import config from './gulppress.config';
 
 const nodeEnvFile = require('node-env-file');
 
 if (typeof config.project.envFile === 'string' && config.project.envFile) {
   try {
-    if (fs.existsSync(config.project.envFile)) {
+    if (existsSync(config.project.envFile)) {
       nodeEnvFile(config.project.envFile, { raise: false });
     }
   } catch (err) {
@@ -40,9 +40,9 @@ const browserSyncConfig = Object.assign({
 }, config.browserSync);
 
 const clean = cleanTasks(config);
-config.scripts.dest = path.resolve(__dirname, config.scripts.dest);
+config.scripts.dest = resolve(__dirname, config.scripts.dest);
 const compileScripts = scriptsTask(config.scripts, config.project);
-config.styles.dest = path.relative(__dirname, config.styles.dest);
+config.styles.dest = relative(__dirname, config.styles.dest);
 const compileStyles = stylesTask(config.styles, config.project);
 const processFavicon = faviconTask(config.favicon);
 const processFonts = fontsTask(config.fonts);
@@ -55,7 +55,6 @@ const processTranslations = translationTask(config.translation);
 // task('watch', function (this: any) {
 task('watch', () => {
   const watchers = getWatchers();
-
   if (watchers.scripts) {
     watch(config.scripts.src, series(reload));
   }
