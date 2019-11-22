@@ -5,7 +5,7 @@
   "respository": "https://github.com/wwwoda/gulppress",
   "homepage": "https://github.com/wwwoda/gulppress",
   "author": "Woda Digital",
-  "version": "0.0.1-alpha.0",
+  "version": "0.0.2-alpha.0",
   "engines": {
     "node": ">=8.9.0"
   },
@@ -23,10 +23,10 @@
     "test": "jest --color",
     "prepare": "cross-env NODE_ENV=production yarn build"
   },
-	"files": [
-		"lib",
-		"templates"
-	],
+  "files": [
+    "lib",
+    "templates"
+  ],
   "publishConfig": {
     "access": "public"
   },
