@@ -24,8 +24,7 @@
     "prepare": "cross-env NODE_ENV=production yarn build"
   },
   "files": [
-    "lib",
-    "templates"
+    "lib"
   ],
   "publishConfig": {
     "access": "public"
@@ -103,5 +102,5 @@
     "@typescript-eslint/eslint-plugin": "^2.0.0",
     "@typescript-eslint/parser": "^2.0.0"
   },
-  "gitHead": "a9b2f579efceee6dc3e8c114ca2370e5070af490"
+  "gitHead": "870c2ec55d0ffa1c2ba6e7824dcb468e66d96410"
 }

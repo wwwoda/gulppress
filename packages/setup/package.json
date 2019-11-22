@@ -17,7 +17,8 @@
   "types": "lib/index.d.ts",
   "bin": "lib/index.js",
   "files": [
-    "lib"
+    "lib",
+    "templates"
   ],
   "scripts": {
     "build": "yarn clean && yarn build:types && yarn build:js",
@@ -57,5 +58,5 @@
     "access": "public"
   },
   "respository": "https://github.com/wwwoda/gulppress",
-  "gitHead": "a9b2f579efceee6dc3e8c114ca2370e5070af490"
+  "gitHead": "870c2ec55d0ffa1c2ba6e7824dcb468e66d96410"
 }
