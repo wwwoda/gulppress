@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "@babel/core": "^7.7.2",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/plugin-proposal-object-rest-spread": "^7.6.2",
     "@babel/preset-env": "^7.7.1",
     "@babel/preset-typescript": "^7.7.2",
@@ -110,5 +111,5 @@
     "@typescript-eslint/eslint-plugin": "^2.0.0",
     "@typescript-eslint/parser": "^2.0.0"
   },
-  "gitHead": "002c07c145e323a8540a3acd003a0da5ce087763"
+  "gitHead": "fcf186c6950335318a7d476fce48b1cbc3e3c841"
 }
