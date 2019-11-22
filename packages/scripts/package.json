@@ -23,9 +23,10 @@
     "test": "jest --color",
     "prepare": "cross-env NODE_ENV=production yarn build"
   },
-  "files": [
-    "lib"
-  ],
+	"files": [
+		"lib",
+		"templates"
+	],
   "publishConfig": {
     "access": "public"
   },
@@ -102,5 +103,5 @@
     "@typescript-eslint/eslint-plugin": "^2.0.0",
     "@typescript-eslint/parser": "^2.0.0"
   },
-  "gitHead": "b2064843da8b1f3f658e6ef19697d6b05e33dd81"
+  "gitHead": "a9b2f579efceee6dc3e8c114ca2370e5070af490"
 }

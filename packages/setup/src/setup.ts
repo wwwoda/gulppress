@@ -74,7 +74,7 @@ export class Setup {
         .readFileSync(
           path.resolve(
             __dirname,
-            '../templates/gulp.config.ts.hbs',
+            '../templates/gulppressconfig.ts.hbs',
           ),
         )
         .toString();
