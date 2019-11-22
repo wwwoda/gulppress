@@ -1,7 +1,7 @@
 {
   "name": "@gulppress/setup",
   "private": false,
-  "version": "0.0.4-alpha.2",
+  "version": "0.0.4-alpha.3",
   "description": "",
   "keywords": [
     "browser-sync",
