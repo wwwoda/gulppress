@@ -65,6 +65,7 @@ export class Setup {
     }
 
     await this.initConfig();
+    this.configureScripts();
     return Promise.resolve();
   }
 
@@ -241,7 +242,6 @@ export async function setup(): Promise<void> {
   const initiator = new Setup(cwd);
 
   await initiator.startSetup();
-  initiator.configureScripts();
 
   console.log('done');
 }

@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
+let isYarnCache: boolean | null = null;
+
 function getTargetFilePath(source: string, target: string): string {
   if (fs.existsSync(target)) {
     if (fs.lstatSync(target).isDirectory()) {
@@ -36,4 +38,20 @@ export function resolveCWD(
   }
 
   return cwd;
+}
+
+export function isYarn(): boolean {
+  const cwd = process.cwd();
+  if (isYarnCache !== null) {
+    return isYarnCache;
+  }
+  try {
+    isYarnCache = findUp.sync('yarn.lock', { cwd }) != null;
+
+    return isYarnCache;
+  } catch (_) {
+    isYarnCache = false;
+
+    return isYarnCache;
+  }
 }
