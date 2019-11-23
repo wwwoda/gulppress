@@ -24,6 +24,10 @@ interface WatchersStatus {
   [propName: string]: boolean;
 }
 
+export function getEnv(): string {
+  return process.env.NODE_ENV || process.env.WP_ENV || 'production';
+}
+
 export function getArgv(): ArgvConfig {
   return argv;
 }
@@ -61,22 +65,12 @@ export function getWatchers(): WatchersStatus {
   return watchers;
 }
 
-export function isDev(): boolean {
-  if (argv.nodev) {
-    return false;
-  }
-
-  if (argv.dev) {
+export function isDevEnv(): boolean {
+  if (getEnv() === 'development') {
     return true;
   }
 
-  if (argv.env !== undefined) {
-    return argv.env === 'development';
-  }
-
-  return process.env.WP_ENV !== undefined
-    ? process.env.WP_ENV === 'development'
-    : false;
+  return false;
 }
 
 export function reload(done: CallableFunction): void {

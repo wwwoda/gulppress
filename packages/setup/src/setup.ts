@@ -1,29 +1,34 @@
 // import chalk from 'chalk';
 // import download from 'download';
 // import ora from 'ora';
+import execa from 'execa';
 import fs from 'fs';
 import handlebars from 'handlebars';
 import inquirer from 'inquirer';
 import path from 'path';
 
-import { copyFileSync, resolveCWD } from './utils';
+import { Pkg, ProjectConfig, ProjectDependencies } from './interfaces';
+import {
+  copyFileSync,
+  installWithYarn,
+  isYarn,
+  resolveCWD,
+} from './utils';
 
 inquirer.registerPrompt('fuzzypath', require('inquirer-fuzzy-path'));
 
-interface Pkg {
-  name: string;
-  homepage?: string;
-  author?: string | { name: string; email: string; url: string };
-  license?: string;
-  scripts?: {
-    [x: string]: string;
-  };
-  dependencies?: {
-    [x: string]: string;
-  };
-  devDependencies?: {
-    [x: string]: string;
-  };
+class SetupResolve {
+  public projectConfig?: ProjectConfig;
+
+  public deps?: ProjectDependencies;
+
+  constructor(
+    projectConfig?: ProjectConfig,
+    deps?: ProjectDependencies,
+  ) {
+    this.projectConfig = projectConfig;
+    this.deps = deps;
+  }
 }
 
 export class Setup {
@@ -57,26 +62,30 @@ export class Setup {
     }
   }
 
-  public async startSetup(): Promise<void> {
+  public async startSetup(): Promise<SetupResolve> {
     if (this.isConfigPresent()) {
       return Promise.reject(
         new Error('Project is already set up.'),
       );
     }
 
-    await this.initConfig();
-    this.configureScripts();
-    return Promise.resolve();
+    const projectConfig = await this.initConfig();
+    const deps = this.configureScripts(projectConfig);
+    return Promise.resolve(
+      new SetupResolve(projectConfig, deps),
+    );
   }
 
-  private async initConfig(): Promise<void> {
+  private async initConfig(): Promise<ProjectConfig> {
     return this.getUserInput().then(answers => {
-      const context: {
-        basePath: string;
-        envFile: string | false;
-      } = {
+      const config: ProjectConfig = {
+        appName: answers.appName,
+        type: answers.type,
         basePath: answers.basePath ? path.relative(this.cwd, answers.basePath) : '',
-        envFile: answers.dotEnv ? answers.dotEnvPath : false,
+        dotEnv: answers.dotEnv,
+        dotEnvPath: `./${answers.dotEnvPath}`,
+        createSeparateMinFiles: answers.createSeparateMinFiles,
+        useYarn: answers.useYarn,
       };
       const source: string = fs
         .readFileSync(
@@ -87,19 +96,14 @@ export class Setup {
         )
         .toString();
       const compiler = handlebars.compile(source);
-      fs.writeFileSync(this.configPath, compiler(context));
+      fs.writeFileSync(this.configPath, compiler(config));
       copyFileSync(path.resolve(__dirname, '../templates/gulpfile.ts.hbs'), this.gulpFilePath);
+      return config;
     });
   }
 
   private async getUserInput(): Promise<inquirer.Answers> {
     const questions: inquirer.QuestionCollection = [
-      {
-        message: 'App Name',
-        name: 'appName',
-        type: 'input',
-        validate: ''
-      },
       {
         message: 'Type of WordPress Project (plugin or theme)',
         name: 'type',
@@ -116,15 +120,26 @@ export class Setup {
         },
       },
       {
+        message: answers => `Name of WordPress ${answers.type === 'plugin' ? 'plugin' : 'theme'}`,
+        name: 'appName',
+        type: 'input',
+        default: this.pkg.name || '',
+      },
+      {
         type: 'fuzzypath',
         name: 'basePath',
         excludePath: (nodePath: string): boolean => nodePath.startsWith('node_modules'),
         itemType: 'directory',
         message: 'Select you theme\'s/plugin\'s directory',
         default: (answers: inquirer.Answers): string => {
-          if (answers.type === 'bedrock'
-            && this.pathExists(path.resolve(this.cwd, './web/app/themes'))) {
-            return 'web/app/themes';
+          if (answers.type === 'bedrock') {
+            if (this.pathExists(path.resolve(this.cwd, `./web/app/themes/${answers.appName}`))) {
+              return `./web/app/themes/${answers.appName}`;
+            }
+            if (this.pathExists(path.resolve(this.cwd, './web/app/themes'))) {
+              return 'web/app/themes';
+            }
+            return '';
           }
           return '';
         },
@@ -146,20 +161,35 @@ export class Setup {
         suggestOnly: true,
         when: answers => answers.dotEnv || answers.type === 'bedrock',
       },
+      {
+        type: 'confirm',
+        name: 'usecreateSeparateMinFilesYarn',
+        message: 'Create separate .min files for scripts and styles?',
+        default: false,
+      },
+      {
+        type: 'confirm',
+        name: 'useYarn',
+        message: 'Install dependencies with yarn instead of npm (yarn needs to be installed globally)?',
+        when: !isYarn(),
+      },
     ];
 
     return inquirer.prompt(questions);
   }
 
-  public configureScripts(): void {
+  public configureScripts(
+    projectConfig: ProjectConfig,
+  ): ProjectDependencies {
     const packageFileData: Pkg = this.fileExists(this.packageJsonPath)
       // eslint-disable-next-line global-require
       ? require(this.packageJsonPath)
       : {
-        name: 'appName',
+        name: projectConfig.appName,
       };
     const scripts: { [x: string]: string } = {
       build: 'gulp build',
+      'build:production': 'cross-env NODE_ENV=production gulp build',
       dev: 'gulp dev',
     };
     if (!packageFileData.scripts) {
@@ -181,6 +211,7 @@ export class Setup {
       }
     });
 
+    const dependencies: string[] = [];
     const devDependencies: string[] = [];
 
     // If @wpackio/scripts is not already present in devDependencies
@@ -198,6 +229,8 @@ export class Setup {
       this.packageJsonPath,
       JSON.stringify(packageFileData, null, 2),
     );
+
+    return { dependencies, devDependencies };
   }
 
   private fileExists(filePath: string): boolean {
@@ -224,14 +257,6 @@ export class Setup {
     }
   }
 
-  private getSubdirectories(directoryPath: string): string[] {
-    if (!this.pathExists(directoryPath)) return [];
-
-    return fs.readdirSync(directoryPath).filter(file => fs
-      .statSync(path.join(directoryPath, file))
-      .isDirectory());
-  }
-
   private isConfigPresent(): boolean {
     return this.fileExists(this.configPath);
   }
@@ -241,7 +266,27 @@ export async function setup(): Promise<void> {
   const cwd = resolveCWD({});
   const initiator = new Setup(cwd);
 
-  await initiator.startSetup();
+  try {
+    const done = await initiator.startSetup();
+    const useYarn = installWithYarn(done.projectConfig);
+    const command = useYarn ? 'yarn' : 'npm';
+    const add = useYarn ? 'add' : 'i';
+    const devParam = useYarn ? '--dev' : '-D';
+
+    if (done.deps && done.deps.devDependencies.length) {
+      try {
+        await execa(command, [
+          add,
+          ...done.deps.devDependencies,
+          devParam,
+        ]);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
 
   console.log('done');
 }

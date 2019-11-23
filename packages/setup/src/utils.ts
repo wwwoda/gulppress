@@ -1,5 +1,7 @@
-const fs = require('fs');
-const path = require('path');
+import findUp from 'find-up';
+import fs from 'fs';
+import path from 'path';
+import { ProjectConfig } from './interfaces';
 
 let isYarnCache: boolean | null = null;
 
@@ -54,4 +56,11 @@ export function isYarn(): boolean {
 
     return isYarnCache;
   }
+}
+
+export function installWithYarn(config: ProjectConfig | undefined): boolean {
+  if (typeof config !== 'undefined') {
+    return config.useYarn || isYarn();
+  }
+  return isYarn();
 }

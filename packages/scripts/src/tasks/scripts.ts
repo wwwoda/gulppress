@@ -12,7 +12,7 @@ import webpackMerge from 'webpack-merge';
 import webpackStream from 'webpack-stream';
 
 import gulpress from '../interfaces';
-import { getWatchers, isDev } from '../utils';
+import { getWatchers, isDevEnv } from '../utils';
 
 const HashAssetsPlugin = require('hash-assets-webpack-plugin');
 const named = require('vinyl-named');
@@ -98,7 +98,7 @@ export default function (
     cache: {},
   };
 
-  if (!isDev()) {
+  if (!isDevEnv()) {
     const uglifyJsPluginConfig = project.createSeparateMinFiles ? { include: /\.min\.js$/ } : {};
     webpackConfig.optimization = {
       minimize: true,
@@ -113,8 +113,8 @@ export default function (
       .pipe(webpackStream(webpackMerge(
         {
           entry: source,
-          devtool: isDev() ? 'inline-source-map' : false,
-          mode: isDev() ? 'development' : 'production',
+          devtool: isDevEnv() ? 'inline-source-map' : false,
+          mode: isDevEnv() ? 'development' : 'production',
         },
         webpackConfig,
       )).on('error', notify))

@@ -16,7 +16,7 @@ import {
   getProxyUrl,
   getTheme,
   getWatchers,
-  isDev,
+  isDevEnv,
   reload,
 } from './utils';
 
@@ -37,6 +37,6 @@ export {
   getProxyUrl,
   getTheme,
   getWatchers,
-  isDev,
+  isDevEnv,
   reload,
 };
