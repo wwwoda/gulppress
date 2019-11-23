@@ -10,10 +10,6 @@ import { copyFileSync, resolveCWD } from './utils';
 
 inquirer.registerPrompt('fuzzypath', require('inquirer-fuzzy-path'));
 
-// const theCWD = process.cwd();
-// const theCWDArray = theCWD.split('/');
-// const theDir = theCWDArray[theCWDArray.length - 1];
-
 interface Pkg {
   name: string;
   homepage?: string;
@@ -62,6 +58,17 @@ export class Setup {
   }
 
   public async startSetup(): Promise<void> {
+    if (this.isConfigPresent()) {
+      return Promise.reject(
+        new Error('Project is already set up.'),
+      );
+    }
+
+    await this.initConfig();
+    return Promise.resolve();
+  }
+
+  private async initConfig(): Promise<void> {
     return this.getUserInput().then(answers => {
       const context: {
         basePath: string;
@@ -87,6 +94,12 @@ export class Setup {
   private async getUserInput(): Promise<inquirer.Answers> {
     const questions: inquirer.QuestionCollection = [
       {
+        message: 'App Name',
+        name: 'appName',
+        type: 'input',
+        validate: ''
+      },
+      {
         message: 'Type of WordPress Project (plugin or theme)',
         name: 'type',
         type: 'list',
@@ -106,16 +119,21 @@ export class Setup {
         name: 'basePath',
         excludePath: (nodePath: string): boolean => nodePath.startsWith('node_modules'),
         itemType: 'directory',
-        message: 'Select you theme\'s directory (create folder in next step if you select /themes)',
-        rootPath: path.resolve(this.cwd, './web/app/themes'),
+        message: 'Select you theme\'s/plugin\'s directory',
+        default: (answers: inquirer.Answers): string => {
+          if (answers.type === 'bedrock'
+            && this.pathExists(path.resolve(this.cwd, './web/app/themes'))) {
+            return 'web/app/themes';
+          }
+          return '';
+        },
         suggestOnly: true,
-        when: answers => answers.type === 'bedrock'
-          && this.getSubdirectories(path.resolve(this.cwd, './web/app/themes')).length,
       },
       {
         type: 'confirm',
         name: 'dotEnv',
         message: 'Do you use a working environment file (.env)?',
+        when: answers => answers.type !== 'bedrock',
       },
       {
         type: 'fuzzypath',
@@ -125,11 +143,60 @@ export class Setup {
         message: 'Select your .env file',
         default: '.env',
         suggestOnly: true,
-        when: answers => answers.dotEnv,
+        when: answers => answers.dotEnv || answers.type === 'bedrock',
       },
     ];
 
     return inquirer.prompt(questions);
+  }
+
+  public configureScripts(): void {
+    const packageFileData: Pkg = this.fileExists(this.packageJsonPath)
+      // eslint-disable-next-line global-require
+      ? require(this.packageJsonPath)
+      : {
+        name: 'appName',
+      };
+    const scripts: { [x: string]: string } = {
+      build: 'gulp build',
+      dev: 'gulp dev',
+    };
+    if (!packageFileData.scripts) {
+      packageFileData.scripts = {};
+    }
+    Object.keys(scripts).forEach(script => {
+      // Take a backup if the script is already defined
+      // and doesn't equal to what we would like it to have.
+      if (
+        packageFileData.scripts
+        && packageFileData.scripts[script] != null
+        && packageFileData.scripts[script] !== scripts[script]
+      ) {
+        packageFileData.scripts[`${script}-backup`] = packageFileData.scripts[script];
+        packageFileData.scripts[script] = scripts[script];
+      } else if (packageFileData.scripts) {
+        // Otherwise define our own
+        packageFileData.scripts[script] = scripts[script];
+      }
+    });
+
+    const devDependencies: string[] = [];
+
+    // If @wpackio/scripts is not already present in devDependencies
+    // Then push it. We do this check, because @wpackio/cli might already
+    // have installed it during scaffolding.
+    if (
+      !packageFileData.devDependencies
+      || !packageFileData.devDependencies['@gulppress/scripts']
+    ) {
+      devDependencies.push('@gulppress/scripts');
+    }
+
+    // Write it
+    fs.writeFileSync(
+      this.packageJsonPath,
+      JSON.stringify(packageFileData, null, 2),
+    );
   }
 
   private fileExists(filePath: string): boolean {
@@ -163,6 +230,10 @@ export class Setup {
       .statSync(path.join(directoryPath, file))
       .isDirectory());
   }
+
+  private isConfigPresent(): boolean {
+    return this.fileExists(this.configPath);
+  }
 }
 
 export async function setup(): Promise<void> {
@@ -170,6 +241,7 @@ export async function setup(): Promise<void> {
   const initiator = new Setup(cwd);
 
   await initiator.startSetup();
+  initiator.configureScripts();
 
   console.log('done');
 }

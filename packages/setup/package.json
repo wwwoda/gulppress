@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "chalk": "^3.0.0",
+    "change-case": "^3.1.0",
     "download": "^7.1.0",
     "handlebars": "^4.5.3",
     "inquirer": "^7.0.0",
