@@ -12,10 +12,6 @@ import imagemin from 'gulp-imagemin';
 import rename from 'gulp-rename';
 import gulpress from '../interfaces';
 
-function shouldCreatePhpPartials(config: gulpress.ImagesConfig): boolean {
-  return !!config.destPhpPartials;
-}
-
 export default function (config: gulpress.ImagesConfig): TaskFunction {
   function processImages(): NodeJS.ReadWriteStream {
     return src(config.src)
@@ -46,12 +42,12 @@ export default function (config: gulpress.ImagesConfig): TaskFunction {
       )
       .pipe(changed(config.dest))
       .pipe(dest(config.dest))
-      .pipe(gulpif(shouldCreatePhpPartials(config), filter(file => /svg$/.test(file.path))))
-      .pipe(gulpif(shouldCreatePhpPartials(config), rename({
+      .pipe(gulpif(!!config.destPhpPartials, filter(file => /svg$/.test(file.path))))
+      .pipe(gulpif(!!config.destPhpPartials, rename({
         extname: '.php',
       })))
-      .pipe(gulpif(shouldCreatePhpPartials(config), changed(config.destPhpPartials || config.dest)))
-      .pipe(gulpif(shouldCreatePhpPartials(config), dest(config.destPhpPartials || config.dest)));
+      .pipe(gulpif(!!config.destPhpPartials, changed(config.destPhpPartials || config.dest)))
+      .pipe(gulpif(!!config.destPhpPartials, dest(config.destPhpPartials || config.dest)));
   }
 
   return parallel(processImages);

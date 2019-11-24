@@ -6,6 +6,7 @@ import {
 } from 'gulp';
 import cache from 'gulp-cache';
 import changed from 'gulp-changed';
+import gulpif from 'gulp-if';
 import imagemin from 'gulp-imagemin';
 import rename from 'gulp-rename';
 import gulpress from '../interfaces';
@@ -29,13 +30,13 @@ export default function (config: gulpress.IconsConfig): TaskFunction {
           ]),
         ),
       )
-      .pipe(
-        rename({
-          extname: '.php',
-        }),
-      )
       .pipe(changed(config.dest))
-      .pipe(dest(config.dest));
+      .pipe(dest(config.dest))
+      .pipe(gulpif(!!config.destPhpPartials, rename({
+        extname: '.php',
+      })))
+      .pipe(gulpif(!!config.destPhpPartials, changed(config.destPhpPartials || config.dest)))
+      .pipe(gulpif(!!config.destPhpPartials, dest(config.destPhpPartials || config.dest)));
   }
 
   return parallel(processIcons);

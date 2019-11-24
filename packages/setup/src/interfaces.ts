@@ -18,6 +18,7 @@ export interface ProjectConfig {
   appName: string;
   type: string;
   basePath: string;
+  projectURL: string;
   dotEnv: boolean;
   dotEnvPath: string;
   createSeparateMinFiles: boolean;

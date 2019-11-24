@@ -6,7 +6,7 @@ import {
 } from 'gulp';
 import gulpress from '../interfaces';
 
-export default function (config: gulpress.VendorScriptsConfig): TaskFunction {
+export default function (config: gulpress.BasicTaskConfig): TaskFunction {
   function processVendorScripts(): NodeJS.ReadWriteStream {
     return src(config.src).pipe(dest(config.dest));
   }

@@ -1,10 +1,11 @@
 // import chalk from 'chalk';
-// import download from 'download';
-// import ora from 'ora';
 import execa from 'execa';
+import findUp from 'find-up';
 import fs from 'fs';
 import handlebars from 'handlebars';
 import inquirer from 'inquirer';
+import nodeEnvFile from 'node-env-file';
+import ora from 'ora';
 import path from 'path';
 
 import { Pkg, ProjectConfig, ProjectDependencies } from './interfaces';
@@ -14,8 +15,6 @@ import {
   isYarn,
   resolveCWD,
 } from './utils';
-
-inquirer.registerPrompt('fuzzypath', require('inquirer-fuzzy-path'));
 
 class SetupResolve {
   public projectConfig?: ProjectConfig;
@@ -63,11 +62,11 @@ export class Setup {
   }
 
   public async startSetup(): Promise<SetupResolve> {
-    if (this.isConfigPresent()) {
-      return Promise.reject(
-        new Error('Project is already set up.'),
-      );
-    }
+    // if (this.isConfigPresent()) {
+    //   return Promise.reject(
+    //     new Error('Project is already set up.'),
+    //   );
+    // }
 
     const projectConfig = await this.initConfig();
     const deps = this.configureScripts(projectConfig);
@@ -82,8 +81,9 @@ export class Setup {
         appName: answers.appName,
         type: answers.type,
         basePath: answers.basePath ? path.relative(this.cwd, answers.basePath) : '',
+        projectURL: answers.projectURL,
         dotEnv: answers.dotEnv,
-        dotEnvPath: `./${answers.dotEnvPath}`,
+        dotEnvPath: path.relative(this.cwd, answers.dotEnvPath),
         createSeparateMinFiles: answers.createSeparateMinFiles,
         useYarn: answers.useYarn,
       };
@@ -126,24 +126,18 @@ export class Setup {
         default: this.pkg.name || '',
       },
       {
-        type: 'fuzzypath',
+        type: 'input',
         name: 'basePath',
-        excludePath: (nodePath: string): boolean => nodePath.startsWith('node_modules'),
-        itemType: 'directory',
         message: 'Select you theme\'s/plugin\'s directory',
         default: (answers: inquirer.Answers): string => {
           if (answers.type === 'bedrock') {
             if (this.pathExists(path.resolve(this.cwd, `./web/app/themes/${answers.appName}`))) {
               return `./web/app/themes/${answers.appName}`;
             }
-            if (this.pathExists(path.resolve(this.cwd, './web/app/themes'))) {
-              return 'web/app/themes';
-            }
             return '';
           }
           return '';
         },
-        suggestOnly: true,
       },
       {
         type: 'confirm',
@@ -152,18 +146,46 @@ export class Setup {
         when: answers => answers.type !== 'bedrock',
       },
       {
-        type: 'fuzzypath',
+        type: 'input',
         name: 'dotEnvPath',
-        excludePath: (nodePath: string): boolean => nodePath.startsWith('node_modules'),
-        itemType: 'file',
-        message: 'Select your .env file',
-        default: '.env',
-        suggestOnly: true,
+        message: 'Path to your .env file',
         when: answers => answers.dotEnv || answers.type === 'bedrock',
+        validate: input => {
+          if (fs.existsSync(input)) {
+            return true;
+          }
+          return 'No .env file found at this location. Please create one to continue.';
+        },
+        default: () => {
+          if (fs.existsSync('.env')) {
+            return '.env';
+          }
+          const cwd = process.cwd();
+          const dotEnvPath = findUp.sync('.env', { cwd });
+          if (typeof dotEnvPath === 'string' && dotEnvPath) {
+            return path.relative(cwd, dotEnvPath);
+          }
+          return '';
+        },
+      },
+      {
+        message: 'URL of your local WordPress site',
+        name: 'projectURL',
+        type: 'input',
+        when: answers => answers.type !== 'plugin',
+        default: (answers: inquirer.Answers): string => {
+          if (answers.dotEnvPath) {
+            if (fs.existsSync(answers.dotEnvPath)) {
+              nodeEnvFile(answers.dotEnvPath, { raise: false });
+              return process.env.WP_HOME || '';
+            }
+          }
+          return '';
+        },
       },
       {
         type: 'confirm',
-        name: 'usecreateSeparateMinFilesYarn',
+        name: 'createSeparateMinFiles',
         message: 'Create separate .min files for scripts and styles?',
         default: false,
       },
@@ -188,9 +210,17 @@ export class Setup {
         name: projectConfig.appName,
       };
     const scripts: { [x: string]: string } = {
+      assets: 'gulp assests',
+      'assets:favicon': 'gulp favicon',
+      'assets:icons': 'gulp icons',
+      'assets:images': 'gulp images',
+      'assets:scripts': 'gulp scripts',
+      'assets:styles': 'gulp images',
       build: 'gulp build',
       'build:production': 'cross-env NODE_ENV=production gulp build',
+      clean: 'gulp clean',
       dev: 'gulp dev',
+      translate: 'gulp translate',
     };
     if (!packageFileData.scripts) {
       packageFileData.scripts = {};
@@ -272,15 +302,19 @@ export async function setup(): Promise<void> {
     const command = useYarn ? 'yarn' : 'npm';
     const add = useYarn ? 'add' : 'i';
     const devParam = useYarn ? '--dev' : '-D';
+    const spinner = ora({ spinner: 'dots3', discardStdin: false });
 
     if (done.deps && done.deps.devDependencies.length) {
+      spinner.start('installing dev dependencies may take a while');
       try {
         await execa(command, [
           add,
           ...done.deps.devDependencies,
           devParam,
         ]);
+        spinner.succeed('done installing dev dependencies\n');
       } catch (error) {
+        spinner.fail('could not install all dev dependencies');
         console.log(error);
       }
     }

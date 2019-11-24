@@ -7,7 +7,7 @@ import { gulppress } from '@gulppress/scripts';
  * @package GulpPress
  */
 
-const basePath = './{{basePath}}';
+const basePath = '{{basePath}}';
 
 // Browsers to consider for autoprefixing (https://github.com/ai/browserslist)
 // The following list is set as per WordPress requirements:
@@ -29,12 +29,11 @@ const config: gulppress.MainConfig = {
   // Project Options
   project: {
     basePath,
-    projectURL: '',
-    environment: 'development', // Override .env option. Available options → 'development' or 'staging' or 'production'
+    projectURL: '{{projectURL}}',
     envFile: '{{dotEnvPath}}',
     createSeparateMinFiles: {{createSeparateMinFiles}},
   },
-  // https://www.browsersync.io/docs/options
+  // Available browsersync options: https://www.browsersync.io/docs/options
   browserSync: {
     ghostMode: false,
     injectChanges: true,
@@ -51,10 +50,12 @@ const config: gulppress.MainConfig = {
   styles: {
     src: `${basePath}/assets/src/styles/*.scss`,
     dest: `${basePath}/assets/dist/styles`,
+		// Available autoprefixer options: https://github.com/postcss/autoprefixer#options
     autoprefixerOptions: {
       overrideBrowserslist: browserList,
     },
     postcssPlugins: [],
+		// Available node-sass options: https://github.com/sass/node-sass#options
     sassOptions: {
       includePaths: [
         './node_modules',
@@ -74,42 +75,25 @@ const config: gulppress.MainConfig = {
     src: `${basePath}/assets/src/fonts/*.+(ttf|woff|woff2)`,
     dest: `${basePath}/assets/dist/fonts`,
   },
-  // Image options
-  images: {
-    src: `${basePath}/assets/src/images/**/*.+(jpg|jpeg|png|svg)`,
-    dest: `${basePath}/assets/dist/images`,
-    destPhpPartials: `${basePath}/assets/dist/partials`,
-  },
   // Icon options
   icons: {
     src: `${basePath}/assets/src/icons/**/*.svg`,
     dest: `${basePath}/assets/dist/icons`,
+    destPhpPartials: `${basePath}/template-parts/svg-icons`,
   },
-  // Modernizr options
-  modernizr: {
-    src: `${basePath}/assets/src/scripts/main.js`,
-    dest: `${basePath}/assets/dist/scripts`,
-    modernizrOptions: {
-      crawl: true,
-      tests: [
-        'touchevents',
-        'json',
-        'canvas',
-        'cssfilters',
-      ],
-      uglify: true,
-    },
+  // Image options
+  images: {
+    src: `${basePath}/assets/src/images/**/*.+(jpg|jpeg|png|svg)`,
+    dest: `${basePath}/assets/dist/images`,
+    destPhpPartials: `${basePath}/template-parts/svg`,
   },
   // Translation optione
   translation: {
     src: `${basePath}/php/**/*.php`,
     dest: `${basePath}/assets/dist/gulppress.pot`,
+		// Available gulp-wp-pot options: https://github.com/wp-pot/wp-pot#options
     wpPotOptions: {
-      domain: 'gulppress',
-      package: 'GulpPress',
-      bugReport: 'https://github.com/wwwoda/gulppress',
-      lastTranslator: 'David Mondok <your_email@email.com>',
-      team: 'David Mondok <your_email@email.com>',
+      package: '{{appName}}',
     },
   },
 };

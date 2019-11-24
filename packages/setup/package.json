@@ -38,7 +38,7 @@
     "find-up": "^4.1.0",
     "handlebars": "^4.5.3",
     "inquirer": "^7.0.0",
-    "inquirer-fuzzy-path": "^2.1.0",
+    "node-env-file": "^0.1.8",
     "ora": "^4.0.2"
   },
   "devDependencies": {

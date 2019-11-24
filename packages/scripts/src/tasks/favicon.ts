@@ -13,7 +13,7 @@ const ico = require('gulp-to-ico');
 
 const pngFilter = filter('**/*.png');
 
-export default function (config: gulpress.FaviconConfig): TaskFunction {
+export default function (config: gulpress.BasicTaskConfig): TaskFunction {
   function faviconToIco(): NodeJS.ReadWriteStream {
     return src(config.src)
       .pipe(pngFilter)

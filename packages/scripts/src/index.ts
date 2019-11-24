@@ -3,7 +3,6 @@ import favicon from './tasks/favicon';
 import fonts from './tasks/fonts';
 import icons from './tasks/icons';
 import images from './tasks/images';
-import modernizr from './tasks/modernizr';
 import scripts from './tasks/scripts';
 import serve from './tasks/serve';
 import styles from './tasks/styles';
@@ -26,7 +25,6 @@ export {
   fonts as fontsTask,
   icons as iconsTask,
   images as imagesTask,
-  modernizr as modernizrTask,
   scripts as scriptsTask,
   serve as serveTask,
   styles as stylesTask,

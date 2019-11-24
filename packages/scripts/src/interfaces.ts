@@ -1,10 +1,9 @@
 import autoprefixer from 'autoprefixer';
 import browserSync from 'browser-sync';
-import modernizr from 'gulp-modernizr';
 import { Options as SassOptions } from 'node-sass';
 
 declare namespace gulppress {
-  export interface BaseConfig {
+  export interface BasicTaskConfig {
     src: string | string[];
     dest: string;
   }
@@ -15,11 +14,10 @@ declare namespace gulppress {
     browserSync: browserSync.Options;
     scripts: ScriptConfig;
     styles: StylesConfig;
-    favicon: FaviconConfig;
+    favicon: BasicTaskConfig;
     fonts: FontsConfig;
     images: ImagesConfig;
     icons: IconsConfig;
-    modernizr: ModernizrConfig;
     translation: TranslationConfig;
   }
 
@@ -28,7 +26,6 @@ declare namespace gulppress {
     envFile: string | false;
     createSeparateMinFiles: boolean;
     projectURL: string;
-    environment: string | false;
   }
 
   export interface CleanConfig {
@@ -54,33 +51,29 @@ declare namespace gulppress {
     };
   }
 
-  export interface FaviconConfig extends BaseConfig {}
-
-  export interface FontsConfig extends BaseConfig {
+  export interface FontsConfig extends BasicTaskConfig {
     srcPath: string;
   }
 
-  export interface IconsConfig extends BaseConfig {}
-
-  export interface ImagesConfig extends BaseConfig {
+  export interface IconsConfig extends BasicTaskConfig {
     destPhpPartials?: string | null | undefined;
   }
 
-  export interface ModernizrConfig extends BaseConfig {
-    modernizrOptions: modernizr.Params;
+  export interface ImagesConfig extends BasicTaskConfig {
+    destPhpPartials?: string | null | undefined;
   }
 
-  export interface ScriptConfig extends BaseConfig {
+  export interface ScriptConfig extends BasicTaskConfig {
     targets: string | Array<string> | { [key: string]: string };
   }
 
-  export interface StylesConfig extends BaseConfig {
+  export interface StylesConfig extends BasicTaskConfig {
     sassOptions: SassOptions;
     autoprefixerOptions: autoprefixer.Options;
     postcssPlugins: [] | Array<CallableFunction>;
   }
 
-  export interface TranslationConfig extends BaseConfig {
+  export interface TranslationConfig extends BasicTaskConfig {
     wpPotOptions: {
       bugReport?: string;
       commentKeyword?: string;
@@ -97,8 +90,6 @@ declare namespace gulppress {
       ignoreTemplateNameHeader?: boolean;
     };
   }
-
-  export interface VendorScriptsConfig extends BaseConfig {}
 }
 
 export default gulppress;

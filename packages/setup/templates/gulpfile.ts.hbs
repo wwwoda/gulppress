@@ -14,7 +14,6 @@ import {
   getWatchers,
   iconsTask,
   imagesTask,
-  modernizrTask,
   reload,
   scriptsTask,
   serveTask,
@@ -36,7 +35,7 @@ if (typeof config.project.envFile === 'string' && config.project.envFile) {
 }
 
 const browserSyncConfig = Object.assign({
-  proxy: getProxyUrl(),
+  proxy: getProxyUrl(config.project.),
 }, config.browserSync);
 
 const clean = cleanTasks(config);
@@ -48,7 +47,6 @@ const processFavicon = faviconTask(config.favicon);
 const processFonts = fontsTask(config.fonts);
 const processIcons = iconsTask(config.icons);
 const processImages = imagesTask(config.images);
-const modernizr = modernizrTask(config.modernizr);
 const startServer = serveTask(browserSyncConfig);
 const processTranslations = translationTask(config.translation);
 
@@ -105,7 +103,6 @@ task('favicon', processFavicon);
 task('fonts', processFonts);
 task('icons', processIcons);
 task('images', processImages);
-task('modernizr', modernizr);
 task('scripts', compileScripts);
 task('serve', startServer);
 task('styles', compileStyles);
