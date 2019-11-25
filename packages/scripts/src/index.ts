@@ -12,8 +12,6 @@ import gulppress from './interfaces';
 // import watcher from './tasks/watcher';
 
 import {
-  getProxyUrl,
-  getTheme,
   getWatchers,
   isDevEnv,
   reload,
@@ -32,8 +30,6 @@ export {
   translate as translationTask,
   // watcher as watcherTask,
   gulppress,
-  getProxyUrl,
-  getTheme,
   getWatchers,
   isDevEnv,
   reload,

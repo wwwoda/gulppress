@@ -1,18 +1,8 @@
+import * as yargs from 'yargs';
 import fancyLog from 'fancy-log';
-
-// import browserSync = require('browser-sync');
 import browserSync from 'browser-sync';
 
-const { argv } = require('yargs');
-
-interface ArgvConfig {
-  _: string[];
-  $0: string;
-  dev?: boolean;
-  env?: string;
-  nodev?: boolean;
-  watch?: boolean | string;
-}
+const { argv } = yargs;
 
 interface WatchersStatus {
   icons: boolean;
@@ -25,19 +15,10 @@ interface WatchersStatus {
 }
 
 export function getEnv(): string {
-  return process.env.NODE_ENV || process.env.WP_ENV || 'production';
-}
-
-export function getArgv(): ArgvConfig {
-  return argv;
-}
-
-export function getProxyUrl(url?: string): string {
-  return process.env.WP_HOME || url || '';
-}
-
-export function getTheme(theme: string): string {
-  return process.env.theme || process.env.THEME || theme;
+  if (typeof argv.env === 'string' && ['development', 'staging', 'production'].indexOf(argv.env) !== -1) {
+    return argv.env;
+  }
+  return process.env.WP_ENV || 'production';
 }
 
 export function getWatchers(): WatchersStatus {
@@ -50,7 +31,7 @@ export function getWatchers(): WatchersStatus {
     vendorScripts: false,
   };
 
-  if (argv.watch) {
+  if (typeof argv.watch === 'string') {
     argv.watch.split(',').forEach((watcher: string) => {
       if (!(watcher in watchers)) {
         fancyLog.error(

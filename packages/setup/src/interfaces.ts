@@ -23,6 +23,7 @@ export interface ProjectConfig {
   dotEnvPath: string;
   createSeparateMinFiles: boolean;
   useYarn: boolean;
+  environment: string | null;
 }
 
 export interface ProjectDependencies {

@@ -1,11 +1,10 @@
-import { gulppress } from '@gulppress/scripts';
-
-/* eslint max-len: ["off"] */
 /**
  * GulpPress Configuration File
  *
  * @package GulpPress
  */
+
+import { gulppress } from '@gulppress/scripts';
 
 const basePath = '{{basePath}}';
 
@@ -29,8 +28,8 @@ const config: gulppress.MainConfig = {
   // Project Options
   project: {
     basePath,
-    projectURL: '{{projectURL}}',
     envFile: '{{dotEnvPath}}',
+		{{#if environment}}{{{environment}}}{{/if}}
     createSeparateMinFiles: {{createSeparateMinFiles}},
   },
   // Available browsersync options: https://www.browsersync.io/docs/options
@@ -38,6 +37,7 @@ const config: gulppress.MainConfig = {
     ghostMode: false,
     injectChanges: true,
     open: true,
+		proxy: '{{projectURL}}',
     tunnel: false,
   },
   // Script Options
@@ -85,7 +85,7 @@ const config: gulppress.MainConfig = {
   images: {
     src: `${basePath}/assets/src/images/**/*.+(jpg|jpeg|png|svg)`,
     dest: `${basePath}/assets/dist/images`,
-    destPhpPartials: `${basePath}/template-parts/svg`,
+    destPhpPartials: `${basePath}/template-parts/svg-images`,
   },
   // Translation optione
   translation: {

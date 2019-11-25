@@ -62,11 +62,11 @@ export class Setup {
   }
 
   public async startSetup(): Promise<SetupResolve> {
-    // if (this.isConfigPresent()) {
-    //   return Promise.reject(
-    //     new Error('Project is already set up.'),
-    //   );
-    // }
+    if (this.isConfigPresent()) {
+      return Promise.reject(
+        new Error('Project is already set up.'),
+      );
+    }
 
     const projectConfig = await this.initConfig();
     const deps = this.configureScripts(projectConfig);
@@ -80,12 +80,13 @@ export class Setup {
       const config: ProjectConfig = {
         appName: answers.appName,
         type: answers.type,
-        basePath: answers.basePath ? path.relative(this.cwd, answers.basePath) : '',
+        basePath: this.getFormattedBasePath(answers.basePath),
         projectURL: answers.projectURL,
         dotEnv: answers.dotEnv,
-        dotEnvPath: path.relative(this.cwd, answers.dotEnvPath),
+        dotEnvPath: answers.dotEnvPath ? path.relative(this.cwd, answers.dotEnvPath) : '',
         createSeparateMinFiles: answers.createSeparateMinFiles,
         useYarn: answers.useYarn,
+        environment: answers.dotEnvPath ? null : "environment: 'development',",
       };
       const source: string = fs
         .readFileSync(
@@ -128,33 +129,34 @@ export class Setup {
       {
         type: 'input',
         name: 'basePath',
-        message: 'Select you theme\'s/plugin\'s directory',
+        message: answers => `Select you ${answers.type === 'plugin' ? 'plugin' : 'theme'}'s directory`,
         default: (answers: inquirer.Answers): string => {
           if (answers.type === 'bedrock') {
             if (this.pathExists(path.resolve(this.cwd, `./web/app/themes/${answers.appName}`))) {
               return `./web/app/themes/${answers.appName}`;
             }
-            return '';
+            return './';
           }
-          return '';
+          return './';
         },
       },
       {
         type: 'confirm',
         name: 'dotEnv',
-        message: 'Do you use a working environment file (.env)?',
+        message: 'Do you use a working environment file (eg .env)?',
         when: answers => answers.type !== 'bedrock',
+        default: answers => answers.type === 'bedrock' || false,
       },
       {
         type: 'input',
         name: 'dotEnvPath',
-        message: 'Path to your .env file',
+        message: 'Path to your working environment file',
         when: answers => answers.dotEnv || answers.type === 'bedrock',
         validate: input => {
           if (fs.existsSync(input)) {
             return true;
           }
-          return 'No .env file found at this location. Please create one to continue.';
+          return 'No working environment file found at this location. Please create one to continue.';
         },
         default: () => {
           if (fs.existsSync('.env')) {
@@ -212,14 +214,14 @@ export class Setup {
     const scripts: { [x: string]: string } = {
       assets: 'gulp assests',
       'assets:favicon': 'gulp favicon',
+      'assets:fonts': 'gulp fonts',
       'assets:icons': 'gulp icons',
       'assets:images': 'gulp images',
-      'assets:scripts': 'gulp scripts',
-      'assets:styles': 'gulp images',
       build: 'gulp build',
-      'build:production': 'cross-env NODE_ENV=production gulp build',
+      'build:css': 'gulp styles',
+      'build:js': 'gulp scripts',
       clean: 'gulp clean',
-      dev: 'gulp dev',
+      dev: 'gulp dev --watch=scripts,styles',
       translate: 'gulp translate',
     };
     if (!packageFileData.scripts) {
@@ -289,6 +291,14 @@ export class Setup {
 
   private isConfigPresent(): boolean {
     return this.fileExists(this.configPath);
+  }
+
+  private getFormattedBasePath(basePath): string {
+    const relativePath = path.relative(this.cwd, basePath);
+    if (!relativePath.startsWith('.')) {
+      return `./${relativePath}`;
+    }
+    return relativePath;
   }
 }
 

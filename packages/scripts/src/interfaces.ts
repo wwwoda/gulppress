@@ -24,8 +24,8 @@ declare namespace gulppress {
   export interface ProjectConfig {
     basePath: string;
     envFile: string | false;
+    environment?: 'development' | 'staging' | 'production';
     createSeparateMinFiles: boolean;
-    projectURL: string;
   }
 
   export interface CleanConfig {
