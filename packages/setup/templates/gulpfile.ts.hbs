@@ -21,6 +21,7 @@ import {
   serveTask,
   stylesTask,
   translationTask,
+	vendorScriptsTask,
 } from '@gulppress/scripts';
 import config from './gulppress.config';
 
@@ -33,7 +34,6 @@ if (typeof config.project.envFile === 'string' && config.project.envFile) {
     console.error('.env file not found, please check your configuration');
   }
 }
-  console.log(process.env);
 
 const clean = cleanTasks(config);
 config.scripts.dest = resolve(__dirname, config.scripts.dest);
@@ -46,6 +46,7 @@ const processIcons = iconsTask(config.icons);
 const processImages = imagesTask(config.images);
 const startServer = serveTask(config.browserSync);
 const processTranslations = translationTask(config.translation);
+const processVendorScripts = vendorScriptsTask(config.vendorScripts);
 
 // task('watch', function (this: any) {
 task('watch', () => {
@@ -82,6 +83,7 @@ task('assets', series(
     processIcons,
     processImages,
     processTranslations,
+		processVendorScripts,
   ),
 ));
 
@@ -96,6 +98,7 @@ task('build', series(
 
 task('default', series('build'));
 
+task('clean', series(clean.all));
 task('favicon', processFavicon);
 task('fonts', processFonts);
 task('icons', processIcons);
@@ -104,4 +107,4 @@ task('scripts', compileScripts);
 task('serve', startServer);
 task('styles', compileStyles);
 task('translate', processTranslations);
-task('clean', series(clean.all));
+task('vendorScripts', processVendorScripts);

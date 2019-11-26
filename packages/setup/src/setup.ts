@@ -80,13 +80,14 @@ export class Setup {
       const config: ProjectConfig = {
         appName: answers.appName,
         type: answers.type,
-        basePath: this.getFormattedBasePath(answers.basePath),
+        basePath: this.getFormattedPath(answers.basePath),
         projectURL: answers.projectURL,
         dotEnv: answers.dotEnv,
-        dotEnvPath: answers.dotEnvPath ? path.relative(this.cwd, answers.dotEnvPath) : '',
+        dotEnvPath: answers.dotEnvPath
+          ? this.getFormattedPath(path.relative(this.cwd, answers.dotEnvPath)) : '',
         createSeparateMinFiles: answers.createSeparateMinFiles,
         useYarn: answers.useYarn,
-        environment: answers.dotEnvPath ? null : "environment: 'development',",
+        environment: answers.dotEnvPath ? null : "\n    environment: 'development',",
       };
       const source: string = fs
         .readFileSync(
@@ -293,9 +294,9 @@ export class Setup {
     return this.fileExists(this.configPath);
   }
 
-  private getFormattedBasePath(basePath): string {
-    const relativePath = path.relative(this.cwd, basePath);
-    if (!relativePath.startsWith('.')) {
+  private getFormattedPath(sourcePath): string {
+    const relativePath = path.relative(this.cwd, sourcePath);
+    if (!relativePath.startsWith('./') || !relativePath.startsWith('../')) {
       return `./${relativePath}`;
     }
     return relativePath;

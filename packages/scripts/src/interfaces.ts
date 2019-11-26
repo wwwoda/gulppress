@@ -19,6 +19,7 @@ declare namespace gulppress {
     images: ImagesConfig;
     icons: IconsConfig;
     translation: TranslationConfig;
+    vendorScripts: BasicTaskConfig;
   }
 
   export interface ProjectConfig {

@@ -28,8 +28,7 @@ const config: gulppress.MainConfig = {
   // Project Options
   project: {
     basePath,
-    envFile: '{{dotEnvPath}}',
-		{{#if environment}}{{{environment}}}{{/if}}
+    envFile: '{{dotEnvPath}}',{{#if environment}}{{{environment}}}{{/if}}
     createSeparateMinFiles: {{createSeparateMinFiles}},
   },
   // Available browsersync options: https://www.browsersync.io/docs/options
@@ -37,7 +36,7 @@ const config: gulppress.MainConfig = {
     ghostMode: false,
     injectChanges: true,
     open: true,
-		proxy: '{{projectURL}}',
+    proxy: '{{projectURL}}',
     tunnel: false,
   },
   // Script Options
@@ -50,12 +49,12 @@ const config: gulppress.MainConfig = {
   styles: {
     src: `${basePath}/assets/src/styles/*.scss`,
     dest: `${basePath}/assets/dist/styles`,
-		// Available autoprefixer options: https://github.com/postcss/autoprefixer#options
+    // Available autoprefixer options: https://github.com/postcss/autoprefixer#options
     autoprefixerOptions: {
       overrideBrowserslist: browserList,
     },
     postcssPlugins: [],
-		// Available node-sass options: https://github.com/sass/node-sass#options
+   // Available node-sass options: https://github.com/sass/node-sass#options
     sassOptions: {
       includePaths: [
         './node_modules',
@@ -91,7 +90,7 @@ const config: gulppress.MainConfig = {
   translation: {
     src: `${basePath}/php/**/*.php`,
     dest: `${basePath}/assets/dist/gulppress.pot`,
-		// Available gulp-wp-pot options: https://github.com/wp-pot/wp-pot#options
+    // Available gulp-wp-pot options: https://github.com/wp-pot/wp-pot#options
     wpPotOptions: {
       package: '{{appName}}',
     },
