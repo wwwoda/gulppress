@@ -95,6 +95,13 @@ const config: gulppress.MainConfig = {
       package: '{{appName}}',
     },
   },
+  // Vendor scripts options
+  vendorScripts: {
+    src: [
+			'./node_modules/jquery/dist/jquery.min.js'
+		],
+    dest: `${basePath}/assets/dist/scripts/vendor`,
+  },
 };
 
 export default config;

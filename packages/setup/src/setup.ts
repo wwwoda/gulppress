@@ -218,6 +218,7 @@ export class Setup {
       'assets:fonts': 'gulp fonts',
       'assets:icons': 'gulp icons',
       'assets:images': 'gulp images',
+      'assets:vendor': 'gulp vendorScripts',
       build: 'gulp build',
       'build:css': 'gulp styles',
       'build:js': 'gulp scripts',
