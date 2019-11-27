@@ -31,7 +31,8 @@ export default function (
           if (fs.statSync(packageJsonPath).isFile()) {
             // eslint-disable-next-line global-require, import/no-dynamic-require
             const pkg = require(packageJsonPath);
-            const srcPath = path.resolve(packagePath, `./${pkg.main}`);
+            const main = pkg.main.endsWith('.js') ? pkg.main : `${pkg.main}.js`;
+            const srcPath = path.resolve(packagePath,main);
             if (fs.statSync(srcPath).isFile()) {
               vendorSources.push(srcPath);
               vendorVersions[path.basename(srcPath)] = pkg.version;
@@ -53,7 +54,12 @@ export default function (
     return cb();
   }
 
-  function processVendorScripts(): NodeJS.ReadWriteStream {
+  function processVendorScripts(cb: CallableFunction): NodeJS.ReadWriteStream | null {
+    if (vendorSources.length < 1) {
+      cb();
+      return null;
+    }
+
     if (project.createSeparateMinFiles === true) {
       return src(vendorSources)
         .pipe(dest(config.dest))
@@ -76,7 +82,7 @@ export default function (
   }
 
   function createVendorScriptsVersionFile(cb: CallableFunction) {
-    if (vendorVersions !== {}) {
+    if (vendorSources.length > 0 && vendorVersions !== {}) {
       const content = JSON.stringify(vendorVersions, null, 2);
       const filePath = path.resolve(config.dest, './.assets.json');
       try {
