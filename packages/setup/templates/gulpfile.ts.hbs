@@ -46,7 +46,7 @@ const processIcons = iconsTask(config.icons);
 const processImages = imagesTask(config.images);
 const startServer = serveTask(config.browserSync);
 const processTranslations = translationTask(config.translation);
-const processVendorScripts = vendorScriptsTask(config.vendorScripts);
+const processVendorScripts = vendorScriptsTask(config.vendorScripts, config.project);
 
 // task('watch', function (this: any) {
 task('watch', () => {

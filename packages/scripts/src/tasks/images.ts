@@ -40,6 +40,7 @@ export default function (config: gulpress.ImagesConfig): TaskFunction {
           ]),
         ),
       )
+      .on('error', function(e) { console.log(e); })
       .pipe(changed(config.dest))
       .pipe(dest(config.dest))
       .pipe(gulpif(!!config.destPhpPartials, filter(file => /svg$/.test(file.path))))

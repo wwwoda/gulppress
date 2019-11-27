@@ -19,7 +19,7 @@ declare namespace gulppress {
     images: ImagesConfig;
     icons: IconsConfig;
     translation: TranslationConfig;
-    vendorScripts: BasicTaskConfig;
+    vendorScripts: VendorScriptsConfig;
   }
 
   export interface ProjectConfig {
@@ -90,6 +90,11 @@ declare namespace gulppress {
       team?: string;
       ignoreTemplateNameHeader?: boolean;
     };
+  }
+
+  export interface VendorScriptsConfig {
+    packages: Array<string>;
+    dest: string;
   }
 }
 

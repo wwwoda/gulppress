@@ -12244,6 +12244,11 @@ uglify-js@^3.0.5, uglify-js@^3.1.4, uglify-js@^3.6.0:
     commander "~2.20.3"
     source-map "~0.6.1"
 
+uglify-save-license@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/uglify-save-license/-/uglify-save-license-0.4.1.tgz#95726c17cc6fd171c3617e3bf4d8d82aa8c4cce1"
+  integrity sha1-lXJsF8xv0XHDYX479NjYKqjEzOE=
+
 uglifyjs-webpack-plugin@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/uglifyjs-webpack-plugin/-/uglifyjs-webpack-plugin-2.2.0.tgz#e75bc80e7f1937f725954c9b4c5a1e967ea9d0d7"

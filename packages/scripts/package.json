@@ -74,6 +74,7 @@
     "postcss-easing-gradients": "^3.0.1",
     "ts-node": "^8.5.2",
     "typescript": "^3.7.2",
+    "uglify-save-license": "^0.4.1",
     "uglifyjs-webpack-plugin": "^2.2.0",
     "vinyl-named": "^1.1.0",
     "webpack": "^4.39.2",

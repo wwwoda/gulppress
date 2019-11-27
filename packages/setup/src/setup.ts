@@ -213,7 +213,7 @@ export class Setup {
         name: projectConfig.appName,
       };
     const scripts: { [x: string]: string } = {
-      assets: 'gulp assests',
+      assets: 'gulp assets',
       'assets:favicon': 'gulp favicon',
       'assets:fonts': 'gulp fonts',
       'assets:icons': 'gulp icons',
