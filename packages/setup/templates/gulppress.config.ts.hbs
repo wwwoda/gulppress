@@ -43,12 +43,14 @@ const config: gulppress.MainConfig = {
   scripts: {
     src: `${basePath}/assets/src/scripts/*.+(js|ts)`,
     dest: `${basePath}/assets/dist/scripts`,
+    watch: `${basePath}/assets/dist/scripts/**/*.js`,
     targets: browserList,
   },
   // Style options
   styles: {
     src: `${basePath}/assets/src/styles/*.scss`,
     dest: `${basePath}/assets/dist/styles`,
+    watch: `${basePath}/assets/src/styles/**/*.scss`,
     // Available autoprefixer options: https://github.com/postcss/autoprefixer#options
     autoprefixerOptions: {
       overrideBrowserslist: browserList,

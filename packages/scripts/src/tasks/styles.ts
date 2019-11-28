@@ -7,6 +7,7 @@ import {
 import autoprefixer from 'autoprefixer';
 import browserSync from 'browser-sync';
 import csso from 'gulp-csso';
+import filter from 'gulp-filter';
 import gulpif from 'gulp-if';
 import plumber from 'gulp-plumber';
 import postcss from 'gulp-postcss';
@@ -47,6 +48,7 @@ export default function (
         .pipe(postcss([...postcssPlugins, ...config.postcssPlugins]))
         .pipe(gulpif(isDevEnv(), sourcemaps.write({ includeContent: false })))
         .pipe(dest(config.dest))
+        .pipe(filter('**/*.css'))
         .pipe(stream())
         .pipe(rename({ suffix: '.min' }))
         .pipe(gulpif(isDevEnv(), sourcemaps.init({ loadMaps: true })))
@@ -66,6 +68,7 @@ export default function (
       .pipe(gulpif(!isDevEnv(), csso()))
       .pipe(gulpif(isDevEnv(), sourcemaps.write('.')))
       .pipe(dest(config.dest))
+      .pipe(filter('**/*.css'))
       .pipe(stream());
   }
 

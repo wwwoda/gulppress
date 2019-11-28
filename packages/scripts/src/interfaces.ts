@@ -65,10 +65,12 @@ declare namespace gulppress {
   }
 
   export interface ScriptConfig extends BasicTaskConfig {
+    watch: string | Array<string>;
     targets: string | Array<string> | { [key: string]: string };
   }
 
   export interface StylesConfig extends BasicTaskConfig {
+    watch: string | Array<string>;
     sassOptions: SassOptions;
     autoprefixerOptions: autoprefixer.Options;
     postcssPlugins: [] | Array<CallableFunction>;

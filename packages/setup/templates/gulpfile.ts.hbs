@@ -52,10 +52,10 @@ const processVendorScripts = vendorScriptsTask(config.vendorScripts, config.proj
 task('watch', () => {
   const watchers = getWatchers();
   if (watchers.scripts) {
-    watch(config.scripts.src, series(reload));
+    watch(config.scripts.watch, series(reload));
   }
   if (watchers.styles) {
-    watch(config.styles.src, series(compileStyles, reload));
+    watch(config.styles.watch, series(compileStyles));
   }
   if (watchers.icons) {
     watch(config.icons.src, series(processIcons));
