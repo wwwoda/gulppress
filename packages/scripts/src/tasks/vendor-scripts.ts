@@ -1,15 +1,14 @@
 import fs from 'fs';
 import {
   dest,
-  parallel,
   series,
   src,
   TaskFunction,
 } from 'gulp';
 import gulpif from 'gulp-if';
-import path from 'path';
 import rename from 'gulp-rename';
 import uglify from 'gulp-uglify';
+import path from 'path';
 import saveLicense from 'uglify-save-license';
 
 import gulpress from '../interfaces';
@@ -32,7 +31,7 @@ export default function (
             // eslint-disable-next-line global-require, import/no-dynamic-require
             const pkg = require(packageJsonPath);
             const main = pkg.main.endsWith('.js') ? pkg.main : `${pkg.main}.js`;
-            const srcPath = path.resolve(packagePath,main);
+            const srcPath = path.resolve(packagePath, main);
             if (fs.statSync(srcPath).isFile()) {
               vendorSources.push(srcPath);
               vendorVersions[path.basename(srcPath)] = pkg.version;

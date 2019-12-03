@@ -90,10 +90,11 @@ const config: gulppress.MainConfig = {
   },
   // Translation optione
   translation: {
-    src: `${basePath}/php/**/*.php`,
-    dest: `${basePath}/assets/dist/gulppress.pot`,
+    src: `${basePath}/**/*.php`,
+    dest: `${basePath}/languages/{{appName}}.pot`,
     // Available gulp-wp-pot options: https://github.com/wp-pot/wp-pot#options
     wpPotOptions: {
+      domain: '{{appName}}',
       package: '{{appName}}',
     },
   },

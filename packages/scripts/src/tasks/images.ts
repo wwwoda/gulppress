@@ -10,6 +10,7 @@ import filter from 'gulp-filter';
 import gulpif from 'gulp-if';
 import imagemin from 'gulp-imagemin';
 import rename from 'gulp-rename';
+
 import gulpress from '../interfaces';
 
 export default function (config: gulpress.ImagesConfig): TaskFunction {
@@ -40,7 +41,7 @@ export default function (config: gulpress.ImagesConfig): TaskFunction {
           ]),
         ),
       )
-      .on('error', function(e) { console.log(e); })
+      .on('error', e => { console.log(e); })
       .pipe(changed(config.dest))
       .pipe(dest(config.dest))
       .pipe(gulpif(!!config.destPhpPartials, filter(file => /svg$/.test(file.path))))

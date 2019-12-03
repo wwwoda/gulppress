@@ -1,13 +1,14 @@
+import { reload } from 'browser-sync';
+import glob from 'glob';
 import {
   dest,
   parallel,
   src,
   TaskFunction,
 } from 'gulp';
-import { Configuration } from 'webpack';
-import glob from 'glob';
-import path from 'path';
 import plumber from 'gulp-plumber';
+import path from 'path';
+import { Configuration } from 'webpack';
 import webpackMerge from 'webpack-merge';
 import webpackStream from 'webpack-stream';
 
@@ -117,7 +118,11 @@ export default function (
           mode: isDevEnv() ? 'development' : 'production',
         },
         webpackConfig,
-      )).on('error', notify))
+      ), undefined, () => {
+        if (getWatchers().scripts === true) {
+          reload();
+        }
+      }).on('error', notify))
       .pipe(dest(config.dest));
   }
 

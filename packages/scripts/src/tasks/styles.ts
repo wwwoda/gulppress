@@ -1,11 +1,11 @@
+import autoprefixer from 'autoprefixer';
+import browserSync from 'browser-sync';
 import {
   dest,
   series,
   src,
   TaskFunction,
 } from 'gulp';
-import autoprefixer from 'autoprefixer';
-import browserSync from 'browser-sync';
 import csso from 'gulp-csso';
 import filter from 'gulp-filter';
 import gulpif from 'gulp-if';
@@ -15,6 +15,7 @@ import rename from 'gulp-rename';
 import sass from 'gulp-sass';
 import sourcemaps from 'gulp-sourcemaps';
 import postcssCalc from 'postcss-calc';
+
 import gulpress from '../interfaces';
 import { isDevEnv } from '../utils';
 

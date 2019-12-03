@@ -6,7 +6,6 @@ import {
   task,
   watch,
 } from 'gulp';
-import nodeEnvFile from 'node-env-file';
 import { relative, resolve } from 'path';
 
 import {
@@ -25,6 +24,7 @@ import {
 } from '@gulppress/scripts';
 import config from './gulppress.config';
 
+const nodeEnvFile = require('node-env-file');
 if (typeof config.project.envFile === 'string' && config.project.envFile) {
   try {
     if (existsSync(config.project.envFile)) {
@@ -51,9 +51,6 @@ const processVendorScripts = vendorScriptsTask(config.vendorScripts, config.proj
 // task('watch', function (this: any) {
 task('watch', () => {
   const watchers = getWatchers();
-  if (watchers.scripts) {
-    watch(config.scripts.watch, series(reload));
-  }
   if (watchers.styles) {
     watch(config.styles.watch, series(compileStyles));
   }

@@ -1,5 +1,6 @@
 import del from 'del';
 import { TaskFunction } from 'gulp';
+
 import gulpress from '../interfaces';
 
 function getDestPaths(config: gulpress.MainConfig): {

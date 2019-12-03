@@ -9,6 +9,7 @@ import changed from 'gulp-changed';
 import gulpif from 'gulp-if';
 import imagemin from 'gulp-imagemin';
 import rename from 'gulp-rename';
+
 import gulpress from '../interfaces';
 
 export default function (config: gulpress.IconsConfig): TaskFunction {

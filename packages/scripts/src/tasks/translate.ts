@@ -4,6 +4,7 @@ import {
   src,
   TaskFunction,
 } from 'gulp';
+
 import gulpress from '../interfaces';
 
 const sort = require('gulp-sort');

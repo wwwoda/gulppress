@@ -7,6 +7,7 @@ import {
 } from 'gulp';
 import changed from 'gulp-changed';
 import filter from 'gulp-filter';
+
 import gulpress from '../interfaces';
 
 const ttf2woff = require('gulp-ttf2woff');
