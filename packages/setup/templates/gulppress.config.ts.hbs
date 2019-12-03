@@ -56,13 +56,12 @@ const config: gulppress.MainConfig = {
       overrideBrowserslist: browserList,
     },
     postcssPlugins: [],
-   // Available node-sass options: https://github.com/sass/node-sass#options
+    // Available node-sass options: https://github.com/sass/node-sass#options
     sassOptions: {
       includePaths: [
-        './node_modules',
+        'node_modules',
       ],
-      outputStyle: 'nested',
-      precision: 5,
+      outputStyle: 'expanded'
     },
   },
   // Favicon options
