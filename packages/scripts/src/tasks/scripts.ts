@@ -122,7 +122,7 @@ export default function (
         if (getWatchers().scripts === true) {
           reload();
         }
-      }).on('error', notify))
+      }).on('error', notify.onError('Error: <%= error.message %>')))
       .pipe(dest(config.dest));
   }
 

@@ -67,6 +67,7 @@ task('dev', series(
   parallel(
     compileScripts,
     compileStyles,
+    processVendorScripts,
     'watch',
     startServer,
   ),

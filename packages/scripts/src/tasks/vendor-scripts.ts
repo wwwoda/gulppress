@@ -25,7 +25,9 @@ export default function (
     config.packages.forEach(vendorScript => {
       const packagePath = path.resolve(process.cwd(), './node_modules', `./${vendorScript}`);
       try {
-        if (fs.statSync(packagePath).isDirectory()) {
+        if (fs.statSync(packagePath).isFile()) {
+          vendorSources.push(packagePath);
+        } else if (fs.statSync(packagePath).isDirectory()) {
           const packageJsonPath = path.resolve(packagePath, './package.json');
           if (fs.statSync(packageJsonPath).isFile()) {
             // eslint-disable-next-line global-require, import/no-dynamic-require
