@@ -11,7 +11,6 @@ declare namespace gulppress {
   export interface MainConfig {
     assets? : string | string[];
     project: ProjectConfig;
-    browserSync: browserSync.Options;
     scripts: ScriptConfig;
     styles: StylesConfig;
     favicon: BasicTaskConfig;
@@ -28,6 +27,8 @@ declare namespace gulppress {
     environment?: 'development' | 'staging' | 'production';
     createSeparateMinFiles: boolean;
   }
+
+  export interface BrowserSyncConfig extends browserSync.Options {}
 
   export interface CleanConfig {
     assets? : string | string[];

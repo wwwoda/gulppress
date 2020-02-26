@@ -15,7 +15,6 @@ import {
   getWatchers,
   iconsTask,
   imagesTask,
-  reload,
   scriptsTask,
   serveTask,
   stylesTask,
@@ -23,6 +22,7 @@ import {
 	vendorScriptsTask,
 } from '@gulppress/scripts';
 import config from './gulppress.config';
+import browserSyncConfig from './gulppress.browsersync';
 
 const nodeEnvFile = require('node-env-file');
 if (typeof config.project.envFile === 'string' && config.project.envFile) {
@@ -44,7 +44,7 @@ const processFavicon = faviconTask(config.favicon);
 const processFonts = fontsTask(config.fonts);
 const processIcons = iconsTask(config.icons);
 const processImages = imagesTask(config.images);
-const startServer = serveTask(config.browserSync);
+const startServer = serveTask(browserSyncConfig);
 const processTranslations = translationTask(config.translation);
 const processVendorScripts = vendorScriptsTask(config.vendorScripts, config.project);
 

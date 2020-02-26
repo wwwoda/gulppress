@@ -31,26 +31,18 @@ const config: gulppress.MainConfig = {
     envFile: '{{dotEnvPath}}',{{#if environment}}{{{environment}}}{{/if}}
     createSeparateMinFiles: {{createSeparateMinFiles}},
   },
-  // Available browsersync options: https://www.browsersync.io/docs/options
-  browserSync: {
-    ghostMode: false,
-    injectChanges: true,
-    open: true,
-    proxy: '{{projectURL}}',
-    tunnel: false,
-  },
   // Script Options
   scripts: {
-    src: `${basePath}/assets/src/scripts/*.+(js|ts)`,
-    dest: `${basePath}/assets/dist/scripts`,
-    watch: `${basePath}/assets/dist/scripts/**/*.js`,
+    src: `${basePath}{{srcStructure}}/scripts/*.+(js|ts)`,
+    dest: `${basePath}{{distStructure}}/scripts`,
+    watch: `${basePath}{{distStructure}}/scripts/**/*.js`,
     targets: browserList,
   },
   // Style options
   styles: {
-    src: `${basePath}/assets/src/styles/*.scss`,
-    dest: `${basePath}/assets/dist/styles`,
-    watch: `${basePath}/assets/src/styles/**/*.scss`,
+    src: `${basePath}{{srcStructure}}/styles/*.scss`,
+    dest: `${basePath}{{distStructure}}/styles`,
+    watch: `${basePath}{{srcStructure}}/styles/**/*.scss`,
     // Available autoprefixer options: https://github.com/postcss/autoprefixer#options
     autoprefixerOptions: {
       overrideBrowserslist: browserList,
@@ -66,25 +58,25 @@ const config: gulppress.MainConfig = {
   },
   // Favicon options
   favicon: {
-    src: `${basePath}/assets/src/favicon/favicon.+(ico|png)`,
-    dest: `${basePath}/assets/dist/favicon`,
+    src: `${basePath}{{srcStructure}}/favicon/favicon.+(ico|png)`,
+    dest: `${basePath}{{distStructure}}/favicon`,
   },
   // Font options
   fonts: {
-    srcPath: `${basePath}/assets/src/fonts`,
-    src: `${basePath}/assets/src/fonts/*.+(ttf|woff|woff2)`,
-    dest: `${basePath}/assets/dist/fonts`,
+    srcPath: `${basePath}{{srcStructure}}/fonts`,
+    src: `${basePath}{{srcStructure}}/fonts/*.+(ttf|woff|woff2)`,
+    dest: `${basePath}{{distStructure}}/fonts`,
   },
   // Icon options
   icons: {
-    src: `${basePath}/assets/src/icons/**/*.svg`,
-    dest: `${basePath}/assets/dist/icons`,
+    src: `${basePath}{{srcStructure}}/icons/**/*.svg`,
+    dest: `${basePath}{{distStructure}}/icons`,
     destPhpPartials: `${basePath}/template-parts/svg-icons`,
   },
   // Image options
   images: {
-    src: `${basePath}/assets/src/images/**/*.+(jpg|jpeg|png|svg)`,
-    dest: `${basePath}/assets/dist/images`,
+    src: `${basePath}{{srcStructure}}/images/**/*.+(jpg|jpeg|png|svg)`,
+    dest: `${basePath}{{distStructure}}/images`,
     destPhpPartials: `${basePath}/template-parts/svg-images`,
   },
   // Translation optione
@@ -102,7 +94,7 @@ const config: gulppress.MainConfig = {
     packages: [
 			'jquery'
 		],
-    dest: `${basePath}/assets/dist/scripts/vendor`,
+    dest: `${basePath}{{distStructure}}/scripts/vendor`,
   },
 };
 

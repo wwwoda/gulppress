@@ -7,6 +7,7 @@ import inquirer from 'inquirer';
 import nodeEnvFile from 'node-env-file';
 import ora from 'ora';
 import path from 'path';
+import * as yargs from 'yargs';
 
 import { Pkg, ProjectConfig, ProjectDependencies } from './interfaces';
 import {
@@ -15,6 +16,8 @@ import {
   isYarn,
   resolveCWD,
 } from './utils';
+
+const { argv } = yargs;
 
 class SetupResolve {
   public projectConfig?: ProjectConfig;
@@ -37,7 +40,11 @@ export class Setup {
 
   private configPath: string;
 
+  private browserSyncConfigPath: string;
+
   private packageJsonPath: string;
+
+  private gitIgnorePath: string;
 
   private pkg: Pkg;
 
@@ -45,7 +52,9 @@ export class Setup {
     this.cwd = cwd;
     this.gulpFilePath = path.resolve(this.cwd, 'gulpfile.ts');
     this.configPath = path.resolve(this.cwd, 'gulppress.config.ts');
+    this.browserSyncConfigPath = path.resolve(this.cwd, 'gulppress.browsersync.ts');
     this.packageJsonPath = path.resolve(this.cwd, 'package.json');
+    this.gitIgnorePath = path.resolve(this.cwd, '.gitignore');
 
     try {
       // eslint-disable-next-line global-require
@@ -62,7 +71,7 @@ export class Setup {
   }
 
   public async startSetup(): Promise<SetupResolve> {
-    if (this.isConfigPresent()) {
+    if (!argv.force && this.isConfigPresent()) {
       return Promise.reject(
         new Error('Project is already set up.'),
       );
@@ -70,6 +79,7 @@ export class Setup {
 
     const projectConfig = await this.initConfig();
     const deps = this.configureScripts(projectConfig);
+    this.editGitIgnoreFile();
     return Promise.resolve(
       new SetupResolve(projectConfig, deps),
     );
@@ -80,7 +90,7 @@ export class Setup {
       const config: ProjectConfig = {
         appName: answers.appName,
         type: answers.type,
-        basePath: this.getFormattedPath(answers.basePath),
+        basePath: answers.basePath ? this.getFormattedPath(answers.basePath) : './',
         projectURL: answers.projectURL,
         dotEnv: answers.dotEnv,
         dotEnvPath: answers.dotEnvPath
@@ -88,17 +98,15 @@ export class Setup {
         createSeparateMinFiles: answers.createSeparateMinFiles,
         useYarn: answers.useYarn,
         environment: answers.dotEnvPath ? null : "\n    environment: 'development',",
+        srcStructure: this.getSrcStructure(answers.structure),
+        distStructure: this.getDistStructure(answers.structure),
       };
-      const source: string = fs
-        .readFileSync(
-          path.resolve(
-            __dirname,
-            '../templates/gulppress.config.ts.hbs',
-          ),
-        )
-        .toString();
-      const compiler = handlebars.compile(source);
-      fs.writeFileSync(this.configPath, compiler(config));
+      const configTemplate = this.getHandlebarsTemplateString('../templates/gulppress.config.ts.hbs');
+      const browserSyncConfigTemplate = this.getHandlebarsTemplateString('../templates/gulppress.browsersync.ts.hbs');
+      const configCompiler = handlebars.compile(configTemplate);
+      const browserSyncConfigCompiler = handlebars.compile(browserSyncConfigTemplate);
+      fs.writeFileSync(this.configPath, configCompiler(config));
+      fs.writeFileSync(this.browserSyncConfigPath, browserSyncConfigCompiler(config));
       copyFileSync(path.resolve(__dirname, '../templates/gulpfile.ts.hbs'), this.gulpFilePath);
       return config;
     });
@@ -125,18 +133,31 @@ export class Setup {
         message: answers => `Name of WordPress ${answers.type === 'plugin' ? 'plugin' : 'theme'}`,
         name: 'appName',
         type: 'input',
-        default: this.pkg.name || '',
+        default: (answers: inquirer.Answers): string => {
+          if (answers.type === 'bedrock') {
+            const themes = this.getDirectories('./web/app/themes');
+            if (themes.length > 0) {
+              return themes[0];
+            }
+          }
+          if (!this.cwd.endsWith('/')) {
+            return this.cwd.split('/').slice(-1)[0];
+          }
+          return this.pkg.name || '';
+        },
       },
       {
         type: 'input',
         name: 'basePath',
-        message: answers => `Select you ${answers.type === 'plugin' ? 'plugin' : 'theme'}'s directory`,
+        message: 'Select your theme\'s directory',
+        when: answers => answers.type === 'bedrock',
         default: (answers: inquirer.Answers): string => {
-          if (answers.type === 'bedrock') {
-            if (this.pathExists(path.resolve(this.cwd, `./web/app/themes/${answers.appName}`))) {
+          const themes = this.getDirectories('./web/app/themes');
+          if (themes.length > 0) {
+            if (themes.includes(answers.appName)) {
               return `./web/app/themes/${answers.appName}`;
             }
-            return './';
+            return `./web/app/themes/${themes[0]}`;
           }
           return './';
         },
@@ -145,8 +166,8 @@ export class Setup {
         type: 'confirm',
         name: 'dotEnv',
         message: 'Do you use a working environment file (eg .env)?',
-        when: answers => answers.type !== 'bedrock',
-        default: answers => answers.type === 'bedrock' || false,
+        when: answers => answers.type === 'theme',
+        default: false,
       },
       {
         type: 'input',
@@ -168,7 +189,7 @@ export class Setup {
           if (typeof dotEnvPath === 'string' && dotEnvPath) {
             return path.relative(cwd, dotEnvPath);
           }
-          return '';
+          return '.env';
         },
       },
       {
@@ -185,6 +206,23 @@ export class Setup {
           }
           return '';
         },
+      },
+      {
+        type: 'list',
+        name: 'structure',
+        message: 'Select your assets file structure',
+        choices: answers => [
+          {
+            name: `./assets/src and ./assets/dist folders inside the ${answers.type === 'plugin' ? 'plugin' : 'theme'} root`,
+            value: 'assets',
+          }, {
+            name: `./src and ./dist folders inside the ${answers.type === 'plugin' ? 'plugin' : 'theme'} root`,
+            value: 'split',
+          }, {
+            name: `Specific source folders (./scripts, ./styles, ./images, ...) and ./dist folder, all located inside the ${answers.type === 'plugin' ? 'plugin' : 'theme'} root`,
+            value: 'root',
+          },
+        ],
       },
       {
         type: 'confirm',
@@ -267,6 +305,21 @@ export class Setup {
     return { dependencies, devDependencies };
   }
 
+  public editGitIgnoreFile() {
+    const content = 'gulppress.env.ts';
+    if (this.fileExists(this.gitIgnorePath)) {
+      fs.appendFileSync(
+        this.gitIgnorePath,
+        content,
+      );
+    } else {
+      fs.writeFileSync(
+        this.gitIgnorePath,
+        content,
+      );
+    }
+  }
+
   private fileExists(filePath: string): boolean {
     try {
       return fs.statSync(filePath).isFile();
@@ -291,6 +344,12 @@ export class Setup {
     }
   }
 
+  private getDirectories(source: string): string[] {
+    return fs.readdirSync(source, { withFileTypes: true })
+      .filter(dirent => dirent.isDirectory())
+      .map(dirent => dirent.name);
+  }
+
   private isConfigPresent(): boolean {
     return this.fileExists(this.configPath);
   }
@@ -301,6 +360,42 @@ export class Setup {
       return `./${relativePath}`;
     }
     return relativePath;
+  }
+
+  private getHandlebarsTemplateString(templatePath: string): string {
+    return fs
+      .readFileSync(
+        path.resolve(
+          __dirname,
+          templatePath,
+        ),
+      )
+      .toString();
+  }
+
+  private getSrcStructure(structure: string): string {
+    switch (structure) {
+      case 'assets':
+        return '/assets/src';
+      case 'split':
+        return '/src';
+      case 'root':
+        return '';
+      default:
+        return '/assets/src';
+    }
+  }
+
+  private getDistStructure(structure: string): string {
+    switch (structure) {
+      case 'assets':
+        return '/assets/dist';
+      case 'split':
+      case 'root':
+        return '/dist';
+      default:
+        return '/assets/dist';
+    }
   }
 }
 

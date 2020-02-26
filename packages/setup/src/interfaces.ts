@@ -24,6 +24,8 @@ export interface ProjectConfig {
   createSeparateMinFiles: boolean;
   useYarn: boolean;
   environment: string | null;
+  srcStructure: string;
+  distStructure: string;
 }
 
 export interface ProjectDependencies {
