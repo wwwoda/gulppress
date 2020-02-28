@@ -71,6 +71,7 @@ export class Setup {
   }
 
   public async startSetup(): Promise<SetupResolve> {
+    this.getThemePaths();
     if (!argv.force && this.isConfigPresent()) {
       return Promise.reject(
         new Error('Project is already set up.'),
@@ -114,10 +115,11 @@ export class Setup {
 
   private async getUserInput(): Promise<inquirer.Answers> {
     const questions: inquirer.QuestionCollection = [
+      // Type of project
       {
-        message: 'Type of WordPress Project (plugin or theme)',
-        name: 'type',
         type: 'list',
+        name: 'type',
+        message: 'Type of WordPress Project (plugin or theme)',
         choices: ['bedrock', 'plugin', 'theme'],
         default: () => {
           if (this.fileExists(path.resolve(this.cwd, './style.css'))) {
@@ -129,10 +131,11 @@ export class Setup {
           return 'plugin';
         },
       },
+      // Name of project
       {
-        message: answers => `Name of WordPress ${answers.type === 'plugin' ? 'plugin' : 'theme'}`,
-        name: 'appName',
         type: 'input',
+        name: 'appName',
+        message: answers => `Name of WordPress ${answers.type === 'plugin' ? 'plugin' : 'theme'}`,
         default: (answers: inquirer.Answers): string => {
           if (answers.type === 'bedrock') {
             const themes = this.getDirectories('./web/app/themes');
@@ -144,6 +147,23 @@ export class Setup {
             return this.cwd.split('/').slice(-1)[0];
           }
           return this.pkg.name || '';
+        },
+      },
+      {
+        type: 'list',
+        name: 'basePathList',
+        message: 'Select your theme\'s directory',
+        when: answers => answers.type !== 'plugin',
+        default: (answers: inquirer.Answers): string => {
+          const paths = this.getThemePaths();
+          const themes = this.getDirectories('./web/app/themes');
+          if (themes.length > 0) {
+            if (themes.includes(answers.appName)) {
+              return `./web/app/themes/${answers.appName}`;
+            }
+            return `./web/app/themes/${themes[0]}`;
+          }
+          return './';
         },
       },
       {
@@ -193,9 +213,9 @@ export class Setup {
         },
       },
       {
-        message: 'URL of your local WordPress site',
-        name: 'projectURL',
         type: 'input',
+        name: 'projectURL',
+        message: 'URL of your local WordPress site',
         when: answers => answers.type !== 'plugin',
         default: (answers: inquirer.Answers): string => {
           if (answers.dotEnvPath) {
@@ -239,6 +259,33 @@ export class Setup {
     ];
 
     return inquirer.prompt(questions);
+  }
+
+  private getThemePaths(): [] {
+    if (this.fileExists(path.resolve(this.cwd, './style.css'))) {
+      console.log('inside theme');
+    } else if (this.pathExists(path.resolve(this.cwd, './web/app/themes'))) {
+      console.log('inside bedrock root');
+      console.log(this.getDirectories('./web/app/themes'));
+    } else if (this.pathExists(path.resolve(this.cwd, './wp-content'))) {
+      console.log('wproot');
+      console.log(this.getDirectories('./wp-content/themes'));
+    } else {
+      console.log('find');
+      const dirs = this.getDirectories('./');
+      const filteredDirs = dirs.filter((value: string) => ![
+        '.git',
+        'node_modules',
+        'vendor',
+        'config',
+      ].includes(value));
+      console.log(filteredDirs);
+      filteredDirs.forEach(element => {
+        console.log(this.getDirectories(`./${element}`));
+      });
+    }
+
+    return [];
   }
 
   public configureScripts(
@@ -306,7 +353,7 @@ export class Setup {
   }
 
   public editGitIgnoreFile() {
-    const content = 'gulppress.env.ts';
+    const content = 'gulppress.browsersync.ts';
     if (this.fileExists(this.gitIgnorePath)) {
       fs.appendFileSync(
         this.gitIgnorePath,
