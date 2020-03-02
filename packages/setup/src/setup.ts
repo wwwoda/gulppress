@@ -2,7 +2,6 @@
 import execa from 'execa';
 import findUp from 'find-up';
 import fs from 'fs';
-import handlebars from 'handlebars';
 import inquirer from 'inquirer';
 import nodeEnvFile from 'node-env-file';
 import ora from 'ora';
@@ -11,11 +10,11 @@ import * as yargs from 'yargs';
 
 import { Pkg, ProjectConfig, ProjectDependencies } from './interfaces';
 import {
-  copyFileSync,
+  compileAndWriteHandlebarsTemplate,
   directoryExists,
   fileExists,
   getDirectories,
-  getFileContent,
+  getFormattedPath,
   installWithYarn,
   isYarn,
   resolveCWD,
@@ -39,6 +38,8 @@ class SetupResolve {
 
 export class Setup {
   private cwd: string;
+
+  private templatesPath = '../templates';
 
   private fileNameGulpFile: string = 'gulpfile.ts';
 
@@ -85,13 +86,14 @@ export class Setup {
   }
 
   public async startSetup(): Promise<SetupResolve> {
-    if (!argv.force && this.isConfigPresent()) {
+    if (!argv.force && fileExists(this.configPath)) {
       return Promise.reject(
         new Error('Project is already set up.'),
       );
     }
 
     const projectConfig = await this.initConfig();
+    this.compileAndWriteFiles(projectConfig);
     const deps = this.configureScripts(projectConfig);
     this.editGitIgnoreFile();
     return Promise.resolve(
@@ -101,30 +103,42 @@ export class Setup {
 
   private async initConfig(): Promise<ProjectConfig> {
     return this.getUserInput().then(answers => {
-      const templatesPath = '../templates/';
       const config: ProjectConfig = {
         appName: answers.appName,
         type: answers.type,
-        basePath: answers.basePath ? this.getFormattedPath(answers.basePath) : './',
+        basePath: answers.basePath ? getFormattedPath(answers.basePath, this.cwd) : './',
         projectURL: answers.projectURL,
         dotEnv: answers.dotEnv,
         dotEnvPath: answers.dotEnvPath
-          ? this.getFormattedPath(path.relative(this.cwd, answers.dotEnvPath)) : '',
+          ? getFormattedPath(path.relative(this.cwd, answers.dotEnvPath), this.cwd) : '',
         createSeparateMinFiles: answers.createSeparateMinFiles,
         useYarn: answers.useYarn,
         environment: answers.dotEnvPath ? null : "\n    environment: 'development',",
         srcStructure: this.getSrcStructure(answers.structure),
         distStructure: this.getDistStructure(answers.structure),
       };
-      const configTemplate = getFileContent(`${templatesPath}${this.fileNameConfig}`);
-      const localConfigTemplate = getFileContent(`${templatesPath}${this.fileNameLocalConfig}`);
-      const configCompiler = handlebars.compile(configTemplate);
-      const localConfigCompiler = handlebars.compile(localConfigTemplate);
-      fs.writeFileSync(this.configPath, configCompiler(config));
-      fs.writeFileSync(this.localConfigPath, localConfigCompiler(config));
-      copyFileSync(path.resolve(__dirname, `${templatesPath}${this.fileNameGulpFile}`), this.gulpFilePath);
+
       return config;
     });
+  }
+
+  private compileAndWriteFiles(config: ProjectConfig): void {
+    compileAndWriteHandlebarsTemplate(
+      `${this.templatesPath}/${this.fileNameConfig}.hbs`,
+      this.configPath,
+      config,
+    );
+
+    compileAndWriteHandlebarsTemplate(
+      `${this.templatesPath}/${this.fileNameLocalConfig}.hbs`,
+      this.localConfigPath,
+      config,
+    );
+
+    compileAndWriteHandlebarsTemplate(
+      `${this.templatesPath}/${this.fileNameGulpFile}.hbs`,
+      this.gulpFilePath,
+    );
   }
 
   private async getUserInput(): Promise<inquirer.Answers> {
@@ -335,18 +349,6 @@ export class Setup {
         content,
       );
     }
-  }
-
-  private isConfigPresent(): boolean {
-    return fileExists(this.configPath);
-  }
-
-  private getFormattedPath(sourcePath): string {
-    const relativePath = path.relative(this.cwd, sourcePath);
-    if (!relativePath.startsWith('./') || !relativePath.startsWith('../')) {
-      return `./${relativePath}`;
-    }
-    return relativePath;
   }
 
   private getSrcStructure(structure: string): string {

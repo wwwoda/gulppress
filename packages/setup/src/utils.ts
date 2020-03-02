@@ -116,3 +116,11 @@ export function compileAndWriteHandlebarsTemplate(
   const compiler = handlebars.compile(templateContent);
   fs.writeFileSync(target, compiler(config));
 }
+
+export function getFormattedPath(source: string, cwd: string): string {
+  const relativePath = path.relative(cwd, source);
+  if (!relativePath.startsWith('./') || !relativePath.startsWith('../')) {
+    return `./${relativePath}`;
+  }
+  return relativePath;
+}
