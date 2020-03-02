@@ -1,6 +1,5 @@
 // import chalk from 'chalk';
 import execa from 'execa';
-import findUp from 'find-up';
 import fs from 'fs';
 import inquirer from 'inquirer';
 import nodeEnvFile from 'node-env-file';
@@ -36,6 +35,8 @@ class SetupResolve {
   }
 }
 
+type ProjectType = 'bedrock' | 'theme' | 'plugin';
+
 export class Setup {
   private cwd: string;
 
@@ -61,7 +62,13 @@ export class Setup {
 
   private gitIgnorePath: string;
 
+  private themePaths: string[];
+
+  private projectType: ProjectType;
+
   private pkg: Pkg;
+
+  private enterManuallyText = '>>> Enter manually';
 
   constructor(cwd: string) {
     this.cwd = cwd;
@@ -70,6 +77,9 @@ export class Setup {
     this.localConfigPath = path.resolve(this.cwd, this.fileNameLocalConfig);
     this.packageJsonPath = path.resolve(this.cwd, this.fileNamePackageJson);
     this.gitIgnorePath = path.resolve(this.cwd, this.fileNameGitIgnore);
+    this.themePaths = this.getThemePaths(this.cwd);
+    this.themePaths.push(this.enterManuallyText);
+    this.projectType = this.getProjectType(this.themePaths);
 
     try {
       // eslint-disable-next-line global-require
@@ -86,8 +96,6 @@ export class Setup {
   }
 
   public async startSetup(): Promise<SetupResolve> {
-    console.log('---');
-    console.log(this.getThemeChoices(this.cwd));
     if (!argv.force && fileExists(this.configPath)) {
       return Promise.reject(
         new Error('Project is already set up.'),
@@ -101,6 +109,19 @@ export class Setup {
     return Promise.resolve(
       new SetupResolve(projectConfig, deps),
     );
+  }
+
+  private getProjectType(themePaths: string[]): ProjectType {
+    if (themePaths.length > 0) {
+      if (themePaths[0].indexOf('web/app/themes') > -1) {
+        return 'bedrock';
+      }
+      if (themePaths[0].indexOf('wp-content/themes') > -1) {
+        return 'theme';
+      }
+    }
+
+    return 'theme';
   }
 
   private async initConfig(): Promise<ProjectConfig> {
@@ -149,76 +170,39 @@ export class Setup {
       {
         type: 'list',
         name: 'type',
-        message: 'Type of WordPress Project (plugin or theme)',
-        choices: ['bedrock', 'plugin', 'theme'],
-        default: () => {
-          if (fileExists(path.resolve(this.cwd, './style.css'))) {
-            return 'theme';
-          }
-          if (directoryExists(path.resolve(this.cwd, './web/app/themes'))) {
-            return 'bedrock';
-          }
-          return 'plugin';
-        },
+        message: 'Type of project',
+        choices: ['theme', 'plugin', 'bedrock'],
+        default: () => this.projectType,
       },
       // Name of project
       {
         type: 'input',
         name: 'appName',
-        message: answers => `Name of WordPress ${answers.type === 'plugin' ? 'plugin' : 'theme'}`,
-        default: (answers: inquirer.Answers): string => {
-          if (answers.type === 'bedrock') {
-            const themes = getDirectories('./web/app/themes');
-            if (themes.length > 0) {
-              return themes[0];
-            }
-          }
-          if (!this.cwd.endsWith('/')) {
-            return this.cwd.split('/').slice(-1)[0];
-          }
-          return this.pkg.name || '';
-        },
+        message: 'Project name',
+        default: this.pkg.name || '',
       },
-      // {
-      //   type: 'list',
-      //   name: 'basePathList',
-      //   message: 'Select your theme\'s directory',
-      //   when: answers => answers.type !== 'plugin',
-      //   default: (answers: inquirer.Answers): string => {
-      //     // const paths = this.getThemeChoices();
-      //     const themes = getDirectories('./web/app/themes');
-      //     if (themes.length > 0) {
-      //       if (themes.includes(answers.appName)) {
-      //         return `./web/app/themes/${answers.appName}`;
-      //       }
-      //       return `./web/app/themes/${themes[0]}`;
-      //     }
-      //     return './';
-      //   },
-      //   choices: this.getThemeChoices(this.cwd),
-      // },
+      {
+        type: 'list',
+        name: 'basePathList',
+        message: 'Select your theme\'s directory',
+        when: answers => answers.type !== 'plugin' && this.themePaths.length > 1,
+        choices: this.themePaths,
+      },
       {
         type: 'input',
         name: 'basePath',
-        message: 'Select your theme\'s directory',
-        when: answers => answers.type === 'bedrock',
-        default: (answers: inquirer.Answers): string => {
-          const themes = getDirectories('./web/app/themes');
-          if (themes.length > 0) {
-            if (themes.includes(answers.appName)) {
-              return `./web/app/themes/${answers.appName}`;
-            }
-            return `./web/app/themes/${themes[0]}`;
-          }
-          return './';
-        },
+        message: 'Enter your theme\'s directory',
+        when: answers => this.projectType !== 'plugin'
+          && (answers.basePathList === this.enterManuallyText
+          || !answers.basePathList),
+        default: './',
       },
       {
         type: 'confirm',
         name: 'dotEnv',
         message: 'Do you use a working environment file (eg .env)?',
-        when: answers => answers.type === 'theme',
-        default: false,
+        when: answers => answers.type !== 'plugin',
+        default: answers => answers.type === 'bedrock',
       },
       {
         type: 'input',
@@ -231,17 +215,7 @@ export class Setup {
           }
           return 'No working environment file found at this location. Please create one to continue.';
         },
-        default: () => {
-          if (fs.existsSync('.env')) {
-            return '.env';
-          }
-          const cwd = process.cwd();
-          const dotEnvPath = findUp.sync('.env', { cwd });
-          if (typeof dotEnvPath === 'string' && dotEnvPath) {
-            return path.relative(cwd, dotEnvPath);
-          }
-          return '.env';
-        },
+        default: () => './.env',
       },
       {
         type: 'input',
@@ -292,47 +266,59 @@ export class Setup {
     return inquirer.prompt(questions);
   }
 
-  private getThemeChoices(dir: string, final?: boolean): [{ [x: string]: string }?] {
-    console.log('getThemeChoices');
-    console.log(dir);
-    console.log(path.relative(dir, './wp-content'));
-    if (fileExists(path.relative(dir, './style.css'))) {
-      console.log('inside theme');
-    } else if (directoryExists(path.relative(dir, './web/app/themes'))) {
-      // const bedrockThemesPath = './web/app/themes';
-      const bedrockThemesPath = path.relative(dir, './web/app/themes');
-      const themes = getDirectories(bedrockThemesPath);
-      console.log('inside bedrock root');
-      console.log(bedrockThemesPath);
-      console.log(themes.map(theme => ({
-        [theme]: `${bedrockThemesPath}/${theme}`,
-      })));
-    } else if (directoryExists(path.relative(dir, './wp-content'))) {
-      const wprootPath = path.relative(dir, './wp-content/themes');
-      const themes = getDirectories(wprootPath);
-      console.log('wproot');
-      console.log(wprootPath);
-      console.log(themes.map(theme => ({
-        [theme]: `${wprootPath}/${theme}`,
-      })));
-    } else if (final !== true) {
-      console.log('find');
+  private getThemePaths(cwd: string, subDirectory?: string): string[] {
+    const themePaths: string[] = [];
+    let typePath = '';
+    // if (fileExists(path.resolve(cwd, './style.css'))) {
+    //   return ['./'];
+    // }
+
+    if (directoryExists(path.resolve(subDirectory || cwd, './web/app/themes'))) {
+      typePath = 'web/app/themes';
+    }
+
+    if (directoryExists(path.resolve(subDirectory || cwd, './wp-content/themes'))) {
+      typePath = 'wp-content/themes';
+    }
+
+    if (typePath !== '') {
+      const searchPath = subDirectory
+        ? `./${path.relative(cwd, subDirectory)}/${typePath}`
+        : `./${typePath}`;
+      const themeNames = getDirectories(searchPath);
+      if (themeNames.length > 1) {
+        themePaths.push(...themeNames.map(theme => `${searchPath}/${theme}`));
+      }
+      // else {
+      //   themePaths.push('./');
+      // }
+      return themePaths;
+    }
+
+    if (typeof subDirectory === 'undefined') {
       const dirs = getDirectories('./');
       const filteredDirs = dirs.filter((value: string) => ![
         '.git',
+        '.github',
         'node_modules',
         'vendor',
         'config',
       ].includes(value));
-      // console.log(filteredDirs);
-      filteredDirs.forEach(element => {
-        const x = path.resolve(`./${element}`);
-        console.log('find loop');
-        console.log(this.getThemeChoices(x, true));
+      filteredDirs.some(element => {
+        const newCwd = path.resolve(`./${element}`);
+        const paths = this.getThemePaths(cwd, newCwd);
+        if (paths.length > 0) {
+          themePaths.push(...paths);
+        }
+        return themePaths.length < 1;
       });
     }
 
-    return [{ foo: 'bar' }];
+    // if (themePaths.length < 1) {
+    //   themePaths.push('./');
+    // }
+
+    return themePaths;
   }
 
   public configureScripts(
