@@ -86,6 +86,8 @@ export class Setup {
   }
 
   public async startSetup(): Promise<SetupResolve> {
+    console.log('---');
+    console.log(this.getThemeChoices(this.cwd));
     if (!argv.force && fileExists(this.configPath)) {
       return Promise.reject(
         new Error('Project is already set up.'),
@@ -183,7 +185,7 @@ export class Setup {
       //   message: 'Select your theme\'s directory',
       //   when: answers => answers.type !== 'plugin',
       //   default: (answers: inquirer.Answers): string => {
-      //     const paths = this.getThemePaths();
+      //     // const paths = this.getThemeChoices();
       //     const themes = getDirectories('./web/app/themes');
       //     if (themes.length > 0) {
       //       if (themes.includes(answers.appName)) {
@@ -193,6 +195,7 @@ export class Setup {
       //     }
       //     return './';
       //   },
+      //   choices: this.getThemeChoices(this.cwd),
       // },
       {
         type: 'input',
@@ -289,16 +292,30 @@ export class Setup {
     return inquirer.prompt(questions);
   }
 
-  private getThemePaths(): [] {
-    if (fileExists(path.resolve(this.cwd, './style.css'))) {
+  private getThemeChoices(dir: string, final?: boolean): [{ [x: string]: string }?] {
+    console.log('getThemeChoices');
+    console.log(dir);
+    console.log(path.relative(dir, './wp-content'));
+    if (fileExists(path.relative(dir, './style.css'))) {
       console.log('inside theme');
-    } else if (directoryExists(path.resolve(this.cwd, './web/app/themes'))) {
+    } else if (directoryExists(path.relative(dir, './web/app/themes'))) {
+      // const bedrockThemesPath = './web/app/themes';
+      const bedrockThemesPath = path.relative(dir, './web/app/themes');
+      const themes = getDirectories(bedrockThemesPath);
       console.log('inside bedrock root');
-      console.log(getDirectories('./web/app/themes'));
-    } else if (directoryExists(path.resolve(this.cwd, './wp-content'))) {
+      console.log(bedrockThemesPath);
+      console.log(themes.map(theme => ({
+        [theme]: `${bedrockThemesPath}/${theme}`,
+      })));
+    } else if (directoryExists(path.relative(dir, './wp-content'))) {
+      const wprootPath = path.relative(dir, './wp-content/themes');
+      const themes = getDirectories(wprootPath);
       console.log('wproot');
-      console.log(getDirectories('./wp-content/themes'));
-    } else {
+      console.log(wprootPath);
+      console.log(themes.map(theme => ({
+        [theme]: `${wprootPath}/${theme}`,
+      })));
+    } else if (final !== true) {
       console.log('find');
       const dirs = getDirectories('./');
       const filteredDirs = dirs.filter((value: string) => ![
@@ -307,13 +324,15 @@ export class Setup {
         'vendor',
         'config',
       ].includes(value));
-      console.log(filteredDirs);
+      // console.log(filteredDirs);
       filteredDirs.forEach(element => {
-        console.log(getDirectories(`./${element}`));
+        const x = path.resolve(`./${element}`);
+        console.log('find loop');
+        console.log(this.getThemeChoices(x, true));
       });
     }
 
-    return [];
+    return [{ foo: 'bar' }];
   }
 
   public configureScripts(
