@@ -383,7 +383,7 @@ export class Setup {
   }
 
   public editGitIgnoreFile() {
-    const content =`\n${this.fileNameLocalConfig}`;
+    const content = `\n${this.fileNameLocalConfig}`;
     if (fileExists(this.gitIgnorePath)) {
       fs.appendFileSync(
         this.gitIgnorePath,
