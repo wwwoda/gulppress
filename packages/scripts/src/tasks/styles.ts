@@ -26,11 +26,11 @@ const postcssEasingGradients = require('postcss-easing-gradients');
 const { stream } = browserSync;
 
 export default function (
-  config: gulpress.StylesConfig,
-  project: gulpress.ProjectConfig,
+  stylesConfig: gulpress.StylesConfig,
+  baseConfig: gulpress.BaseConfig,
 ): TaskFunction {
   const postcssPlugins = [
-    autoprefixer(config.autoprefixerOptions),
+    autoprefixer(stylesConfig.autoprefixerOptions),
     cssVariables({
       preserve: true,
     }),
@@ -38,50 +38,58 @@ export default function (
     postcssEasingGradients(),
   ];
 
+  function sassErrorHandler(this: any, error: Error) {
+    sass.logError.call(this, error);
+    if (!isDevEnv(baseConfig)) {
+      console.log('Aborting styles build task due to error!');
+      process.exit(1);
+    }
+  }
+
   function compileStyles(): NodeJS.ReadWriteStream {
-    if (project.createSeparateMinFiles === true) {
-      return src(config.src)
+    if (baseConfig.createSeparateMinFiles === true) {
+      return src(stylesConfig.src)
         .pipe(plumber())
-        .pipe(gulpif(isDevEnv(), sourcemaps.init()))
+        .pipe(gulpif(isDevEnv(baseConfig), sourcemaps.init()))
         .pipe(
-          sass(config.sassOptions).on('error', sass.logError),
+          sass(stylesConfig.sassOptions).on('error', sassErrorHandler),
         )
-        .pipe(postcss([...postcssPlugins, ...config.postcssPlugins]))
-        .pipe(gulpif(isDevEnv(), sourcemaps.write({ includeContent: false })))
-        .pipe(dest(config.dest))
+        .pipe(postcss([...postcssPlugins, ...stylesConfig.postcssPlugins]))
+        .pipe(gulpif(isDevEnv(baseConfig), sourcemaps.write({ includeContent: false })))
+        .pipe(dest(stylesConfig.dest))
         .pipe(filter('**/*.css'))
         .pipe(stream())
         .pipe(rename({ suffix: '.min' }))
-        .pipe(gulpif(isDevEnv(), sourcemaps.init({ loadMaps: true })))
+        .pipe(gulpif(isDevEnv(baseConfig), sourcemaps.init({ loadMaps: true })))
         .pipe(csso())
-        .pipe(gulpif(isDevEnv(), sourcemaps.write('./')))
-        .pipe(dest(config.dest))
+        .pipe(gulpif(isDevEnv(baseConfig), sourcemaps.write('./')))
+        .pipe(dest(stylesConfig.dest))
         .pipe(stream());
     }
 
-    return src(config.src)
+    return src(stylesConfig.src)
       .pipe(plumber())
-      .pipe(gulpif(isDevEnv(), sourcemaps.init()))
+      .pipe(gulpif(isDevEnv(baseConfig), sourcemaps.init()))
       .pipe(
-        sass(config.sassOptions).on('error', sass.logError),
+        sass(stylesConfig.sassOptions).on('error', sassErrorHandler),
       )
       .pipe(postcss(postcssPlugins))
-      .pipe(gulpif(!isDevEnv(), csso()))
-      .pipe(gulpif(isDevEnv(), sourcemaps.write('.')))
-      .pipe(dest(config.dest))
+      .pipe(gulpif(!isDevEnv(baseConfig), csso()))
+      .pipe(gulpif(isDevEnv(baseConfig), sourcemaps.write('.')))
+      .pipe(dest(stylesConfig.dest))
       .pipe(filter('**/*.css'))
       .pipe(stream());
   }
 
   function bustCache(): NodeJS.ReadWriteStream {
-    return src(`${config.dest}/*.css`)
+    return src(`${stylesConfig.dest}/*.css`)
       .pipe(
         gulpBuster({
           fileName: '.assets.json',
-          relativePath: config.dest,
+          relativePath: stylesConfig.dest,
         }),
       )
-      .pipe(dest(config.dest));
+      .pipe(dest(stylesConfig.dest));
   }
 
   return series(compileStyles, bustCache);

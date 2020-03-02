@@ -1,4 +1,5 @@
 import { reload } from 'browser-sync';
+import fancyLog from 'fancy-log';
 import glob from 'glob';
 import {
   dest,
@@ -17,31 +18,30 @@ import { getWatchers, isDevEnv } from '../utils';
 
 const HashAssetsPlugin = require('hash-assets-webpack-plugin');
 const named = require('vinyl-named');
-const notify = require('gulp-notify');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 export default function (
-  config: gulpress.ScriptConfig,
-  project: gulpress.ProjectConfig,
+  scriptConfig: gulpress.ScriptConfig,
+  baseConfig: gulpress.BaseConfig,
 ): TaskFunction {
   const source: { [key: string]: string } = {};
-  if (Array.isArray(config.src)) {
-    config.src.forEach((entry: string) => {
+  if (Array.isArray(scriptConfig.src)) {
+    scriptConfig.src.forEach((entry: string) => {
       glob.sync(entry).forEach((result: string) => {
         const extension = path.extname(result);
         const file = path.basename(result, extension);
         source[file] = result;
-        if (project.createSeparateMinFiles) {
+        if (baseConfig.createSeparateMinFiles === true) {
           source[`${file}.min`] = result;
         }
       });
     });
   } else {
-    glob.sync(config.src).forEach((result: string) => {
+    glob.sync(scriptConfig.src).forEach((result: string) => {
       const extension = path.extname(result);
       const file = path.basename(result, extension);
       source[file] = result;
-      if (project.createSeparateMinFiles) {
+      if (baseConfig.createSeparateMinFiles === true) {
         source[`${file}.min`] = result;
       }
     });
@@ -50,7 +50,7 @@ export default function (
   const webpackConfig: Configuration = {
     watch: getWatchers().scripts === true,
     output: {
-      path: config.dest,
+      path: scriptConfig.dest,
       filename: '[name].js',
     },
     module: {
@@ -64,7 +64,7 @@ export default function (
               [
                 '@babel/preset-env',
                 {
-                  targets: config.targets,
+                  targets: scriptConfig.targets,
                 },
               ],
               '@babel/typescript',
@@ -99,8 +99,8 @@ export default function (
     cache: {},
   };
 
-  if (!isDevEnv()) {
-    const uglifyJsPluginConfig = project.createSeparateMinFiles ? { include: /\.min\.js$/ } : {};
+  if (!isDevEnv(baseConfig)) {
+    const uglifyJsPluginConfig = baseConfig.createSeparateMinFiles === true ? { include: /\.min\.js$/ } : {};
     webpackConfig.optimization = {
       minimize: true,
       minimizer: [new UglifyJsPlugin(uglifyJsPluginConfig)],
@@ -108,22 +108,28 @@ export default function (
   }
 
   function compileScripts(): NodeJS.ReadWriteStream {
-    return src(config.src)
+    return src(scriptConfig.src)
       .pipe(plumber())
       .pipe(named())
       .pipe(webpackStream(webpackMerge(
         {
-          entry: source,
-          devtool: isDevEnv() ? 'inline-source-map' : false,
-          mode: isDevEnv() ? 'development' : 'production',
+          entry: Object.entries(source).length >= 1 ? source : '',
+          devtool: isDevEnv(baseConfig) ? 'inline-source-map' : false,
+          mode: isDevEnv(baseConfig) ? 'development' : 'production',
         },
         webpackConfig,
       ), undefined, () => {
         if (getWatchers().scripts === true) {
           reload();
         }
-      }).on('error', notify.onError('Error: <%= error.message %>')))
-      .pipe(dest(config.dest));
+      }).on('error', (error: Error) => {
+        fancyLog.error(error.message);
+        if (!isDevEnv(baseConfig)) {
+          console.log('Aborting scripts build task due to error!');
+          process.exit(1);
+        }
+      }))
+      .pipe(dest(scriptConfig.dest));
   }
 
   return parallel(compileScripts);

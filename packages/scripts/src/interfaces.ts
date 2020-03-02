@@ -8,24 +8,24 @@ declare namespace gulppress {
     dest: string;
   }
 
-  export interface MainConfig {
+  export interface ProjectConfig {
     assets? : string | string[];
-    project: ProjectConfig;
-    scripts: ScriptConfig;
-    styles: StylesConfig;
-    favicon: BasicTaskConfig;
-    fonts: FontsConfig;
-    images: ImagesConfig;
-    icons: IconsConfig;
-    translation: TranslationConfig;
-    vendorScripts: VendorScriptsConfig;
+    base?: BaseConfig;
+    browserSync?: browserSync.Options
+    scripts?: ScriptConfig;
+    styles?: StylesConfig;
+    favicon?: BasicTaskConfig;
+    fonts?: FontsConfig;
+    images?: ImagesConfig;
+    icons?: IconsConfig;
+    translation?: TranslationConfig;
+    vendorScripts?: VendorScriptsConfig;
   }
 
-  export interface ProjectConfig {
-    basePath: string;
-    envFile: string | false;
+  export interface BaseConfig {
+    envFile?: string | false;
     environment?: 'development' | 'staging' | 'production';
-    createSeparateMinFiles: boolean;
+    createSeparateMinFiles?: boolean;
   }
 
   export interface BrowserSyncConfig extends browserSync.Options {}

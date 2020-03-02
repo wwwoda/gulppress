@@ -7,7 +7,6 @@ import {
   watch,
 } from 'gulp';
 import { relative, resolve } from 'path';
-
 import {
   cleanTasks,
   faviconTask,
@@ -19,16 +18,24 @@ import {
   serveTask,
   stylesTask,
   translationTask,
-	vendorScriptsTask,
+  vendorScriptsTask,
 } from '@gulppress/scripts';
-import config from './gulppress.config';
-import browserSyncConfig from './gulppress.browsersync';
+import mainConfig from './gulppress.config';
+
+let localConfig = null;
+try {
+  localConfig = require('./gulppress.local.config');
+} catch(e) {
+  console.log('Optional local config not found');
+}
+
+const config = getConfig();
 
 const nodeEnvFile = require('node-env-file');
-if (typeof config.project.envFile === 'string' && config.project.envFile) {
+if (typeof config.base.envFile === 'string' && config.base.envFile) {
   try {
-    if (existsSync(config.project.envFile)) {
-      nodeEnvFile(config.project.envFile, { raise: false });
+    if (existsSync(config.base.envFile)) {
+      nodeEnvFile(config.base.envFile, { raise: false });
     }
   } catch (err) {
     console.error('.env file not found, please check your configuration');
@@ -37,16 +44,16 @@ if (typeof config.project.envFile === 'string' && config.project.envFile) {
 
 const clean = cleanTasks(config);
 config.scripts.dest = resolve(__dirname, config.scripts.dest);
-const compileScripts = scriptsTask(config.scripts, config.project);
+const compileScripts = scriptsTask(config.scripts, config.base);
 config.styles.dest = relative(__dirname, config.styles.dest);
-const compileStyles = stylesTask(config.styles, config.project);
+const compileStyles = stylesTask(config.styles, config.base);
 const processFavicon = faviconTask(config.favicon);
 const processFonts = fontsTask(config.fonts);
 const processIcons = iconsTask(config.icons);
 const processImages = imagesTask(config.images);
-const startServer = serveTask(browserSyncConfig);
+const startServer = serveTask(config.browserSync);
 const processTranslations = translationTask(config.translation);
-const processVendorScripts = vendorScriptsTask(config.vendorScripts, config.project);
+const processVendorScripts = vendorScriptsTask(config.vendorScripts, config.base);
 
 // task('watch', function (this: any) {
 task('watch', () => {
@@ -81,7 +88,7 @@ task('assets', series(
     processIcons,
     processImages,
     processTranslations,
-		processVendorScripts,
+    processVendorScripts,
   ),
 ));
 
@@ -106,3 +113,10 @@ task('serve', startServer);
 task('styles', compileStyles);
 task('translate', processTranslations);
 task('vendorScripts', processVendorScripts);
+
+function getConfig() {
+  if (typeof localConfig === 'object') {
+    return Object.assign(mainConfig, localConfig)
+  }
+  return mainConfig;
+}

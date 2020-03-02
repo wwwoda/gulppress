@@ -2,7 +2,6 @@
 import execa from 'execa';
 import findUp from 'find-up';
 import fs from 'fs';
-import handlebars from 'handlebars';
 import inquirer from 'inquirer';
 import nodeEnvFile from 'node-env-file';
 import ora from 'ora';
@@ -11,7 +10,11 @@ import * as yargs from 'yargs';
 
 import { Pkg, ProjectConfig, ProjectDependencies } from './interfaces';
 import {
-  copyFileSync,
+  compileAndWriteHandlebarsTemplate,
+  directoryExists,
+  fileExists,
+  getDirectories,
+  getFormattedPath,
   installWithYarn,
   isYarn,
   resolveCWD,
@@ -36,11 +39,23 @@ class SetupResolve {
 export class Setup {
   private cwd: string;
 
+  private templatesPath = '../templates';
+
+  private fileNameGulpFile: string = 'gulpfile.ts';
+
+  private fileNameConfig: string = 'gulppress.config.ts';
+
+  private fileNameLocalConfig: string = 'gulppress.local.config.ts';
+
+  private fileNamePackageJson: string = 'package.json';
+
+  private fileNameGitIgnore: string = '.gitignore';
+
   private gulpFilePath: string;
 
   private configPath: string;
 
-  private browserSyncConfigPath: string;
+  private localConfigPath: string;
 
   private packageJsonPath: string;
 
@@ -50,11 +65,11 @@ export class Setup {
 
   constructor(cwd: string) {
     this.cwd = cwd;
-    this.gulpFilePath = path.resolve(this.cwd, 'gulpfile.ts');
-    this.configPath = path.resolve(this.cwd, 'gulppress.config.ts');
-    this.browserSyncConfigPath = path.resolve(this.cwd, 'gulppress.browsersync.ts');
-    this.packageJsonPath = path.resolve(this.cwd, 'package.json');
-    this.gitIgnorePath = path.resolve(this.cwd, '.gitignore');
+    this.gulpFilePath = path.resolve(this.cwd, this.fileNameGulpFile);
+    this.configPath = path.resolve(this.cwd, this.fileNameConfig);
+    this.localConfigPath = path.resolve(this.cwd, this.fileNameLocalConfig);
+    this.packageJsonPath = path.resolve(this.cwd, this.fileNamePackageJson);
+    this.gitIgnorePath = path.resolve(this.cwd, this.fileNameGitIgnore);
 
     try {
       // eslint-disable-next-line global-require
@@ -71,14 +86,14 @@ export class Setup {
   }
 
   public async startSetup(): Promise<SetupResolve> {
-    this.getThemePaths();
-    if (!argv.force && this.isConfigPresent()) {
+    if (!argv.force && fileExists(this.configPath)) {
       return Promise.reject(
         new Error('Project is already set up.'),
       );
     }
 
     const projectConfig = await this.initConfig();
+    this.compileAndWriteFiles(projectConfig);
     const deps = this.configureScripts(projectConfig);
     this.editGitIgnoreFile();
     return Promise.resolve(
@@ -91,26 +106,39 @@ export class Setup {
       const config: ProjectConfig = {
         appName: answers.appName,
         type: answers.type,
-        basePath: answers.basePath ? this.getFormattedPath(answers.basePath) : './',
+        basePath: answers.basePath ? getFormattedPath(answers.basePath, this.cwd) : './',
         projectURL: answers.projectURL,
         dotEnv: answers.dotEnv,
         dotEnvPath: answers.dotEnvPath
-          ? this.getFormattedPath(path.relative(this.cwd, answers.dotEnvPath)) : '',
+          ? getFormattedPath(path.relative(this.cwd, answers.dotEnvPath), this.cwd) : '',
         createSeparateMinFiles: answers.createSeparateMinFiles,
         useYarn: answers.useYarn,
         environment: answers.dotEnvPath ? null : "\n    environment: 'development',",
         srcStructure: this.getSrcStructure(answers.structure),
         distStructure: this.getDistStructure(answers.structure),
       };
-      const configTemplate = this.getHandlebarsTemplateString('../templates/gulppress.config.ts.hbs');
-      const browserSyncConfigTemplate = this.getHandlebarsTemplateString('../templates/gulppress.browsersync.ts.hbs');
-      const configCompiler = handlebars.compile(configTemplate);
-      const browserSyncConfigCompiler = handlebars.compile(browserSyncConfigTemplate);
-      fs.writeFileSync(this.configPath, configCompiler(config));
-      fs.writeFileSync(this.browserSyncConfigPath, browserSyncConfigCompiler(config));
-      copyFileSync(path.resolve(__dirname, '../templates/gulpfile.ts.hbs'), this.gulpFilePath);
+
       return config;
     });
+  }
+
+  private compileAndWriteFiles(config: ProjectConfig): void {
+    compileAndWriteHandlebarsTemplate(
+      `${this.templatesPath}/${this.fileNameConfig}.hbs`,
+      this.configPath,
+      config,
+    );
+
+    compileAndWriteHandlebarsTemplate(
+      `${this.templatesPath}/${this.fileNameLocalConfig}.hbs`,
+      this.localConfigPath,
+      config,
+    );
+
+    compileAndWriteHandlebarsTemplate(
+      `${this.templatesPath}/${this.fileNameGulpFile}.hbs`,
+      this.gulpFilePath,
+    );
   }
 
   private async getUserInput(): Promise<inquirer.Answers> {
@@ -122,10 +150,10 @@ export class Setup {
         message: 'Type of WordPress Project (plugin or theme)',
         choices: ['bedrock', 'plugin', 'theme'],
         default: () => {
-          if (this.fileExists(path.resolve(this.cwd, './style.css'))) {
+          if (fileExists(path.resolve(this.cwd, './style.css'))) {
             return 'theme';
           }
-          if (this.pathExists(path.resolve(this.cwd, './web/app/themes'))) {
+          if (directoryExists(path.resolve(this.cwd, './web/app/themes'))) {
             return 'bedrock';
           }
           return 'plugin';
@@ -138,7 +166,7 @@ export class Setup {
         message: answers => `Name of WordPress ${answers.type === 'plugin' ? 'plugin' : 'theme'}`,
         default: (answers: inquirer.Answers): string => {
           if (answers.type === 'bedrock') {
-            const themes = this.getDirectories('./web/app/themes');
+            const themes = getDirectories('./web/app/themes');
             if (themes.length > 0) {
               return themes[0];
             }
@@ -149,30 +177,30 @@ export class Setup {
           return this.pkg.name || '';
         },
       },
-      {
-        type: 'list',
-        name: 'basePathList',
-        message: 'Select your theme\'s directory',
-        when: answers => answers.type !== 'plugin',
-        default: (answers: inquirer.Answers): string => {
-          const paths = this.getThemePaths();
-          const themes = this.getDirectories('./web/app/themes');
-          if (themes.length > 0) {
-            if (themes.includes(answers.appName)) {
-              return `./web/app/themes/${answers.appName}`;
-            }
-            return `./web/app/themes/${themes[0]}`;
-          }
-          return './';
-        },
-      },
+      // {
+      //   type: 'list',
+      //   name: 'basePathList',
+      //   message: 'Select your theme\'s directory',
+      //   when: answers => answers.type !== 'plugin',
+      //   default: (answers: inquirer.Answers): string => {
+      //     const paths = this.getThemePaths();
+      //     const themes = getDirectories('./web/app/themes');
+      //     if (themes.length > 0) {
+      //       if (themes.includes(answers.appName)) {
+      //         return `./web/app/themes/${answers.appName}`;
+      //       }
+      //       return `./web/app/themes/${themes[0]}`;
+      //     }
+      //     return './';
+      //   },
+      // },
       {
         type: 'input',
         name: 'basePath',
         message: 'Select your theme\'s directory',
         when: answers => answers.type === 'bedrock',
         default: (answers: inquirer.Answers): string => {
-          const themes = this.getDirectories('./web/app/themes');
+          const themes = getDirectories('./web/app/themes');
           if (themes.length > 0) {
             if (themes.includes(answers.appName)) {
               return `./web/app/themes/${answers.appName}`;
@@ -262,17 +290,17 @@ export class Setup {
   }
 
   private getThemePaths(): [] {
-    if (this.fileExists(path.resolve(this.cwd, './style.css'))) {
+    if (fileExists(path.resolve(this.cwd, './style.css'))) {
       console.log('inside theme');
-    } else if (this.pathExists(path.resolve(this.cwd, './web/app/themes'))) {
+    } else if (directoryExists(path.resolve(this.cwd, './web/app/themes'))) {
       console.log('inside bedrock root');
-      console.log(this.getDirectories('./web/app/themes'));
-    } else if (this.pathExists(path.resolve(this.cwd, './wp-content'))) {
+      console.log(getDirectories('./web/app/themes'));
+    } else if (directoryExists(path.resolve(this.cwd, './wp-content'))) {
       console.log('wproot');
-      console.log(this.getDirectories('./wp-content/themes'));
+      console.log(getDirectories('./wp-content/themes'));
     } else {
       console.log('find');
-      const dirs = this.getDirectories('./');
+      const dirs = getDirectories('./');
       const filteredDirs = dirs.filter((value: string) => ![
         '.git',
         'node_modules',
@@ -281,7 +309,7 @@ export class Setup {
       ].includes(value));
       console.log(filteredDirs);
       filteredDirs.forEach(element => {
-        console.log(this.getDirectories(`./${element}`));
+        console.log(getDirectories(`./${element}`));
       });
     }
 
@@ -291,25 +319,27 @@ export class Setup {
   public configureScripts(
     projectConfig: ProjectConfig,
   ): ProjectDependencies {
-    const packageFileData: Pkg = this.fileExists(this.packageJsonPath)
+    const packageFileData: Pkg = fileExists(this.packageJsonPath)
       // eslint-disable-next-line global-require
       ? require(this.packageJsonPath)
       : {
         name: projectConfig.appName,
       };
     const scripts: { [x: string]: string } = {
-      assets: 'gulp assets',
-      'assets:favicon': 'gulp favicon',
-      'assets:fonts': 'gulp fonts',
-      'assets:icons': 'gulp icons',
-      'assets:images': 'gulp images',
-      'assets:vendor': 'gulp vendorScripts',
-      build: 'gulp build',
-      'build:css': 'gulp styles',
-      'build:js': 'gulp scripts',
-      clean: 'gulp clean',
       dev: 'gulp dev --watch=scripts,styles',
+      build: 'gulp build --env=production',
+      'build:styles': 'gulp styles --env=production',
+      'build:scripts': 'gulp scripts --env=production',
+      clean: 'gulp clean',
+      assets: 'gulp assets',
+      favicon: 'gulp favicon',
+      fonts: 'gulp fonts',
+      icons: 'gulp icons',
+      images: 'gulp images',
+      scripts: 'gulp scripts',
+      styles: 'gulp styles',
       translate: 'gulp translate',
+      vendorScripts: 'gulp vendorScripts',
     };
     if (!packageFileData.scripts) {
       packageFileData.scripts = {};
@@ -353,8 +383,8 @@ export class Setup {
   }
 
   public editGitIgnoreFile() {
-    const content = 'gulppress.browsersync.ts';
-    if (this.fileExists(this.gitIgnorePath)) {
+    const content =`\n${this.fileNameLocalConfig}`;
+    if (fileExists(this.gitIgnorePath)) {
       fs.appendFileSync(
         this.gitIgnorePath,
         content,
@@ -365,59 +395,6 @@ export class Setup {
         content,
       );
     }
-  }
-
-  private fileExists(filePath: string): boolean {
-    try {
-      return fs.statSync(filePath).isFile();
-    } catch (error) {
-      if (error.code === 'ENOENT') {
-        return false;
-      }
-
-      throw error;
-    }
-  }
-
-  private pathExists(directoryPath: string): boolean {
-    try {
-      return fs.statSync(directoryPath).isDirectory();
-    } catch (error) {
-      if (error.code === 'ENOENT') {
-        return false;
-      }
-
-      throw error;
-    }
-  }
-
-  private getDirectories(source: string): string[] {
-    return fs.readdirSync(source, { withFileTypes: true })
-      .filter(dirent => dirent.isDirectory())
-      .map(dirent => dirent.name);
-  }
-
-  private isConfigPresent(): boolean {
-    return this.fileExists(this.configPath);
-  }
-
-  private getFormattedPath(sourcePath): string {
-    const relativePath = path.relative(this.cwd, sourcePath);
-    if (!relativePath.startsWith('./') || !relativePath.startsWith('../')) {
-      return `./${relativePath}`;
-    }
-    return relativePath;
-  }
-
-  private getHandlebarsTemplateString(templatePath: string): string {
-    return fs
-      .readFileSync(
-        path.resolve(
-          __dirname,
-          templatePath,
-        ),
-      )
-      .toString();
   }
 
   private getSrcStructure(structure: string): string {

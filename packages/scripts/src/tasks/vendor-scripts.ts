@@ -15,14 +15,14 @@ import gulpress from '../interfaces';
 import { isDevEnv } from '../utils';
 
 export default function (
-  config: gulpress.VendorScriptsConfig,
-  project: gulpress.ProjectConfig,
+  vendorScriptsConfig: gulpress.VendorScriptsConfig,
+  baseConfig: gulpress.BaseConfig,
 ): TaskFunction {
   const vendorSources: string[] = [];
   const vendorVersions: {} = {};
 
   function processVendorScriptsConfig(cb: CallableFunction) {
-    config.packages.forEach(vendorScript => {
+    vendorScriptsConfig.packages.forEach(vendorScript => {
       const packagePath = path.resolve(process.cwd(), './node_modules', `./${vendorScript}`);
       try {
         if (fs.statSync(packagePath).isFile()) {
@@ -37,7 +37,7 @@ export default function (
             if (fs.statSync(srcPath).isFile()) {
               vendorSources.push(srcPath);
               vendorVersions[path.basename(srcPath)] = pkg.version;
-              if (project.createSeparateMinFiles === true) {
+              if (baseConfig.createSeparateMinFiles === true) {
                 vendorVersions[`${path.basename(srcPath)}.min`] = pkg.version;
               }
             }
@@ -61,31 +61,31 @@ export default function (
       return null;
     }
 
-    if (project.createSeparateMinFiles === true) {
+    if (baseConfig.createSeparateMinFiles === true) {
       return src(vendorSources)
-        .pipe(dest(config.dest))
+        .pipe(dest(vendorScriptsConfig.dest))
         .pipe(rename({ suffix: '.min' }))
         .pipe(uglify({
           output: {
             comments: saveLicense,
           },
         }))
-        .pipe(dest(config.dest));
+        .pipe(dest(vendorScriptsConfig.dest));
     }
 
     return src(vendorSources)
-      .pipe(gulpif(!isDevEnv(), uglify({
+      .pipe(gulpif(!isDevEnv(baseConfig), uglify({
         output: {
           comments: saveLicense,
         },
       })))
-      .pipe(dest(config.dest));
+      .pipe(dest(vendorScriptsConfig.dest));
   }
 
   function createVendorScriptsVersionFile(cb: CallableFunction) {
     if (vendorSources.length > 0 && vendorVersions !== {}) {
       const content = JSON.stringify(vendorVersions, null, 2);
-      const filePath = path.resolve(config.dest, './.assets.json');
+      const filePath = path.resolve(vendorScriptsConfig.dest, './.assets.json');
       try {
         fs.writeFileSync(filePath, content);
       } catch (error) {

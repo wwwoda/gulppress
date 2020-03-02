@@ -24,10 +24,9 @@ const browserList = [
   'last 2 Opera versions',
 ];
 
-const config: gulppress.MainConfig = {
-  // Project Options
-  project: {
-    basePath,
+const mainConfig: gulppress.ProjectConfig = {
+  // Base Options
+  base: {
     envFile: '{{dotEnvPath}}',{{#if environment}}{{{environment}}}{{/if}}
     createSeparateMinFiles: {{createSeparateMinFiles}},
   },
@@ -98,4 +97,6 @@ const config: gulppress.MainConfig = {
   },
 };
 
-export default config;
+export default mainConfig;
+
+export { basePath };

@@ -1,0 +1,34 @@
+/**
+ * GulpPress Local Config File.
+ *
+ * This local config file allows you to overwrite the project configuration
+ * from the main config file gulppress.config.ts
+ *
+ * For example if multiple people are working on this project they can define
+ * their prefererred Browser Sync settings here without interfering with others'
+ * settings.
+ *
+ * You could also use this config file to test configurations locally without
+ * any risks.
+ *
+ * DO NOT COMMIT THIS FILE!!!
+ *
+ * @package GulpPress
+ */
+
+import { gulppress } from '@gulppress/scripts';
+
+// Uncomment to access basePath variable from your main project config
+// import basePath from 'gulppress.config';
+
+const localConfig: gulppress.ProjectConfig = {
+	browserSync: {
+		ghostMode: false,
+		injectChanges: true,
+		open: true,
+		proxy: '{{projectURL}}',
+		tunnel: false,
+	},
+};
+
+module.exports = localConfig;

@@ -1,6 +1,7 @@
 import * as yargs from 'yargs';
 import fancyLog from 'fancy-log';
 import browserSync from 'browser-sync';
+import gulpress from './interfaces';
 
 const { argv } = yargs;
 
@@ -14,11 +15,11 @@ interface WatchersStatus {
   [propName: string]: boolean;
 }
 
-export function getEnv(): string {
+export function getEnv(env?: string): string {
   if (typeof argv.env === 'string' && ['development', 'staging', 'production'].indexOf(argv.env) !== -1) {
     return argv.env;
   }
-  return process.env.WP_ENV || 'production';
+  return process.env.WP_ENV || env || 'production';
 }
 
 export function getWatchers(): WatchersStatus {
@@ -46,8 +47,9 @@ export function getWatchers(): WatchersStatus {
   return watchers;
 }
 
-export function isDevEnv(): boolean {
-  if (getEnv() === 'development') {
+export function isDevEnv(config: gulpress.BaseConfig): boolean {
+  const env = config.environment || '';
+  if (getEnv(env) === 'development') {
     return true;
   }
 
