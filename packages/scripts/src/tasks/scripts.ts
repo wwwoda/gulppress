@@ -1,4 +1,5 @@
 import { reload } from 'browser-sync';
+import fancyLog from 'fancy-log';
 import glob from 'glob';
 import {
   dest,
@@ -17,7 +18,6 @@ import { getWatchers, isDevEnv } from '../utils';
 
 const HashAssetsPlugin = require('hash-assets-webpack-plugin');
 const named = require('vinyl-named');
-const notify = require('gulp-notify');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 export default function (
@@ -122,7 +122,14 @@ export default function (
         if (getWatchers().scripts === true) {
           reload();
         }
-      }).on('error', notify.onError('Error: <%= error.message %>')))
+      // }).on('error', notify.onError('Error: <%= error.message %>')))
+      }).on('error', (error: Error) => {
+        fancyLog.error(error.message);
+        if (!isDevEnv()) {
+          console.log('Aborting scripts build task due to error!');
+          process.exit(1);
+        }
+      }))
       .pipe(dest(config.dest));
   }
 

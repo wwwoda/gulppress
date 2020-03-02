@@ -1,5 +1,6 @@
 import findUp from 'find-up';
 import fs from 'fs';
+import handlebars from 'handlebars';
 import path from 'path';
 import { ProjectConfig } from './interfaces';
 
@@ -63,4 +64,55 @@ export function installWithYarn(config: ProjectConfig | undefined): boolean {
     return config.useYarn || isYarn();
   }
   return isYarn();
+}
+
+export function getFileContent(filePath: string): string {
+  return fs
+    .readFileSync(
+      path.resolve(
+        __dirname,
+        filePath,
+      ),
+    )
+    .toString();
+}
+
+export function fileExists(filePath: string): boolean {
+  try {
+    return fs.statSync(filePath).isFile();
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      return false;
+    }
+
+    throw error;
+  }
+}
+
+export function directoryExists(directoryPath: string): boolean {
+  try {
+    return fs.statSync(directoryPath).isDirectory();
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      return false;
+    }
+
+    throw error;
+  }
+}
+
+export function getDirectories(source: string): string[] {
+  return fs.readdirSync(source, { withFileTypes: true })
+    .filter(dirent => dirent.isDirectory())
+    .map(dirent => dirent.name);
+}
+
+export function compileAndWriteHandlebarsTemplate(
+  source: string,
+  target: string,
+  config?: ProjectConfig,
+) {
+  const templateContent = getFileContent(source);
+  const compiler = handlebars.compile(templateContent);
+  fs.writeFileSync(target, compiler(config));
 }

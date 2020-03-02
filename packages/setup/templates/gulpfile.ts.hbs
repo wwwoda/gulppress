@@ -20,9 +20,20 @@ import {
   stylesTask,
   translationTask,
 	vendorScriptsTask,
+	BrowserSyncConfig,
 } from '@gulppress/scripts';
 import config from './gulppress.config';
-import browserSyncConfig from './gulppress.browsersync';
+let browserSyncConfig: BrowserSyncConfig = {
+	ghostMode: false,
+	injectChanges: true,
+	open: true,
+	tunnel: false,
+};
+try {
+  browserSyncConfig = require('./gulppress.browsersync');
+} catch(e) {
+  console.log('browsersync config not found');
+}
 
 const nodeEnvFile = require('node-env-file');
 if (typeof config.project.envFile === 'string' && config.project.envFile) {

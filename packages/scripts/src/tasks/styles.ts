@@ -7,6 +7,7 @@ import {
   TaskFunction,
 } from 'gulp';
 import csso from 'gulp-csso';
+import fancyLog from 'fancy-log';
 import filter from 'gulp-filter';
 import gulpif from 'gulp-if';
 import plumber from 'gulp-plumber';
@@ -44,7 +45,13 @@ export default function (
         .pipe(plumber())
         .pipe(gulpif(isDevEnv(), sourcemaps.init()))
         .pipe(
-          sass(config.sassOptions).on('error', sass.logError),
+          sass(config.sassOptions).on('error', function (this: any, error: Error) {
+            sass.logError.call(this, error);
+            if (!isDevEnv()) {
+              console.log('Aborting styles build task due to error!');
+              process.exit(1);
+            }
+          }),
         )
         .pipe(postcss([...postcssPlugins, ...config.postcssPlugins]))
         .pipe(gulpif(isDevEnv(), sourcemaps.write({ includeContent: false })))
@@ -63,7 +70,13 @@ export default function (
       .pipe(plumber())
       .pipe(gulpif(isDevEnv(), sourcemaps.init()))
       .pipe(
-        sass(config.sassOptions).on('error', sass.logError),
+        sass(config.sassOptions).on('error', function (this: any, error: Error) {
+          sass.logError.call(this, error);
+          if (!isDevEnv()) {
+            console.log('Aborting styles build task due to error!');
+            process.exit(1);
+          }
+        }),
       )
       .pipe(postcss(postcssPlugins))
       .pipe(gulpif(!isDevEnv(), csso()))
