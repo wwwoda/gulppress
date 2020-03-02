@@ -1,4 +1,4 @@
-// import chalk from 'chalk';
+import { paramCase } from 'change-case';
 import execa from 'execa';
 import fs from 'fs';
 import inquirer from 'inquirer';
@@ -38,37 +38,37 @@ class SetupResolve {
 type ProjectType = 'bedrock' | 'theme' | 'plugin';
 
 export class Setup {
+  private configPath: string;
+
   private cwd: string;
 
-  private templatesPath = '../templates';
-
-  private fileNameGulpFile: string = 'gulpfile.ts';
+  private enterManuallyText = '>>> Enter manually';
 
   private fileNameConfig: string = 'gulppress.config.ts';
+
+  private fileNameGitIgnore: string = '.gitignore';
+
+  private fileNameGulpFile: string = 'gulpfile.ts';
 
   private fileNameLocalConfig: string = 'gulppress.local.config.ts';
 
   private fileNamePackageJson: string = 'package.json';
 
-  private fileNameGitIgnore: string = '.gitignore';
+  private gitIgnorePath: string;
 
   private gulpFilePath: string;
-
-  private configPath: string;
 
   private localConfigPath: string;
 
   private packageJsonPath: string;
 
-  private gitIgnorePath: string;
-
-  private themePaths: string[];
+  private pkg: Pkg;
 
   private projectType: ProjectType;
 
-  private pkg: Pkg;
+  private templatesPath = '../templates';
 
-  private enterManuallyText = '>>> Enter manually';
+  private themePaths: string[];
 
   constructor(cwd: string) {
     this.cwd = cwd;
@@ -111,32 +111,22 @@ export class Setup {
     );
   }
 
-  private getProjectType(themePaths: string[]): ProjectType {
-    if (themePaths.length > 0) {
-      if (themePaths[0].indexOf('web/app/themes') > -1) {
-        return 'bedrock';
-      }
-      if (themePaths[0].indexOf('wp-content/themes') > -1) {
-        return 'theme';
-      }
-    }
-
-    return 'theme';
-  }
-
   private async initConfig(): Promise<ProjectConfig> {
     return this.getUserInput().then(answers => {
       const config: ProjectConfig = {
-        appName: answers.appName,
+        projectName: answers.projectName,
+        domain: paramCase(answers.projectName),
         type: answers.type,
-        basePath: answers.basePath ? getFormattedPath(answers.basePath, this.cwd) : './',
+        basePath: answers.basePath
+          ? getFormattedPath(answers.basePath, this.cwd) : './',
         projectURL: answers.projectURL,
         dotEnv: answers.dotEnv,
         dotEnvPath: answers.dotEnvPath
           ? getFormattedPath(path.relative(this.cwd, answers.dotEnvPath), this.cwd) : '',
         createSeparateMinFiles: answers.createSeparateMinFiles,
         useYarn: answers.useYarn,
-        environment: answers.dotEnvPath ? null : "\n    environment: 'development',",
+        environment: answers.dotEnvPath
+          ? null : "\n    environment: 'development',",
         srcStructure: this.getSrcStructure(answers.structure),
         distStructure: this.getDistStructure(answers.structure),
       };
@@ -177,7 +167,7 @@ export class Setup {
       // Name of project
       {
         type: 'input',
-        name: 'appName',
+        name: 'projectName',
         message: 'Project name',
         default: this.pkg.name || '',
       },
@@ -202,7 +192,7 @@ export class Setup {
         name: 'dotEnv',
         message: 'Do you use a working environment file (eg .env)?',
         when: answers => answers.type !== 'plugin',
-        default: answers => answers.type === 'bedrock',
+        default: (answers: inquirer.Answers) => answers.type === 'bedrock',
       },
       {
         type: 'input',
@@ -215,19 +205,17 @@ export class Setup {
           }
           return 'No working environment file found at this location. Please create one to continue.';
         },
-        default: () => './.env',
+        default: './.env',
       },
       {
         type: 'input',
         name: 'projectURL',
         message: 'URL of your local WordPress site',
         when: answers => answers.type !== 'plugin',
-        default: (answers: inquirer.Answers): string => {
-          if (answers.dotEnvPath) {
-            if (fs.existsSync(answers.dotEnvPath)) {
-              nodeEnvFile(answers.dotEnvPath, { raise: false });
-              return process.env.WP_HOME || '';
-            }
+        default: (answers: inquirer.Answers) => {
+          if (answers.dotEnvPath && fs.existsSync(answers.dotEnvPath)) {
+            nodeEnvFile(answers.dotEnvPath, { raise: false });
+            return process.env.WP_HOME || '';
           }
           return '';
         },
@@ -266,12 +254,93 @@ export class Setup {
     return inquirer.prompt(questions);
   }
 
+  public configureScripts(
+    projectConfig: ProjectConfig,
+  ): ProjectDependencies {
+    const packageFileData: Pkg = fileExists(this.packageJsonPath)
+      // eslint-disable-next-line global-require
+      ? require(this.packageJsonPath)
+      : { name: projectConfig.domain };
+    const scripts: { [x: string]: string } = {
+      dev: 'gulp dev --watch=scripts,styles',
+      build: 'gulp build --env=production',
+      'build:styles': 'gulp styles --env=production',
+      'build:scripts': 'gulp scripts --env=production',
+      clean: 'gulp clean',
+      assets: 'gulp assets',
+      favicon: 'gulp favicon',
+      fonts: 'gulp fonts',
+      icons: 'gulp icons',
+      images: 'gulp images',
+      scripts: 'gulp scripts',
+      styles: 'gulp styles',
+      translate: 'gulp translate',
+      vendorScripts: 'gulp vendorScripts',
+    };
+    if (!packageFileData.scripts) {
+      packageFileData.scripts = {};
+    }
+    Object.keys(scripts).forEach(script => {
+      if (
+        packageFileData.scripts
+        && packageFileData.scripts[script] != null
+        && packageFileData.scripts[script] !== scripts[script]
+      ) {
+        packageFileData.scripts[`${script}-backup`] = packageFileData.scripts[script];
+        packageFileData.scripts[script] = scripts[script];
+      } else if (packageFileData.scripts) {
+        packageFileData.scripts[script] = scripts[script];
+      }
+    });
+
+    const dependencies: string[] = [];
+    const devDependencies: string[] = [];
+    if (
+      !packageFileData.devDependencies
+      || !packageFileData.devDependencies['@gulppress/scripts']
+    ) {
+      devDependencies.push('@gulppress/scripts');
+    }
+
+    fs.writeFileSync(
+      this.packageJsonPath,
+      JSON.stringify(packageFileData, null, 2),
+    );
+
+    return { dependencies, devDependencies };
+  }
+
+  public editGitIgnoreFile() {
+    const content = `\n${this.fileNameLocalConfig}`;
+    if (fileExists(this.gitIgnorePath)) {
+      fs.appendFileSync(
+        this.gitIgnorePath,
+        content,
+      );
+    } else {
+      fs.writeFileSync(
+        this.gitIgnorePath,
+        content,
+      );
+    }
+  }
+
+  private getProjectType(themePaths: string[]): ProjectType {
+    if (themePaths.length > 0) {
+      if (themePaths[0].indexOf('web/app/themes') > -1) {
+        return 'bedrock';
+      }
+      if (themePaths[0].indexOf('wp-content/themes') > -1) {
+        return 'theme';
+      }
+    }
+
+    return 'theme';
+  }
+
   private getThemePaths(cwd: string, subDirectory?: string): string[] {
     const themePaths: string[] = [];
     let typePath = '';
-    // if (fileExists(path.resolve(cwd, './style.css'))) {
-    //   return ['./'];
-    // }
 
     if (directoryExists(path.resolve(subDirectory || cwd, './web/app/themes'))) {
       typePath = 'web/app/themes';
@@ -289,9 +358,6 @@ export class Setup {
       if (themeNames.length > 1) {
         themePaths.push(...themeNames.map(theme => `${searchPath}/${theme}`));
       }
-      // else {
-      //   themePaths.push('./');
-      // }
       return themePaths;
     }
 
@@ -314,92 +380,7 @@ export class Setup {
       });
     }
 
-    // if (themePaths.length < 1) {
-    //   themePaths.push('./');
-    // }
-
     return themePaths;
-  }
-
-  public configureScripts(
-    projectConfig: ProjectConfig,
-  ): ProjectDependencies {
-    const packageFileData: Pkg = fileExists(this.packageJsonPath)
-      // eslint-disable-next-line global-require
-      ? require(this.packageJsonPath)
-      : {
-        name: projectConfig.appName,
-      };
-    const scripts: { [x: string]: string } = {
-      dev: 'gulp dev --watch=scripts,styles',
-      build: 'gulp build --env=production',
-      'build:styles': 'gulp styles --env=production',
-      'build:scripts': 'gulp scripts --env=production',
-      clean: 'gulp clean',
-      assets: 'gulp assets',
-      favicon: 'gulp favicon',
-      fonts: 'gulp fonts',
-      icons: 'gulp icons',
-      images: 'gulp images',
-      scripts: 'gulp scripts',
-      styles: 'gulp styles',
-      translate: 'gulp translate',
-      vendorScripts: 'gulp vendorScripts',
-    };
-    if (!packageFileData.scripts) {
-      packageFileData.scripts = {};
-    }
-    Object.keys(scripts).forEach(script => {
-      // Take a backup if the script is already defined
-      // and doesn't equal to what we would like it to have.
-      if (
-        packageFileData.scripts
-        && packageFileData.scripts[script] != null
-        && packageFileData.scripts[script] !== scripts[script]
-      ) {
-        packageFileData.scripts[`${script}-backup`] = packageFileData.scripts[script];
-        packageFileData.scripts[script] = scripts[script];
-      } else if (packageFileData.scripts) {
-        // Otherwise define our own
-        packageFileData.scripts[script] = scripts[script];
-      }
-    });
-
-    const dependencies: string[] = [];
-    const devDependencies: string[] = [];
-
-    // If @wpackio/scripts is not already present in devDependencies
-    // Then push it. We do this check, because @wpackio/cli might already
-    // have installed it during scaffolding.
-    if (
-      !packageFileData.devDependencies
-      || !packageFileData.devDependencies['@gulppress/scripts']
-    ) {
-      devDependencies.push('@gulppress/scripts');
-    }
-
-    // Write it
-    fs.writeFileSync(
-      this.packageJsonPath,
-      JSON.stringify(packageFileData, null, 2),
-    );
-
-    return { dependencies, devDependencies };
-  }
-
-  public editGitIgnoreFile() {
-    const content = `\n${this.fileNameLocalConfig}`;
-    if (fileExists(this.gitIgnorePath)) {
-      fs.appendFileSync(
-        this.gitIgnorePath,
-        content,
-      );
-    } else {
-      fs.writeFileSync(
-        this.gitIgnorePath,
-        content,
-      );
-    }
   }
 
   private getSrcStructure(structure: string): string {

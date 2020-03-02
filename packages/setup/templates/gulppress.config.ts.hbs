@@ -81,11 +81,11 @@ const mainConfig: gulppress.ProjectConfig = {
   // Translation optione
   translation: {
     src: `${basePath}/**/*.php`,
-    dest: `${basePath}/languages/{{appName}}.pot`,
+    dest: `${basePath}/languages/{{domain}}.pot`,
     // Available gulp-wp-pot options: https://github.com/wp-pot/wp-pot#options
     wpPotOptions: {
-      domain: '{{appName}}',
-      package: '{{appName}}',
+      domain: '{{domain}}',
+      package: '{{projectName}}',
     },
   },
   // Vendor scripts options

@@ -15,7 +15,8 @@ export interface Pkg {
 }
 
 export interface ProjectConfig {
-  appName: string;
+  projectName: string;
+  domain: string;
   type: string;
   basePath: string;
   projectURL: string;
