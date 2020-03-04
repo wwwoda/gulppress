@@ -117,8 +117,7 @@ export class Setup {
         projectName: answers.projectName,
         domain: paramCase(answers.projectName),
         type: answers.type,
-        basePath: answers.basePath
-          ? getFormattedPath(answers.basePath, this.cwd) : './',
+        basePath: this.extractCorrectBasePathFromAnswers(answers),
         projectURL: answers.projectURL,
         dotEnv: answers.dotEnv,
         dotEnvPath: answers.dotEnvPath
@@ -404,6 +403,11 @@ export class Setup {
       default:
         return '/assets/dist';
     }
+  }
+
+  private extractCorrectBasePathFromAnswers(answers: inquirer.Answers): string {
+    const p = answers.basePathList || answers.basePath;
+    return p ? getFormattedPath(p, this.cwd) : './';
   }
 }
 
