@@ -156,7 +156,6 @@ export class Setup {
 
   private async getUserInput(): Promise<inquirer.Answers> {
     const questions: inquirer.QuestionCollection = [
-      // Type of project
       {
         type: 'list',
         name: 'type',
@@ -164,7 +163,6 @@ export class Setup {
         choices: ['theme', 'plugin', 'bedrock'],
         default: () => this.projectType,
       },
-      // Name of project
       {
         type: 'input',
         name: 'projectName',
