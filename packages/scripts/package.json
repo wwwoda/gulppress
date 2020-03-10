@@ -5,7 +5,7 @@
   "respository": "https://github.com/wwwoda/gulppress",
   "homepage": "https://github.com/wwwoda/gulppress",
   "author": "Woda Digital",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "engines": {
     "node": ">=8.9.0"
   },
