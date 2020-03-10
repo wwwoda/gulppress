@@ -226,10 +226,10 @@ export class Setup {
             name: `./assets/src and ./assets/dist folders inside the ${answers.type === 'plugin' ? 'plugin' : 'theme'} root`,
             value: 'assets',
           }, {
-            name: `./src and ./dist folders inside the ${answers.type === 'plugin' ? 'plugin' : 'theme'} root`,
-            value: 'split',
+            name: `./src and ./assets folders inside the ${answers.type === 'plugin' ? 'plugin' : 'theme'} root`,
+            value: 'plugin',
           }, {
-            name: `Specific source folders (./scripts, ./styles, ./images, ...) and ./dist folder, all located inside the ${answers.type === 'plugin' ? 'plugin' : 'theme'} root`,
+            name: `Specific source folders (./scripts, ./styles, ./images, ...) and ./assets folder, all located inside the ${answers.type === 'plugin' ? 'plugin' : 'theme'} root`,
             value: 'root',
           },
         ],
@@ -308,18 +308,22 @@ export class Setup {
   }
 
   public editGitIgnoreFile() {
-    const content = `\n${this.fileNameLocalConfig}`;
-    if (fileExists(this.gitIgnorePath)) {
-      fs.appendFileSync(
-        this.gitIgnorePath,
-        content,
-      );
-    } else {
-      fs.writeFileSync(
-        this.gitIgnorePath,
-        content,
-      );
+    const gitignoreContent = this.getGitIgnoreContent();
+    const newContent = `\n# GulpPress Local Config\n${this.fileNameLocalConfig}`;
+    if (gitignoreContent.includes(this.fileNameLocalConfig)) {
+      return;
     }
+    fs.writeFileSync(
+      this.gitIgnorePath,
+      gitignoreContent + newContent,
+    );
+  }
+
+  private getGitIgnoreContent(): string {
+    if (fileExists(this.gitIgnorePath)) {
+      return fs.readFileSync(this.gitIgnorePath).toString().trim();
+    }
+    return '';
   }
 
   private getProjectType(themePaths: string[]): ProjectType {
@@ -382,9 +386,7 @@ export class Setup {
 
   private getSrcStructure(structure: string): string {
     switch (structure) {
-      case 'assets':
-        return '/assets/src';
-      case 'split':
+      case 'plugin':
         return '/src';
       case 'root':
         return '';
@@ -395,11 +397,9 @@ export class Setup {
 
   private getDistStructure(structure: string): string {
     switch (structure) {
-      case 'assets':
-        return '/assets/dist';
-      case 'split':
       case 'root':
-        return '/dist';
+      case 'plugin':
+        return '/assets';
       default:
         return '/assets/dist';
     }
