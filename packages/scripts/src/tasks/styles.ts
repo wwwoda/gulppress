@@ -1,7 +1,9 @@
+import chalk from 'chalk';
 import autoprefixer from 'autoprefixer';
 import browserSync from 'browser-sync';
 import {
   dest,
+  parallel,
   series,
   src,
   TaskFunction,
@@ -26,11 +28,29 @@ const postcssEasingGradients = require('postcss-easing-gradients');
 const { stream } = browserSync;
 
 export default function (
-  stylesConfig: gulpress.StylesConfig,
-  baseConfig: gulpress.BaseConfig,
+  stylesConfig: gulpress.StylesConfig | false | null | undefined,
+  baseConfig: gulpress.BaseConfig | false | null | undefined,
 ): TaskFunction {
+  if (!stylesConfig) {
+    return parallel(cb => {
+      console.log(chalk.red('Styles configuration missing!'));
+      cb();
+    });
+  }
+
+  const autoprefixerOptions = stylesConfig && stylesConfig.autoprefixerOptions;
+  const customPostcssPlugins = (stylesConfig && stylesConfig.postcssPlugins) || [];
+  const sassOptions = (stylesConfig && stylesConfig.sassOptions) || {
+    includePaths: [
+      'node_modules',
+    ],
+    outputStyle: 'expanded',
+  };
+  const stylesDest = (stylesConfig && stylesConfig.dest) || '';
+  const stylesSrc = (stylesConfig && stylesConfig.src) || '';
+
   const postcssPlugins = [
-    autoprefixer(stylesConfig.autoprefixerOptions),
+    autoprefixer(autoprefixerOptions),
     cssVariables({
       preserve: true,
     }),
@@ -47,49 +67,49 @@ export default function (
   }
 
   function compileStyles(): NodeJS.ReadWriteStream {
-    if (baseConfig.createSeparateMinFiles === true) {
-      return src(stylesConfig.src)
+    if (baseConfig && baseConfig.createSeparateMinFiles === true) {
+      return src(stylesSrc)
         .pipe(plumber())
         .pipe(gulpif(isDevEnv(baseConfig), sourcemaps.init()))
         .pipe(
-          sass(stylesConfig.sassOptions).on('error', sassErrorHandler),
+          sass(sassOptions).on('error', sassErrorHandler),
         )
-        .pipe(postcss([...postcssPlugins, ...stylesConfig.postcssPlugins]))
+        .pipe(postcss([...postcssPlugins, ...customPostcssPlugins]))
         .pipe(gulpif(isDevEnv(baseConfig), sourcemaps.write({ includeContent: false })))
-        .pipe(dest(stylesConfig.dest))
+        .pipe(dest(stylesDest))
         .pipe(filter('**/*.css'))
         .pipe(stream())
         .pipe(rename({ suffix: '.min' }))
         .pipe(gulpif(isDevEnv(baseConfig), sourcemaps.init({ loadMaps: true })))
         .pipe(csso())
         .pipe(gulpif(isDevEnv(baseConfig), sourcemaps.write('./')))
-        .pipe(dest(stylesConfig.dest))
+        .pipe(dest(stylesDest))
         .pipe(stream());
     }
 
-    return src(stylesConfig.src)
+    return src(stylesSrc)
       .pipe(plumber())
       .pipe(gulpif(isDevEnv(baseConfig), sourcemaps.init()))
       .pipe(
-        sass(stylesConfig.sassOptions).on('error', sassErrorHandler),
+        sass(sassOptions).on('error', sassErrorHandler),
       )
       .pipe(postcss(postcssPlugins))
       .pipe(gulpif(!isDevEnv(baseConfig), csso()))
       .pipe(gulpif(isDevEnv(baseConfig), sourcemaps.write('.')))
-      .pipe(dest(stylesConfig.dest))
+      .pipe(dest(stylesDest))
       .pipe(filter('**/*.css'))
       .pipe(stream());
   }
 
   function bustCache(): NodeJS.ReadWriteStream {
-    return src(`${stylesConfig.dest}/*.css`)
+    return src(`${stylesDest}/*.css`)
       .pipe(
         gulpBuster({
           fileName: '.assets.json',
-          relativePath: stylesConfig.dest,
+          relativePath: stylesDest,
         }),
       )
-      .pipe(dest(stylesConfig.dest));
+      .pipe(dest(stylesDest));
   }
 
   return series(compileStyles, bustCache);

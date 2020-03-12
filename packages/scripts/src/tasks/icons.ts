@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import {
   dest,
   parallel,
@@ -12,9 +13,20 @@ import rename from 'gulp-rename';
 
 import gulpress from '../interfaces';
 
-export default function (config: gulpress.IconsConfig): TaskFunction {
+export default function (config: gulpress.IconsConfig | false | null | undefined): TaskFunction {
+  if (!config) {
+    return parallel(cb => {
+      console.log(chalk.red('Icons configuration missing!'));
+      cb();
+    });
+  }
+
+  const iconsDest = (config && config.dest) || '';
+  const iconsDestPhpPartials = (config && config.destPhpPartials) || '';
+  const iconsSrc = (config && config.src) || '';
+
   function processIcons(): NodeJS.ReadWriteStream {
-    return src(config.src)
+    return src(iconsSrc)
       .pipe(
         cache(
           imagemin([
@@ -31,13 +43,13 @@ export default function (config: gulpress.IconsConfig): TaskFunction {
           ]),
         ),
       )
-      .pipe(changed(config.dest))
-      .pipe(dest(config.dest))
-      .pipe(gulpif(!!config.destPhpPartials, rename({
+      .pipe(changed(iconsDest))
+      .pipe(dest(iconsDest))
+      .pipe(gulpif(!!iconsDestPhpPartials, rename({
         extname: '.php',
       })))
-      .pipe(gulpif(!!config.destPhpPartials, changed(config.destPhpPartials || config.dest)))
-      .pipe(gulpif(!!config.destPhpPartials, dest(config.destPhpPartials || config.dest)));
+      .pipe(gulpif(!!iconsDestPhpPartials, changed(iconsDestPhpPartials || iconsDest)))
+      .pipe(gulpif(!!iconsDestPhpPartials, dest(iconsDestPhpPartials || iconsDest)));
   }
 
   return parallel(processIcons);

@@ -1,6 +1,8 @@
+import chalk from 'chalk';
 import fs from 'fs';
 import {
   dest,
+  parallel,
   series,
   src,
   TaskFunction,
@@ -15,14 +17,24 @@ import gulpress from '../interfaces';
 import { isDevEnv } from '../utils';
 
 export default function (
-  vendorScriptsConfig: gulpress.VendorScriptsConfig,
-  baseConfig: gulpress.BaseConfig,
+  vendorScriptsConfig: gulpress.VendorScriptsConfig | false | null | undefined,
+  baseConfig: gulpress.BaseConfig | false | null | undefined,
 ): TaskFunction {
+  if (!vendorScriptsConfig) {
+    return parallel(cb => {
+      console.log(chalk.red('Vendor scripts configuration missing!'));
+      cb();
+    });
+  }
+
+  const packages = (vendorScriptsConfig && vendorScriptsConfig.packages) || [];
+  const vendorDest = (vendorScriptsConfig && vendorScriptsConfig.dest) || '';
+  const createSeparateMinFiles = (baseConfig && baseConfig.createSeparateMinFiles) || false;
   const vendorSources: string[] = [];
   const vendorVersions: {} = {};
 
   function processVendorScriptsConfig(cb: CallableFunction) {
-    vendorScriptsConfig.packages.forEach(vendorScript => {
+    packages.forEach(vendorScript => {
       const packagePath = path.resolve(process.cwd(), './node_modules', `./${vendorScript}`);
       try {
         if (fs.statSync(packagePath).isFile()) {
@@ -37,7 +49,7 @@ export default function (
             if (fs.statSync(srcPath).isFile()) {
               vendorSources.push(srcPath);
               vendorVersions[path.basename(srcPath)] = pkg.version;
-              if (baseConfig.createSeparateMinFiles === true) {
+              if (baseConfig && baseConfig.createSeparateMinFiles === true) {
                 vendorVersions[`${path.basename(srcPath)}.min`] = pkg.version;
               }
             }
@@ -61,16 +73,16 @@ export default function (
       return null;
     }
 
-    if (baseConfig.createSeparateMinFiles === true) {
+    if (createSeparateMinFiles === true) {
       return src(vendorSources)
-        .pipe(dest(vendorScriptsConfig.dest))
+        .pipe(dest(vendorDest))
         .pipe(rename({ suffix: '.min' }))
         .pipe(uglify({
           output: {
             comments: saveLicense,
           },
         }))
-        .pipe(dest(vendorScriptsConfig.dest));
+        .pipe(dest(vendorDest));
     }
 
     return src(vendorSources)
@@ -79,13 +91,13 @@ export default function (
           comments: saveLicense,
         },
       })))
-      .pipe(dest(vendorScriptsConfig.dest));
+      .pipe(dest(vendorDest));
   }
 
   function createVendorScriptsVersionFile(cb: CallableFunction) {
-    if (vendorSources.length > 0 && vendorVersions !== {}) {
+    if (vendorDest && vendorSources.length > 0 && vendorVersions !== {}) {
       const content = JSON.stringify(vendorVersions, null, 2);
-      const filePath = path.resolve(vendorScriptsConfig.dest, './.assets.json');
+      const filePath = path.resolve(vendorDest, './.assets.json');
       try {
         fs.writeFileSync(filePath, content);
       } catch (error) {

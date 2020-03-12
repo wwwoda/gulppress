@@ -1,4 +1,7 @@
+/* eslint-disable global-require */
+/* eslint-disable import/no-extraneous-dependencies */
 
+import chalk from 'chalk';
 import { existsSync } from 'fs';
 import {
   parallel,
@@ -8,97 +11,108 @@ import {
 } from 'gulp';
 import { relative, resolve } from 'path';
 import {
-  cleanTasks,
-  faviconTask,
-  fontsTask,
+  getAssetsTasks,
+  getBuildTasks,
+  getDevTasks,
+  getCleanTask,
+  getFaviconTask,
+  getFontsTask,
+  getIconsTask,
+  getImagesTask,
+  getScriptsTask,
+  getServeTask,
+  getStylesTask,
+  getTranslationTask,
+  getVendorScriptsTask,
   getWatchers,
-  iconsTask,
-  imagesTask,
-  scriptsTask,
-  serveTask,
-  stylesTask,
-  translationTask,
-  vendorScriptsTask,
+  gulppress,
 } from '@gulppress/scripts';
 import mainConfig from './gulppress.config';
 
-let localConfig = null;
-try {
-  localConfig = require('./gulppress.local.config');
-} catch(e) {
-  console.log('Optional local config not found');
-}
+// try loading gulppress.local.config.ts
+const getLocalConfig = (): gulppress.ProjectConfig => {
+  try {
+    return require('./gulppress.local.config');
+  } catch (e) {
+    console.log(chalk.yellow('Optional local config not found'));
+  }
+  return {};
+};
+const localConfig = getLocalConfig();
 
+// merge the main and local configs
+const getConfig = (): gulppress.ProjectConfig => {
+  if (typeof localConfig === 'object') {
+    return { ...mainConfig, ...localConfig };
+  }
+  return mainConfig || {};
+};
 const config = getConfig();
 
-const nodeEnvFile = require('node-env-file');
-if (typeof config.base.envFile === 'string' && config.base.envFile) {
+// Load the env file if one is present
+if (config.base && typeof config.base.envFile === 'string' && config.base.envFile) {
+  const nodeEnvFile = require('node-env-file');
   try {
     if (existsSync(config.base.envFile)) {
       nodeEnvFile(config.base.envFile, { raise: false });
     }
   } catch (err) {
-    console.error('.env file not found, please check your configuration');
+    console.error(chalk.bgRed('.env file not found, please check your configuration'));
   }
 }
 
-const clean = cleanTasks(config);
-config.scripts.dest = resolve(__dirname, config.scripts.dest);
-const compileScripts = scriptsTask(config.scripts, config.base);
-config.styles.dest = relative(__dirname, config.styles.dest);
-const compileStyles = stylesTask(config.styles, config.base);
-const processFavicon = faviconTask(config.favicon);
-const processFonts = fontsTask(config.fonts);
-const processIcons = iconsTask(config.icons);
-const processImages = imagesTask(config.images);
-const startServer = serveTask(config.browserSync);
-const processTranslations = translationTask(config.translation);
-const processVendorScripts = vendorScriptsTask(config.vendorScripts, config.base);
+// Make sure the scripts dest path is absolute
+if (config.scripts && config.scripts.dest) {
+  config.scripts.dest = resolve(__dirname, config.scripts.dest);
+}
+// Make sure the styles dest path is relative to the current path
+if (config.styles && config.styles.dest) {
+  config.styles.dest = relative(__dirname, config.styles.dest);
+}
+
+const assetsTasks = getAssetsTasks(config);
+const buildTasks = getBuildTasks(config);
+const devTasks = getDevTasks(config);
+const clean = getCleanTask(config);
+const compileScripts = getScriptsTask(config);
+const compileStyles = getStylesTask(config);
+const processFavicon = getFaviconTask(config);
+const processFonts = getFontsTask(config);
+const processIcons = getIconsTask(config);
+const processImages = getImagesTask(config);
+const startServer = getServeTask(config);
+const processTranslations = getTranslationTask(config);
+const processVendorScripts = getVendorScriptsTask(config);
 
 // task('watch', function (this: any) {
 task('watch', () => {
   const watchers = getWatchers();
-  if (watchers.styles) {
-    watch(config.styles.watch, series(compileStyles));
-  }
-  if (watchers.icons) {
-    watch(config.icons.src, series(processIcons));
-  }
-  if (watchers.images) {
-    watch(config.images.src, series(processImages));
+  if (config) {
+    if (watchers.styles && config.styles && config.styles.watch) {
+      watch(config.styles.watch, series(compileStyles));
+    }
+    if (watchers.icons && config.icons && config.icons.src) {
+      watch(config.icons.src, series(processIcons));
+    }
+    if (watchers.images && config.images && config.images.src) {
+      watch(config.images.src, series(processImages));
+    }
   }
 });
 
 task('dev', series(
   clean.scriptsStyles,
-  parallel(
-    compileScripts,
-    compileStyles,
-    processVendorScripts,
-    'watch',
-    startServer,
-  ),
+  parallel(devTasks),
 ));
 
 task('assets', series(
   clean.assets,
-  parallel(
-    processFavicon,
-    processFonts,
-    processIcons,
-    processImages,
-    processTranslations,
-    processVendorScripts,
-  ),
+  parallel(assetsTasks),
 ));
 
 task('build', series(
   clean.all,
-  parallel(
-    compileScripts,
-    compileStyles,
-    'assets',
-  ),
+  parallel(buildTasks),
 ));
 
 task('default', series('build'));
@@ -113,10 +127,3 @@ task('serve', startServer);
 task('styles', compileStyles);
 task('translate', processTranslations);
 task('vendorScripts', processVendorScripts);
-
-function getConfig() {
-  if (typeof localConfig === 'object') {
-    return Object.assign(mainConfig, localConfig)
-  }
-  return mainConfig;
-}

@@ -31,14 +31,14 @@ const mainConfig: gulppress.ProjectConfig = {
     createSeparateMinFiles: {{createSeparateMinFiles}},
   },
   // Script Options
-  scripts: {
+  scripts: {{#if_feature "scripts"}}{
     src: `${basePath}{{srcStructure}}/scripts/*.+(js|ts)`,
     dest: `${basePath}{{distStructure}}/scripts`,
     watch: `${basePath}{{distStructure}}/scripts/**/*.js`,
     targets: browserList,
-  },
+  }{{else}}null{{/if_feature}},
   // Style options
-  styles: {
+  styles: {{#if_feature "styles"}}{
     src: `${basePath}{{srcStructure}}/styles/*.scss`,
     dest: `${basePath}{{distStructure}}/styles`,
     watch: `${basePath}{{srcStructure}}/styles/**/*.scss`,
@@ -54,32 +54,32 @@ const mainConfig: gulppress.ProjectConfig = {
       ],
       outputStyle: 'expanded'
     },
-  },
+  }{{else}}null{{/if_feature}},
   // Favicon options
-  favicon: {
+  favicon: {{#if_feature "favicon"}}{
     src: `${basePath}{{srcStructure}}/favicon/favicon.+(ico|png)`,
     dest: `${basePath}{{distStructure}}/favicon`,
-  },
+  }{{else}}null{{/if_feature}},
   // Font options
-  fonts: {
+  fonts: {{#if_feature "fonts"}}{
     srcPath: `${basePath}{{srcStructure}}/fonts`,
     src: `${basePath}{{srcStructure}}/fonts/*.+(ttf|woff|woff2)`,
     dest: `${basePath}{{distStructure}}/fonts`,
-  },
+  }{{else}}null{{/if_feature}},
   // Icon options
-  icons: {
+  icons: {{#if_feature "icons"}}{
     src: `${basePath}{{srcStructure}}/icons/**/*.svg`,
     dest: `${basePath}{{distStructure}}/icons`,
     destPhpPartials: `${basePath}/template-parts/svg-icons`,
-  },
+  }{{else}}null{{/if_feature}},
   // Image options
-  images: {
+  images: {{#if_feature "images"}}{
     src: `${basePath}{{srcStructure}}/images/**/*.+(jpg|jpeg|png|svg)`,
     dest: `${basePath}{{distStructure}}/images`,
     destPhpPartials: `${basePath}/template-parts/svg-images`,
-  },
+  }{{else}}null{{/if_feature}},
   // Translation optione
-  translation: {
+  translation: {{#if_feature "translation"}}{
     src: `${basePath}/**/*.php`,
     dest: `${basePath}/languages/{{domain}}.pot`,
     // Available gulp-wp-pot options: https://github.com/wp-pot/wp-pot#options
@@ -87,14 +87,14 @@ const mainConfig: gulppress.ProjectConfig = {
       domain: '{{domain}}',
       package: '{{projectName}}',
     },
-  },
+  }{{else}}null{{/if_feature}},
   // Vendor scripts options
-  vendorScripts: {
+  vendorScripts: {{#if_feature "vendorScripts"}}{
     packages: [
 			'jquery'
 		],
     dest: `${basePath}{{distStructure}}/scripts/vendor`,
-  },
+  }{{else}}null{{/if_feature}},
 };
 
 export default mainConfig;

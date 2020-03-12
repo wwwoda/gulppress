@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import {
   dest,
   parallel,
@@ -13,9 +14,20 @@ import rename from 'gulp-rename';
 
 import gulpress from '../interfaces';
 
-export default function (config: gulpress.ImagesConfig): TaskFunction {
+export default function (config: gulpress.ImagesConfig | false | null | undefined): TaskFunction {
+  if (!config) {
+    return parallel(cb => {
+      console.log(chalk.red('Images configuration missing!'));
+      cb();
+    });
+  }
+
+  const imagesDest = (config && config.dest) || '';
+  const imagesDestPhpPartials = (config && config.destPhpPartials) || '';
+  const imagesSrc = (config && config.src) || '';
+
   function processImages(): NodeJS.ReadWriteStream {
-    return src(config.src)
+    return src(imagesSrc)
       .pipe(
         cache(
           imagemin([
@@ -42,14 +54,14 @@ export default function (config: gulpress.ImagesConfig): TaskFunction {
         ),
       )
       .on('error', e => { console.log(e); })
-      .pipe(changed(config.dest))
-      .pipe(dest(config.dest))
-      .pipe(gulpif(!!config.destPhpPartials, filter(file => /svg$/.test(file.path))))
-      .pipe(gulpif(!!config.destPhpPartials, rename({
+      .pipe(changed(imagesDest))
+      .pipe(dest(imagesDest))
+      .pipe(gulpif(!!imagesDestPhpPartials, filter(file => /svg$/.test(file.path))))
+      .pipe(gulpif(!!imagesDestPhpPartials, rename({
         extname: '.php',
       })))
-      .pipe(gulpif(!!config.destPhpPartials, changed(config.destPhpPartials || config.dest)))
-      .pipe(gulpif(!!config.destPhpPartials, dest(config.destPhpPartials || config.dest)));
+      .pipe(gulpif(!!imagesDestPhpPartials, changed(imagesDestPhpPartials || imagesDest)))
+      .pipe(gulpif(!!imagesDestPhpPartials, dest(imagesDestPhpPartials || imagesDest)));
   }
 
   return parallel(processImages);

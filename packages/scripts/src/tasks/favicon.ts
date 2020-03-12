@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import {
   dest,
   parallel,
@@ -14,19 +15,31 @@ const ico = require('gulp-to-ico');
 
 const pngFilter = filter('**/*.png');
 
-export default function (config: gulpress.BasicTaskConfig): TaskFunction {
+export default function (
+  config: gulpress.BasicTaskConfig | false | null | undefined,
+): TaskFunction {
+  if (!config) {
+    return parallel(cb => {
+      console.log(chalk.red('Favicon configuration missing!'));
+      cb();
+    });
+  }
+
+  const faviconSrc = (config && config.src) || '';
+  const faviconDest = (config && config.dest) || '';
+
   function faviconToIco(): NodeJS.ReadWriteStream {
-    return src(config.src)
+    return src(faviconSrc)
       .pipe(pngFilter)
       .pipe(ico('favicon.ico', {
         resize: true,
         sizes: [32],
       }))
-      .pipe(dest(config.dest));
+      .pipe(dest(faviconDest));
   }
 
   function faviconToImages(): NodeJS.ReadWriteStream {
-    return src(config.src)
+    return src(faviconSrc)
       .pipe(responsive({
         'favicon.png': [{
           width: 16,
@@ -59,7 +72,7 @@ export default function (config: gulpress.BasicTaskConfig): TaskFunction {
         silent: true,
       }))
       .pipe(imagemin())
-      .pipe(dest(config.dest));
+      .pipe(dest((faviconDest)));
   }
 
   return parallel(faviconToIco, faviconToImages);

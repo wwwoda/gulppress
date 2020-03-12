@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import { reload } from 'browser-sync';
 import fancyLog from 'fancy-log';
 import glob from 'glob';
@@ -21,27 +22,50 @@ const named = require('vinyl-named');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 export default function (
-  scriptConfig: gulpress.ScriptConfig,
-  baseConfig: gulpress.BaseConfig,
+  scriptConfig: gulpress.ScriptConfig | false | null | undefined,
+  baseConfig: gulpress.BaseConfig | false | null | undefined,
 ): TaskFunction {
+  if (!scriptConfig) {
+    return parallel(cb => {
+      console.log(chalk.red('Scripts configuration missing!'));
+      cb();
+    });
+  }
+
+  const scriptSrc = (scriptConfig && scriptConfig.src) || '';
+  const scriptDest = (scriptConfig && scriptConfig.dest) || '';
+  const targets = (scriptConfig && scriptConfig.targets) || [
+    '> 1%',
+    'ie >= 11',
+    'last 1 Android versions',
+    'last 1 ChromeAndroid versions',
+    'last 2 Chrome versions',
+    'last 2 Firefox versions',
+    'last 2 Safari versions',
+    'last 2 iOS versions',
+    'last 2 Edge versions',
+    'last 2 Opera versions',
+  ];
+
   const source: { [key: string]: string } = {};
-  if (Array.isArray(scriptConfig.src)) {
-    scriptConfig.src.forEach((entry: string) => {
+
+  if (Array.isArray(scriptSrc)) {
+    scriptSrc.forEach((entry: string) => {
       glob.sync(entry).forEach((result: string) => {
         const extension = path.extname(result);
         const file = path.basename(result, extension);
         source[file] = result;
-        if (baseConfig.createSeparateMinFiles === true) {
+        if (baseConfig && baseConfig.createSeparateMinFiles === true) {
           source[`${file}.min`] = result;
         }
       });
     });
-  } else {
-    glob.sync(scriptConfig.src).forEach((result: string) => {
+  } else if (scriptSrc) {
+    glob.sync(scriptSrc).forEach((result: string) => {
       const extension = path.extname(result);
       const file = path.basename(result, extension);
       source[file] = result;
-      if (baseConfig.createSeparateMinFiles === true) {
+      if (baseConfig && baseConfig.createSeparateMinFiles === true) {
         source[`${file}.min`] = result;
       }
     });
@@ -50,7 +74,7 @@ export default function (
   const webpackConfig: Configuration = {
     watch: getWatchers().scripts === true,
     output: {
-      path: scriptConfig.dest,
+      path: scriptDest,
       filename: '[name].js',
     },
     module: {
@@ -64,7 +88,7 @@ export default function (
               [
                 '@babel/preset-env',
                 {
-                  targets: scriptConfig.targets,
+                  targets,
                 },
               ],
               '@babel/typescript',
@@ -100,7 +124,7 @@ export default function (
   };
 
   if (!isDevEnv(baseConfig)) {
-    const uglifyJsPluginConfig = baseConfig.createSeparateMinFiles === true ? { include: /\.min\.js$/ } : {};
+    const uglifyJsPluginConfig = baseConfig && baseConfig.createSeparateMinFiles === true ? { include: /\.min\.js$/ } : {};
     webpackConfig.optimization = {
       minimize: true,
       minimizer: [new UglifyJsPlugin(uglifyJsPluginConfig)],
@@ -108,7 +132,7 @@ export default function (
   }
 
   function compileScripts(): NodeJS.ReadWriteStream {
-    return src(scriptConfig.src)
+    return src(scriptSrc)
       .pipe(plumber())
       .pipe(named())
       .pipe(webpackStream(webpackMerge(
@@ -129,7 +153,7 @@ export default function (
           process.exit(1);
         }
       }))
-      .pipe(dest(scriptConfig.dest));
+      .pipe(dest(scriptDest));
   }
 
   return parallel(compileScripts);

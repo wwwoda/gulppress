@@ -20,6 +20,7 @@ export interface ProjectConfig {
   type: string;
   basePath: string;
   projectURL: string;
+  features: string[];
   dotEnv: boolean;
   dotEnvPath: string;
   createSeparateMinFiles: boolean;

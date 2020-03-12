@@ -1,6 +1,7 @@
 import { paramCase } from 'change-case';
 import execa from 'execa';
 import fs from 'fs';
+import handlebars from 'handlebars';
 import inquirer from 'inquirer';
 import nodeEnvFile from 'node-env-file';
 import ora from 'ora';
@@ -119,6 +120,7 @@ export class Setup {
         type: answers.type,
         basePath: this.extractCorrectBasePathFromAnswers(answers),
         projectURL: answers.projectURL,
+        features: answers.features,
         dotEnv: answers.dotEnv,
         dotEnvPath: answers.dotEnvPath
           ? getFormattedPath(path.relative(this.cwd, answers.dotEnvPath), this.cwd) : '',
@@ -135,6 +137,14 @@ export class Setup {
   }
 
   private compileAndWriteFiles(config: ProjectConfig): void {
+    // eslint-disable-next-line func-names
+    handlebars.registerHelper('if_feature', function (this: any, feature: string, options): boolean {
+      if (config.features.includes(feature)) {
+        return options.fn(this);
+      }
+      return options.inverse(this);
+    });
+
     compileAndWriteHandlebarsTemplate(
       `${this.templatesPath}/${this.fileNameConfig}.hbs`,
       this.configPath,
@@ -183,6 +193,51 @@ export class Setup {
           && (answers.basePathList === this.enterManuallyText
           || !answers.basePathList),
         default: './',
+      },
+      {
+        type: 'checkbox',
+        name: 'features',
+        message: 'Select tasks GulpPress should take care of',
+        pageSize: 99,
+        choices: answers => [
+          {
+            name: 'Scripts',
+            value: 'scripts',
+            checked: true,
+          }, {
+            name: 'Styles',
+            value: 'styles',
+            checked: true,
+          }, {
+            name: 'Browsersync test server',
+            value: 'browserSync',
+            checked: answers.type !== 'plugin',
+          }, {
+            name: 'Favicon',
+            value: 'favicon',
+            checked: answers.type !== 'plugin',
+          }, {
+            name: 'Fonts',
+            value: 'fonts',
+            checked: answers.type !== 'plugin',
+          }, {
+            name: 'Icons',
+            value: 'icons',
+            checked: answers.type !== 'plugin',
+          }, {
+            name: 'Images',
+            value: 'images',
+            checked: answers.type !== 'plugin',
+          }, {
+            name: 'Translations',
+            value: 'translations',
+            checked: answers.type !== 'plugin',
+          }, {
+            name: 'Vendor Scripts',
+            value: 'vendorScripts',
+            checked: answers.type !== 'plugin',
+          },
+        ],
       },
       {
         type: 'confirm',

@@ -47,8 +47,8 @@ export function getWatchers(): WatchersStatus {
   return watchers;
 }
 
-export function isDevEnv(config: gulpress.BaseConfig): boolean {
-  const env = config.environment || '';
+export function isDevEnv(config: gulpress.BaseConfig | false | null | undefined): boolean {
+  const env = (config && config.environment) || '';
   if (getEnv(env) === 'development') {
     return true;
   }

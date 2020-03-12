@@ -11,23 +11,56 @@ import vendorScripts from './tasks/vendor-scripts';
 import gulppress from './interfaces';
 
 import {
+  getAssetsTasks,
+  getBuildTasks,
+  getDevTasks,
+  getCleanTask,
+  getFaviconTask,
+  getFontsTask,
+  getIconsTask,
+  getImagesTask,
+  getScriptsTask,
+  getServeTask,
+  getStylesTask,
+  getTranslationTask,
+  getVendorScriptsTask,
+} from './getters';
+
+import {
   getWatchers,
   isDevEnv,
   reload,
 } from './utils';
 
 export {
-  clean as cleanTasks,
-  favicon as faviconTask,
-  fonts as fontsTask,
-  icons as iconsTask,
-  images as imagesTask,
-  scripts as scriptsTask,
-  serve as serveTask,
-  styles as stylesTask,
-  vendorScripts as vendorScriptsTask,
-  translate as translationTask,
+  // Intefaces
   gulppress,
+  // Tasks
+  clean,
+  favicon,
+  fonts,
+  icons,
+  images,
+  scripts,
+  serve,
+  styles,
+  vendorScripts,
+  translate,
+  // Getters
+  getAssetsTasks,
+  getBuildTasks,
+  getDevTasks,
+  getCleanTask,
+  getFaviconTask,
+  getFontsTask,
+  getIconsTask,
+  getImagesTask,
+  getScriptsTask,
+  getServeTask,
+  getStylesTask,
+  getTranslationTask,
+  getVendorScriptsTask,
+  // Utilities
   getWatchers,
   isDevEnv,
   reload,

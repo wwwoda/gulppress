@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import {
   dest,
   parallel,
@@ -13,26 +14,37 @@ import gulpress from '../interfaces';
 const ttf2woff = require('gulp-ttf2woff');
 const ttf2woff2 = require('gulp-ttf2woff2');
 
-export default function (config: gulpress.FontsConfig): TaskFunction {
+export default function (config: gulpress.FontsConfig | false | null | undefined): TaskFunction {
+  if (!config) {
+    return parallel(cb => {
+      console.log(chalk.red('Fonts configuration missing!'));
+      cb();
+    });
+  }
+
+  const fontsDest = (config && config.dest) || '';
+  const fontsSrc = (config && config.src) || '';
+  const fontsSrcPath = (config && config.srcPath) || '';
+
   function createWoffFromTtf(): NodeJS.ReadWriteStream {
-    return src(config.src)
+    return src(fontsSrc)
       .pipe(filter(file => /ttf$/.test(file.path)))
       .pipe(ttf2woff())
-      .pipe(dest(config.srcPath));
+      .pipe(dest(fontsSrcPath));
   }
 
   function createWoff2FromTtf(): NodeJS.ReadWriteStream {
-    return src(config.src)
+    return src(fontsSrc)
       .pipe(filter(file => /ttf$/.test(file.path)))
       .pipe(ttf2woff2())
-      .pipe(dest(config.srcPath));
+      .pipe(dest(fontsSrcPath));
   }
 
   function copyFonts(): NodeJS.ReadWriteStream {
-    return src(config.src)
+    return src(fontsSrc)
       .pipe(filter(file => /(woff|woff2)$/.test(file.path)))
-      .pipe(changed(config.dest))
-      .pipe(dest(config.dest));
+      .pipe(changed(fontsDest))
+      .pipe(dest(fontsDest));
   }
 
   return series(parallel(createWoffFromTtf, createWoff2FromTtf), copyFonts);
