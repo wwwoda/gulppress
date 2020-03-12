@@ -9,17 +9,17 @@ declare namespace gulppress {
   }
 
   export interface ProjectConfig {
-    assets? : string | string[];
-    base?: BaseConfig;
+    assets? : string | string[] | null;
+    base?: BaseConfig | null;
     browserSync?: browserSync.Options
-    scripts?: ScriptConfig;
-    styles?: StylesConfig;
-    favicon?: BasicTaskConfig;
-    fonts?: FontsConfig;
-    images?: ImagesConfig;
-    icons?: IconsConfig;
-    translation?: TranslationConfig;
-    vendorScripts?: VendorScriptsConfig;
+    scripts?: ScriptConfig | null;
+    styles?: StylesConfig | null;
+    favicon?: BasicTaskConfig | null;
+    fonts?: FontsConfig | null;
+    images?: ImagesConfig | null;
+    icons?: IconsConfig | null;
+    translation?: TranslationConfig | null;
+    vendorScripts?: VendorScriptsConfig | null;
   }
 
   export interface BaseConfig {

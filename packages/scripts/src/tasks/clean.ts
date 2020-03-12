@@ -11,7 +11,7 @@ function getDestPaths(config: gulpress.ProjectConfig | false | null | undefined)
   } = {};
   if (config) {
     for (const [key, value] of Object.entries(config || {})) {
-      if (typeof value === 'object' && value.dest) {
+      if (value && value.dest) {
         dests[key] = value.dest;
       }
     }
