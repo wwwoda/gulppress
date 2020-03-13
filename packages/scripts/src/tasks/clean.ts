@@ -49,7 +49,7 @@ export default function (config: gulpress.ProjectConfig | false | null | undefin
     if (dests.fonts) { assetsArray.push(dests.fonts); }
     if (dests.icons) { assetsArray.push(dests.icons); }
     if (dests.images) { assetsArray.push(dests.images); }
-    if (config && typeof config.images === 'object' && config.images.destPhpPartials) {
+    if (config && config.images && config.images.destPhpPartials) {
       assetsArray.push(config.images.destPhpPartials);
     }
 
