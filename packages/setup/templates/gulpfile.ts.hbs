@@ -32,6 +32,7 @@ import mainConfig from './gulppress.config';
 // try loading gulppress.local.config.ts
 const getLocalConfig = (): gulppress.ProjectConfig => {
   try {
+    // eslint-disable-next-line import/no-unresolved
     return require('./gulppress.local.config');
   } catch (e) {
     console.log(chalk.yellow('Optional local config not found'));
