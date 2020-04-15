@@ -1,3 +1,5 @@
+/* eslint-disable import/no-extraneous-dependencies */
+
 /**
  * GulpPress Configuration File
  *
@@ -52,7 +54,7 @@ const mainConfig: gulppress.ProjectConfig = {
       includePaths: [
         'node_modules',
       ],
-      outputStyle: 'expanded'
+      outputStyle: 'expanded',
     },
   }{{else}}null{{/if_feature}},
   // Favicon options
@@ -91,8 +93,8 @@ const mainConfig: gulppress.ProjectConfig = {
   // Vendor scripts options
   vendorScripts: {{#if_feature "vendorScripts"}}{
     packages: [
-			'jquery'
-		],
+      'jquery',
+    ],
     dest: `${basePath}{{distStructure}}/scripts/vendor`,
   }{{else}}null{{/if_feature}},
 };
