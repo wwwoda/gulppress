@@ -229,8 +229,8 @@ export class Setup {
             value: 'images',
             checked: answers.type !== 'plugin',
           }, {
-            name: 'Translations',
-            value: 'translations',
+            name: 'Translation',
+            value: 'translation',
             checked: answers.type !== 'plugin',
           }, {
             name: 'Vendor Scripts',

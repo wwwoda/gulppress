@@ -14,7 +14,7 @@ declare namespace gulppress {
     browserSync?: browserSync.Options
     scripts?: ScriptConfig | null;
     styles?: StylesConfig | null;
-    favicon?: BasicTaskConfig | null;
+    favicon?: FaviconConfig | null;
     fonts?: FontsConfig | null;
     images?: ImagesConfig | null;
     icons?: IconsConfig | null;
@@ -51,6 +51,11 @@ declare namespace gulppress {
     styles? : string | {
       dest: string;
     };
+  }
+
+  export interface FaviconConfig extends BasicTaskConfig {
+    color?: string;
+    sizes?: Array<number | {size: number, rename: string}>;
   }
 
   export interface FontsConfig extends BasicTaskConfig {

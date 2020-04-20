@@ -19,6 +19,7 @@ module.exports = {
     '@typescript-eslint',
 	],
 	rules: {
+    'import/prefer-default-export': 'off',
     'no-console': 'off',
     'no-restricted-syntax': 'off',
     '@typescript-eslint/no-var-requires': 'off',

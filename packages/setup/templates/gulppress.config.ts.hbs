@@ -59,8 +59,19 @@ const mainConfig: gulppress.ProjectConfig = {
   }{{else}}null{{/if_feature}},
   // Favicon options
   favicon: {{#if_feature "favicon"}}{
-    src: `${basePath}{{srcStructure}}/favicon/favicon.+(ico|png)`,
+    src: `${basePath}{{srcStructure}}/favicon/favicon.png`,
     dest: `${basePath}{{distStructure}}/favicon`,
+    sizes: [
+      16, // Old browsers
+      32, // Standard for most desktop browsers
+      { size: 120, rename: 'apple-touch-icon.png' }, // iPhone old
+      128, // Chrome Web Store icon & Small Windows 8 Star Screen Icon*
+      { size: 152, rename: 'apple-touch-icon-ipad.png' }, // iPad
+      { size: 167, rename: 'apple-touch-icon-ipad-retina.png' }, // iPad Retina
+      { size: 180, rename: 'apple-touch-icon-iphone-retina.png' }, // iPhone Retina
+      192, // Google Developer Web App Manifest Recommendation
+      196, // Chrome for Android home screen icon
+    ],
   }{{else}}null{{/if_feature}},
   // Font options
   fonts: {{#if_feature "fonts"}}{
@@ -80,7 +91,7 @@ const mainConfig: gulppress.ProjectConfig = {
     dest: `${basePath}{{distStructure}}/images`,
     destPhpPartials: `${basePath}/template-parts/svg-images`,
   }{{else}}null{{/if_feature}},
-  // Translation optione
+  // Translation options
   translation: {{#if_feature "translation"}}{
     src: `${basePath}/**/*.php`,
     dest: `${basePath}/languages/{{domain}}.pot`,
