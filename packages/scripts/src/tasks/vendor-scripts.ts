@@ -11,10 +11,11 @@ import gulpif from 'gulp-if';
 import rename from 'gulp-rename';
 import uglify from 'gulp-uglify';
 import path from 'path';
-import saveLicense from 'uglify-save-license';
 
 import gulpress from '../interfaces';
 import { isDevEnv } from '../utils';
+
+const saveLicense = require('uglify-save-license');
 
 export default function (
   vendorScriptsConfig: gulpress.VendorScriptsConfig | false | null | undefined,
@@ -31,7 +32,7 @@ export default function (
   const vendorDest = (vendorScriptsConfig && vendorScriptsConfig.dest) || '';
   const createSeparateMinFiles = (baseConfig && baseConfig.createSeparateMinFiles) || false;
   const vendorSources: string[] = [];
-  const vendorVersions: {} = {};
+  const vendorVersions: { [key: string]: string } = {};
 
   function processVendorScriptsConfig(cb: CallableFunction) {
     packages.forEach(vendorScript => {

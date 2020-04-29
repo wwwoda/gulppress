@@ -3,7 +3,6 @@ import execa from 'execa';
 import fs from 'fs';
 import handlebars from 'handlebars';
 import inquirer from 'inquirer';
-import nodeEnvFile from 'node-env-file';
 import ora from 'ora';
 import path from 'path';
 import * as yargs from 'yargs';
@@ -19,6 +18,8 @@ import {
   isYarn,
   resolveCWD,
 } from './utils';
+
+const nodeEnvFile = require('node-env-file');
 
 const { argv } = yargs;
 

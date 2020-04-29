@@ -8,13 +8,12 @@ import {
   TaskFunction,
 } from 'gulp';
 import filter from 'gulp-filter';
-// import gulpif from 'gulp-if';
-import file from 'gulp-file';
 import imagemin from 'gulp-imagemin';
 import gulpress from '../interfaces';
 
 import { FaviconHelper } from '../module/favicon';
 
+const file = require('gulp-file');
 const responsive = require('gulp-responsive');
 const ico = require('gulp-to-ico');
 

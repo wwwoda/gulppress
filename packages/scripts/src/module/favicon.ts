@@ -38,6 +38,12 @@ export type Sizes = Array<Size>;
 
 export type ValidColorString = string & { __validColorString: true };
 
+export type SizeOfResponse = {
+  width: number;
+  height: number;
+  type: string;
+};
+
 const faviconData: FaviconData = [
   {
     size: 16,
@@ -105,9 +111,9 @@ const faviconData: FaviconData = [
 ];
 
 export class FaviconHelper {
-  public size: number;
+  public size!: number;
 
-  public color: string;
+  public color!: string;
 
   private readonly defaultColor = '#ffffff';
 
@@ -120,12 +126,10 @@ export class FaviconHelper {
     display: 'standalone',
   };
 
+
+
   public processImage = through.obj((imageFile, enc, cb) => {
-    const size: {
-      width: number;
-      height: number;
-      type: string;
-    } = sizeOf(imageFile.path);
+    const size: SizeOfResponse = sizeOf(imageFile.path);
     const imageSize = this.setSize(Math.min(size.width, size.height));
     console.log('---');
     console.log(chalk.yellow(`Your favicon base image’s size is ${size.width}x${size.height}`));
@@ -150,7 +154,7 @@ export class FaviconHelper {
     cb(null, imageFile);
   });
 
-  private static isSquare(size): boolean {
+  private static isSquare(size: SizeOfResponse): boolean {
     return size.width === size.height;
   }
 

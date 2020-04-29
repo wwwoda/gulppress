@@ -1,6 +1,7 @@
 import chalk from 'chalk';
 import { reload } from 'browser-sync';
 import fancyLog from 'fancy-log';
+import forkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import glob from 'glob';
 import {
   dest,
@@ -8,8 +9,8 @@ import {
   src,
   TaskFunction,
 } from 'gulp';
-import plumber from 'gulp-plumber';
 import path from 'path';
+import plumber from 'gulp-plumber';
 import { Configuration } from 'webpack';
 import webpackMerge from 'webpack-merge';
 import webpackStream from 'webpack-stream';
@@ -17,9 +18,9 @@ import webpackStream from 'webpack-stream';
 import gulpress from '../interfaces';
 import { getWatchers, isDevEnv } from '../utils';
 
-const HashAssetsPlugin = require('hash-assets-webpack-plugin');
 const named = require('vinyl-named');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const hashAssetsPlugin = require('hash-assets-webpack-plugin');
+const uglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 export default function (
   scriptConfig: gulpress.ScriptConfig | false | null | undefined,
@@ -91,7 +92,7 @@ export default function (
                   targets,
                 },
               ],
-              '@babel/typescript',
+              '@babel/preset-typescript',
             ],
             plugins: [
               '@babel/proposal-class-properties',
@@ -108,7 +109,8 @@ export default function (
       jquery: 'jQuery',
     },
     plugins: [
-      new HashAssetsPlugin({
+      new forkTsCheckerWebpackPlugin(),
+      new hashAssetsPlugin({
         filename: '.assets.json',
         keyTemplate: (filename: string): string|null => {
           const match = /^(.*)\.(?!\.)(.*)$/.exec(filename);
@@ -127,7 +129,7 @@ export default function (
     const uglifyJsPluginConfig = baseConfig && baseConfig.createSeparateMinFiles === true ? { include: /\.min\.js$/ } : {};
     webpackConfig.optimization = {
       minimize: true,
-      minimizer: [new UglifyJsPlugin(uglifyJsPluginConfig)],
+      minimizer: [new uglifyJsPlugin(uglifyJsPluginConfig)],
     };
   }
 

@@ -58,7 +58,7 @@ export default function (
     postcssEasingGradients(),
   ];
 
-  function sassErrorHandler(this: any, error: Error) {
+  function sassErrorHandler(this: any, error: string) {
     sass.logError.call(this, error);
     if (!isDevEnv(baseConfig)) {
       console.log('Aborting styles build task due to error!');
