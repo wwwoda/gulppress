@@ -355,6 +355,13 @@ export class Setup {
       devDependencies.push('@gulppress/scripts');
     }
 
+    if (
+      !packageFileData.devDependencies
+      || !packageFileData.devDependencies['@types/gulp']
+    ) {
+      devDependencies.push('@types/gulp');
+    }
+
     fs.writeFileSync(
       this.packageJsonPath,
       JSON.stringify(packageFileData, null, 2),
