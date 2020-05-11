@@ -27,7 +27,7 @@ export default function (config: gulpress.ImagesConfig | false | null | undefine
   const imagesSrc = (config && config.src) || '';
 
   function processImages(): NodeJS.ReadWriteStream {
-    return src(imagesSrc)
+    return src(imagesSrc, { allowEmpty: true })
       .pipe(
         cache(
           imagemin([

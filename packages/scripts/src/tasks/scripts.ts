@@ -134,7 +134,7 @@ export default function (
   }
 
   function compileScripts(): NodeJS.ReadWriteStream {
-    return src(scriptSrc)
+    return src(scriptSrc, { allowEmpty: true })
       .pipe(plumber())
       .pipe(named())
       .pipe(webpackStream(webpackMerge(

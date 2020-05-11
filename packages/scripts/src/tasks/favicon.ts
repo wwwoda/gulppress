@@ -54,7 +54,7 @@ export default function (
   ];
 
   function faviconToImages(): NodeJS.ReadWriteStream {
-    return src(faviconSrc)
+    return src(faviconSrc, { allowEmpty: true })
       .pipe(faviconHelper.processImage)
       .pipe(responsive({
         'favicon.png': FaviconHelper.getReponsiveConfigs(faviconSizes),
@@ -78,7 +78,7 @@ export default function (
       return src('./');
     }
 
-    return src(faviconSrc)
+    return src(faviconSrc, { allowEmpty: true })
       .pipe(pngFilter)
       .pipe(ico('favicon.ico', {
         resize: true,

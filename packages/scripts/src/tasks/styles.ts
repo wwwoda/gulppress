@@ -68,7 +68,7 @@ export default function (
 
   function compileStyles(): NodeJS.ReadWriteStream {
     if (baseConfig && baseConfig.createSeparateMinFiles === true) {
-      return src(stylesSrc)
+      return src(stylesSrc, { allowEmpty: true })
         .pipe(plumber())
         .pipe(gulpif(isDevEnv(baseConfig), sourcemaps.init()))
         .pipe(
@@ -87,7 +87,7 @@ export default function (
         .pipe(stream());
     }
 
-    return src(stylesSrc)
+    return src(stylesSrc, { allowEmpty: true })
       .pipe(plumber())
       .pipe(gulpif(isDevEnv(baseConfig), sourcemaps.init()))
       .pipe(

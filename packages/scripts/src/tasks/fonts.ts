@@ -27,21 +27,21 @@ export default function (config: gulpress.FontsConfig | false | null | undefined
   const fontsSrcPath = (config && config.srcPath) || '';
 
   function createWoffFromTtf(): NodeJS.ReadWriteStream {
-    return src(fontsSrc)
+    return src(fontsSrc, { allowEmpty: true })
       .pipe(filter(file => /ttf$/.test(file.path)))
       .pipe(ttf2woff())
       .pipe(dest(fontsSrcPath));
   }
 
   function createWoff2FromTtf(): NodeJS.ReadWriteStream {
-    return src(fontsSrc)
+    return src(fontsSrc, { allowEmpty: true })
       .pipe(filter(file => /ttf$/.test(file.path)))
       .pipe(ttf2woff2())
       .pipe(dest(fontsSrcPath));
   }
 
   function copyFonts(): NodeJS.ReadWriteStream {
-    return src(fontsSrc)
+    return src(fontsSrc, { allowEmpty: true })
       .pipe(filter(file => /(woff|woff2)$/.test(file.path)))
       .pipe(changed(fontsDest))
       .pipe(dest(fontsDest));

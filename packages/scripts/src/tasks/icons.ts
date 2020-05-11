@@ -26,7 +26,7 @@ export default function (config: gulpress.IconsConfig | false | null | undefined
   const iconsSrc = (config && config.src) || '';
 
   function processIcons(): NodeJS.ReadWriteStream {
-    return src(iconsSrc)
+    return src(iconsSrc, { allowEmpty: true })
       .pipe(
         cache(
           imagemin([

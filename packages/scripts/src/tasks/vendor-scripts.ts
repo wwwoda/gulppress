@@ -75,7 +75,7 @@ export default function (
     }
 
     if (createSeparateMinFiles === true) {
-      return src(vendorSources)
+      return src(vendorSources, { allowEmpty: true })
         .pipe(dest(vendorDest))
         .pipe(rename({ suffix: '.min' }))
         .pipe(uglify({
@@ -86,7 +86,7 @@ export default function (
         .pipe(dest(vendorDest));
     }
 
-    return src(vendorSources)
+    return src(vendorSources, { allowEmpty: true })
       .pipe(gulpif(!isDevEnv(baseConfig), uglify({
         output: {
           comments: saveLicense,

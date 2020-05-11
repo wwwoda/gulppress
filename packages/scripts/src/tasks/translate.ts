@@ -26,7 +26,7 @@ export default function (
   const translationSrc = (config && config.src) || '';
 
   function translate(): NodeJS.ReadWriteStream {
-    return src(translationSrc)
+    return src(translationSrc, { allowEmpty: true })
       .pipe(sort())
       .pipe(
         wpPot(configWpPotOptions),
