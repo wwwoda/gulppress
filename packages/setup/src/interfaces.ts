@@ -37,7 +37,6 @@ export interface ProjectConfig {
   srcStructure: SrcStructure;
   tasks: Task[]
   type: Type;
-  useYarn: boolean;
 }
 
 export interface ProjectDependencies {

@@ -111,7 +111,6 @@ export class Setup {
         dotEnvPath: answers.dotEnvPath
           ? getFormattedPath(path.relative(this.cwd, answers.dotEnvPath), this.cwd) : '',
         createSeparateMinFiles: answers.createSeparateMinFiles,
-        useYarn: answers.useYarn,
         environment: answers.dotEnvPath
           ? null : "\n    environment: 'development',",
         srcStructure: answers.srcStructure,
@@ -217,7 +216,7 @@ export class Setup {
       case 'dist':
         return '/dist/';
       case 'root':
-        return '';
+        return '/';
       case 'assets':
       default:
         return '/assets/dist/';
@@ -260,19 +259,15 @@ export async function setup(): Promise<void> {
 
   try {
     const done = await initiator.startSetup();
-    const useYarn = installWithYarn(done.projectConfig);
-    const command = useYarn ? 'yarn' : 'npm';
-    const add = useYarn ? 'add' : 'i';
-    const devParam = useYarn ? '--dev' : '-D';
     const spinner = ora({ spinner: 'dots3', discardStdin: false });
 
     if (done && done.devDependencies.length) {
       spinner.start('installing dev dependencies may take a while');
       try {
-        await execa(command, [
-          add,
+        await execa('yarn', [
+          'add',
           ...done.devDependencies,
-          devParam,
+          '--dev',
         ]);
         spinner.succeed('done installing dev dependencies\n');
       } catch (error) {

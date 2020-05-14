@@ -2,10 +2,6 @@
 import fs from 'fs';
 import inquirer from 'inquirer';
 
-import {
-  isYarn,
-} from './utils';
-
 const nodeEnvFile = require('node-env-file');
 
 interface InquirerConfig {
@@ -211,12 +207,6 @@ export class Inquirer {
         name: 'createSeparateMinFiles',
         message: 'Create separate .min files for scripts and styles?',
         default: false,
-      },
-      {
-        type: 'confirm',
-        name: 'useYarn',
-        message: 'Install dependencies with yarn instead of npm (yarn needs to be installed globally)?',
-        when: !isYarn(),
       },
     ];
 
