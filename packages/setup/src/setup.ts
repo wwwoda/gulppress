@@ -119,7 +119,6 @@ export class Setup {
         distStructure: answers.distStructure,
         distStructurePath: this.getDistStructure(answers.distStructure),
       };
-      console.log(config);
 
       return config;
     });
