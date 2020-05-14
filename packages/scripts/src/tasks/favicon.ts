@@ -35,7 +35,7 @@ const defaultFaviconSizes = [
 ];
 
 export default function (
-  config: gulpress.FaviconConfig | false | null | undefined,
+  config: gulpress.FaviconConfig | null | undefined,
 ): TaskFunction {
   if (!config) {
     return parallel(cb => {

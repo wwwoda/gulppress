@@ -18,8 +18,8 @@ import { isDevEnv } from '../utils';
 const saveLicense = require('uglify-save-license');
 
 export default function (
-  vendorScriptsConfig: gulpress.VendorScriptsConfig | false | null | undefined,
-  baseConfig: gulpress.BaseConfig | false | null | undefined,
+  vendorScriptsConfig: gulpress.VendorScriptsConfig | null | undefined,
+  baseConfig: gulpress.BaseConfig,
 ): TaskFunction {
   if (!vendorScriptsConfig) {
     return parallel(cb => {
@@ -58,9 +58,9 @@ export default function (
         }
       } catch (error) {
         if (error.code === 'ENOENT') {
-          console.error(`Error processing vendor package: no such file or directory, stat '${error.path}'`);
+          console.log(chalk.red(`Error processing vendor package: no such file or directory, stat '${error.path}'`));
         } else {
-          console.error('Error processing vendor package');
+          console.log(chalk.red('Error processing vendor package'));
           console.log(error);
         }
       }

@@ -28,8 +28,8 @@ const postcssEasingGradients = require('postcss-easing-gradients');
 const { stream } = browserSync;
 
 export default function (
-  stylesConfig: gulpress.StylesConfig | false | null | undefined,
-  baseConfig: gulpress.BaseConfig | false | null | undefined,
+  stylesConfig: gulpress.StylesConfig | null | undefined,
+  baseConfig: gulpress.BaseConfig,
 ): TaskFunction {
   if (!stylesConfig) {
     return parallel(cb => {

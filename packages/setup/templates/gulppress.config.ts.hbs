@@ -34,17 +34,21 @@ const mainConfig: gulppress.ProjectConfig = {
     createSeparateMinFiles: {{createSeparateMinFiles}},
   },
   // Script Options
-  scripts: {{#if_feature "scripts"}}{
-    src: `${basePath}{{srcStructure}}/scripts/*.+(js|ts)`,
-    dest: `${basePath}{{distStructure}}/scripts`,
-    watch: `${basePath}{{distStructure}}/scripts/**/*.js`,
+  scripts: {{#if_task "scripts"}}{
+    src: `${basePath}{{srcStructurePath}}scripts/*.{{#if_feature "typescript"}}+(js|ts){{else}}js{{/if_feature}}`,
+    dest: `${basePath}{{distStructurePath}}js`,
+    watch: `${basePath}{{distStructurePath}}scripts/**/*.js`,
     targets: browserList,
-  }{{else}}null{{/if_feature}},
+    features: {
+      typescript: {{#if_feature "typescript"}}true{{else}}false{{/if_feature}},
+      typeChecks: {{#if_feature "typescript"}}true{{else}}false{{/if_feature}},
+    },
+  }{{else}}null{{/if_task}},
   // Style options
-  styles: {{#if_feature "styles"}}{
-    src: `${basePath}{{srcStructure}}/styles/*.scss`,
-    dest: `${basePath}{{distStructure}}/styles`,
-    watch: `${basePath}{{srcStructure}}/styles/**/*.scss`,
+  styles: {{#if_task "styles"}}{
+    src: `${basePath}{{srcStructurePath}}styles/*.scss`,
+    dest: `${basePath}{{distStructurePath}}css`,
+    watch: `${basePath}{{srcStructurePath}}styles/**/*.scss`,
     // Available autoprefixer options: https://github.com/postcss/autoprefixer#options
     autoprefixerOptions: {
       overrideBrowserslist: browserList,
@@ -57,34 +61,34 @@ const mainConfig: gulppress.ProjectConfig = {
       ],
       outputStyle: 'expanded',
     },
-  }{{else}}null{{/if_feature}},
+  }{{else}}null{{/if_task}},
   // Favicon options
-  favicon: {{#if_feature "favicon"}}{
-    src: `${basePath}{{srcStructure}}/favicon/favicon.png`,
-    dest: `${basePath}{{distStructure}}/favicon`,
+  favicon: {{#if_task "favicon"}}{
+    src: `${basePath}{{srcStructurePath}}favicon/favicon.png`,
+    dest: `${basePath}{{distStructurePath}}favicon`,
     sizes: [],
-		color: '#ffffff',
-  }{{else}}null{{/if_feature}},
+    color: '#ffffff',
+  }{{else}}null{{/if_task}},
   // Font options
-  fonts: {{#if_feature "fonts"}}{
-    srcPath: `${basePath}{{srcStructure}}/fonts`,
-    src: `${basePath}{{srcStructure}}/fonts/*.+(ttf|woff|woff2)`,
-    dest: `${basePath}{{distStructure}}/fonts`,
-  }{{else}}null{{/if_feature}},
+  fonts: {{#if_task "fonts"}}{
+    srcPath: `${basePath}{{srcStructurePath}}fonts`,
+    src: `${basePath}{{srcStructurePath}}fonts/*.+(ttf|woff|woff2)`,
+    dest: `${basePath}{{distStructurePath}}fonts`,
+  }{{else}}null{{/if_task}},
   // Icon options
-  icons: {{#if_feature "icons"}}{
-    src: `${basePath}{{srcStructure}}/icons/**/*.svg`,
-    dest: `${basePath}{{distStructure}}/icons`,
+  icons: {{#if_task "icons"}}{
+    src: `${basePath}{{srcStructurePath}}icons/**/*.svg`,
+    dest: `${basePath}{{distStructurePath}}icons`,
     destPhpPartials: `${basePath}/template-parts/svg-icons`,
-  }{{else}}null{{/if_feature}},
+  }{{else}}null{{/if_task}},
   // Image options
-  images: {{#if_feature "images"}}{
-    src: `${basePath}{{srcStructure}}/images/**/*.+(jpg|jpeg|png|svg)`,
-    dest: `${basePath}{{distStructure}}/images`,
+  images: {{#if_task "images"}}{
+    src: `${basePath}{{srcStructurePath}}images/**/*.+(jpg|jpeg|png|svg)`,
+    dest: `${basePath}{{distStructurePath}}images`,
     destPhpPartials: `${basePath}/template-parts/svg-images`,
-  }{{else}}null{{/if_feature}},
+  }{{else}}null{{/if_task}},
   // Translation options
-  translation: {{#if_feature "translation"}}{
+  translation: {{#if_task "translation"}}{
     src: `${basePath}/**/*.php`,
     dest: `${basePath}/languages/{{domain}}.pot`,
     // Available gulp-wp-pot options: https://github.com/wp-pot/wp-pot#options
@@ -92,14 +96,14 @@ const mainConfig: gulppress.ProjectConfig = {
       domain: '{{domain}}',
       package: '{{projectName}}',
     },
-  }{{else}}null{{/if_feature}},
+  }{{else}}null{{/if_task}},
   // Vendor scripts options
-  vendorScripts: {{#if_feature "vendorScripts"}}{
+  vendorScripts: {{#if_task "vendorScripts"}}{
     packages: [
       'jquery',
     ],
-    dest: `${basePath}{{distStructure}}/scripts/vendor`,
-  }{{else}}null{{/if_feature}},
+    dest: `${basePath}{{distStructurePath}}js/vendor`,
+  }{{else}}null{{/if_task}},
 };
 
 export default mainConfig;

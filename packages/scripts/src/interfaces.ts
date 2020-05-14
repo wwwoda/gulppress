@@ -10,7 +10,7 @@ declare namespace gulppress {
 
   export interface ProjectConfig {
     assets? : string | string[] | null;
-    base?: BaseConfig | null;
+    base?: BaseConfig;
     browserSync?: browserSync.Options
     scripts?: ScriptConfig | null;
     styles?: StylesConfig | null;
@@ -43,7 +43,7 @@ declare namespace gulppress {
     };
     images? : string | {
       dest: string;
-      destPhpPartials: string;
+      destPhpPartials?: string;
     };
     scripts? : string | {
       dest: string;
@@ -71,38 +71,48 @@ declare namespace gulppress {
   }
 
   export interface ScriptConfig extends BasicTaskConfig {
-    watch: string | Array<string>;
-    targets: string | Array<string> | { [key: string]: string };
+    watch?: string | Array<string>;
+    targets?: Targets;
+    features?: {
+      typescript?: boolean;
+      typeChecks?: boolean;
+    };
   }
 
   export interface StylesConfig extends BasicTaskConfig {
-    watch: string | Array<string>;
-    sassOptions: SassOptions;
-    autoprefixerOptions: autoprefixer.Options;
-    postcssPlugins: [] | Array<CallableFunction>;
+    watch?: string | Array<string>;
+    sassOptions?: SassOptions;
+    autoprefixerOptions?: autoprefixer.Options;
+    postcssPlugins?: [] | Array<CallableFunction>;
   }
 
   export interface TranslationConfig extends BasicTaskConfig {
-    wpPotOptions: {
+    wpPotOptions?: {
       bugReport?: string;
       commentKeyword?: string;
       domain?: string;
-      headers?: { [key: string]: string } | boolean;
-      gettextFunctions?: { [key: string]: string };
+      headers?: IndexedObject | boolean;
+      gettextFunctions?: IndexedObject;
       lastTranslator?: string;
       metadataFile?: string;
       noFilePaths?: boolean;
       package?: string;
       relativeTo?: string;
-      globOpts?: { [key: string]: string };
+      globOpts?: IndexedObject;
       team?: string;
       ignoreTemplateNameHeader?: boolean;
     };
   }
 
   export interface VendorScriptsConfig {
-    packages: Array<string>;
-    dest: string;
+    packages?: Array<string>;
+    dest?: string;
+  }
+
+  export type Targets = string | Array<string> | IndexedObject;
+
+  export interface IndexedObject {
+    [key: string]: string
   }
 }
 

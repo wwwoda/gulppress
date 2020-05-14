@@ -14,7 +14,7 @@ import gulpress from '../interfaces';
 const ttf2woff = require('gulp-ttf2woff');
 const ttf2woff2 = require('gulp-ttf2woff2');
 
-export default function (config: gulpress.FontsConfig | false | null | undefined): TaskFunction {
+export default function (config: gulpress.FontsConfig | null | undefined): TaskFunction {
   if (!config) {
     return parallel(cb => {
       console.log(chalk.red('Fonts configuration missing!'));

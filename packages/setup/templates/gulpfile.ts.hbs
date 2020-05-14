@@ -39,7 +39,7 @@ const getLocalConfig = (): gulppress.ProjectConfig => {
   try {
     return require('./gulppress.local.config');
   } catch (e) {
-    console.log(chalk.yellow('Optional local config not found'));
+    // console.log(chalk.yellow('Optional local config not found'));
   }
   return {};
 };

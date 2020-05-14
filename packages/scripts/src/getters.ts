@@ -1,4 +1,3 @@
-import chalk from 'chalk';
 import { TaskFunction } from 'gulp';
 
 import clean from './tasks/clean';
@@ -69,7 +68,6 @@ const getAssetsTasks = (config: gulppress.ProjectConfig) => {
   }
   if (tasks.length < 1) {
     tasks.push((cb: any) => {
-      console.log(chalk.red('No asset configs'));
       cb();
     });
   }
@@ -90,7 +88,6 @@ const getBuildTasks = (config: gulppress.ProjectConfig) => {
   }
   if (tasks.length < 1) {
     tasks.push((cb: any) => {
-      console.log(chalk.red('No build configs'));
       cb();
     });
   }
@@ -116,7 +113,6 @@ const getDevTasks = (config: gulppress.ProjectConfig) => {
   }
   if (tasks.length < 1) {
     tasks.push((cb: any) => {
-      console.log(chalk.red('No dev configs'));
       cb();
     });
   }

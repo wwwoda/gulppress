@@ -1,7 +1,7 @@
 import * as yargs from 'yargs';
 import fancyLog from 'fancy-log';
 import browserSync from 'browser-sync';
-import gulpress from './interfaces';
+import gulppress from './interfaces';
 
 const { argv } = yargs;
 
@@ -47,7 +47,7 @@ export function getWatchers(): WatchersStatus {
   return watchers;
 }
 
-export function isDevEnv(config: gulpress.BaseConfig | false | null | undefined): boolean {
+export function isDevEnv(config: gulppress.BaseConfig | null | undefined): boolean {
   const env = (config && config.environment) || '';
   if (getEnv(env) === 'development') {
     return true;
@@ -59,4 +59,12 @@ export function isDevEnv(config: gulpress.BaseConfig | false | null | undefined)
 export function reload(done: CallableFunction): void {
   browserSync.reload();
   done();
+}
+
+export function getConfigSource(config: gulppress.BasicTaskConfig): string | string[] {
+  return (config && config.src) || '';
+}
+
+export function getConfigDestination(config: gulppress.BasicTaskConfig): string {
+  return (config && config.dest) || '';
 }

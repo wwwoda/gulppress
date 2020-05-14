@@ -126,8 +126,6 @@ export class FaviconHelper {
     display: 'standalone',
   };
 
-
-
   public processImage = through.obj((imageFile, _enc, cb) => {
     const size: SizeOfResponse = sizeOf(imageFile.path);
     const imageSize = this.setSize(Math.min(size.width, size.height));

@@ -12,7 +12,7 @@ const sort = require('gulp-sort');
 const wpPot = require('gulp-wp-pot');
 
 export default function (
-  config: gulpress.TranslationConfig | false | null | undefined,
+  config: gulpress.TranslationConfig | null | undefined,
 ): TaskFunction {
   if (!config) {
     return parallel(cb => {

@@ -13,7 +13,7 @@ import rename from 'gulp-rename';
 
 import gulpress from '../interfaces';
 
-export default function (config: gulpress.IconsConfig | false | null | undefined): TaskFunction {
+export default function (config: gulpress.IconsConfig | null | undefined): TaskFunction {
   if (!config) {
     return parallel(cb => {
       console.log(chalk.red('Icons configuration missing!'));

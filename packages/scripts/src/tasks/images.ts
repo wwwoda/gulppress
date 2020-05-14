@@ -14,7 +14,7 @@ import rename from 'gulp-rename';
 
 import gulpress from '../interfaces';
 
-export default function (config: gulpress.ImagesConfig | false | null | undefined): TaskFunction {
+export default function (config: gulpress.ImagesConfig | null | undefined): TaskFunction {
   if (!config) {
     return parallel(cb => {
       console.log(chalk.red('Images configuration missing!'));

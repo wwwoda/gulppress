@@ -1,36 +1,48 @@
+export type Feature = 'typescript' | 'eslint' | 'stylelint';
+
+export type DistStructure = 'assets' | 'dist' | 'root';
+
+export type SrcStructure = 'assets' | 'src';
+
+export type Task = 'styles' | 'browserSync' | 'favicon' | 'fonts' | 'icons' | 'images' | 'translation' | 'vendorScripts';
+
+export type Type = 'theme' | 'plugin' | 'bedrock';
 export interface Pkg {
   name: string;
-  homepage?: string;
-  author?: string | { name: string; email: string; url: string };
-  license?: string;
-  scripts?: {
-    [x: string]: string;
-  };
-  dependencies?: {
-    [x: string]: string;
-  };
-  devDependencies?: {
-    [x: string]: string;
-  };
+  description: string;
+  version: string;
+  scripts: IndexedObject;
+  keywords: string[];
+  author: string | { name: string; email: string; url: string };
+  license: string;
+  homepage: string;
+  dependencies: IndexedObject;
+  devDependencies: { [index:string] : string };
 }
 
 export interface ProjectConfig {
-  projectName: string;
+  distStructurePath: string;
   domain: string;
-  type: string;
+  environment: string | null;
+  srcStructurePath: string;
   basePath: string;
-  projectURL: string;
-  features: string[];
+  basePathClean: string;
+  createSeparateMinFiles: boolean;
+  distStructure: DistStructure;
   dotEnv: boolean;
   dotEnvPath: string;
-  createSeparateMinFiles: boolean;
+  features: Feature[];
+  projectName: string;
+  projectURL: string;
+  srcStructure: SrcStructure;
+  tasks: Task[]
+  type: Type;
   useYarn: boolean;
-  environment: string | null;
-  srcStructure: string;
-  distStructure: string;
 }
 
 export interface ProjectDependencies {
-  dependencies: string[];
-  devDependencies: string[];
+  dependencies?: string[];
+  devDependencies?: string[];
 }
+
+export interface IndexedObject { [index:string] : string }

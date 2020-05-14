@@ -24,13 +24,13 @@ import { gulppress } from '@gulppress/scripts';
 // import basePath from 'gulppress.config';
 
 const localConfig: gulppress.ProjectConfig = {
-  browserSync: {{#if_feature "browserSync"}}{
+  browserSync: {{#if_task "browserSync"}}{
     ghostMode: false,
     injectChanges: true,
     open: true,
     proxy: '{{projectURL}}',
     tunnel: false,
-  }{{else}}null{{/if_feature}},
+  }{{else}}null{{/if_task}},
 };
 
 module.exports = localConfig;

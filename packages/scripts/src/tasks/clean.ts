@@ -3,7 +3,7 @@ import { TaskFunction } from 'gulp';
 
 import gulpress from '../interfaces';
 
-function getDestPaths(config: gulpress.ProjectConfig | false | null | undefined): {
+function getDestPaths(config: gulpress.ProjectConfig | null | undefined): {
   [key: string]: string;
 } {
   const dests: {
@@ -19,7 +19,7 @@ function getDestPaths(config: gulpress.ProjectConfig | false | null | undefined)
   return dests;
 }
 
-export default function (config: gulpress.ProjectConfig | false | null | undefined): {
+export default function (config: gulpress.ProjectConfig | null | undefined): {
   scriptsStyles: TaskFunction;
   assets: TaskFunction;
   all: TaskFunction;
