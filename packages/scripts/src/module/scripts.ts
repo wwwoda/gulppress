@@ -29,7 +29,7 @@ export class ScriptsHelper {
     baseConfig: gulppress.BaseConfig,
   ) {
     ScriptsHelper.createSeparateMinFiles = baseConfig?.createSeparateMinFiles === true;
-    ScriptsHelper.isDevelopmentEnvironment = isDevEnv(baseConfig);
+    ScriptsHelper.isDevelopmentEnvironment = isDevEnv();
     ScriptsHelper.isTypescriptEnabled = scriptConfig.features?.typescript === true;
     ScriptsHelper.isTypechecksEnabled = scriptConfig.features?.typeChecks === true;
     ScriptsHelper.targets = (scriptConfig && scriptConfig.targets) || [

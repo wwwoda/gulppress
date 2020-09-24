@@ -16,14 +16,11 @@ import postcss from 'gulp-postcss';
 import rename from 'gulp-rename';
 import sass from 'gulp-sass';
 import sourcemaps from 'gulp-sourcemaps';
-import postcssCalc from 'postcss-calc';
 
 import gulpress from '../interfaces';
 import { isDevEnv } from '../utils';
 
 const gulpBuster = require('gulp-buster');
-const cssVariables = require('postcss-css-variables');
-const postcssEasingGradients = require('postcss-easing-gradients');
 
 const { stream } = browserSync;
 
@@ -39,7 +36,7 @@ export default function (
   }
 
   const autoprefixerOptions = stylesConfig && stylesConfig.autoprefixerOptions;
-  const customPostcssPlugins = (stylesConfig && stylesConfig.postcssPlugins) || [];
+  const postcssPlugins = (stylesConfig && stylesConfig.postcssPlugins) || [];
   const sassOptions = (stylesConfig && stylesConfig.sassOptions) || {
     includePaths: [
       'node_modules',
@@ -49,18 +46,9 @@ export default function (
   const stylesDest = (stylesConfig && stylesConfig.dest) || '';
   const stylesSrc = (stylesConfig && stylesConfig.src) || '';
 
-  const postcssPlugins = [
-    autoprefixer(autoprefixerOptions),
-    cssVariables({
-      preserve: true,
-    }),
-    postcssCalc(),
-    postcssEasingGradients(),
-  ];
-
   function sassErrorHandler(this: any, error: string) {
     sass.logError.call(this, error);
-    if (!isDevEnv(baseConfig)) {
+    if (!isDevEnv()) {
       console.log('Aborting styles build task due to error!');
       process.exit(1);
     }
@@ -70,32 +58,32 @@ export default function (
     if (baseConfig && baseConfig.createSeparateMinFiles === true) {
       return src(stylesSrc, { allowEmpty: true })
         .pipe(plumber())
-        .pipe(gulpif(isDevEnv(baseConfig), sourcemaps.init()))
+        .pipe(gulpif(isDevEnv(), sourcemaps.init()))
         .pipe(
           sass(sassOptions).on('error', sassErrorHandler),
         )
-        .pipe(postcss([...postcssPlugins, ...customPostcssPlugins]))
-        .pipe(gulpif(isDevEnv(baseConfig), sourcemaps.write({ includeContent: false })))
+        .pipe(postcss([...postcssPlugins, autoprefixer(autoprefixerOptions)]))
+        .pipe(gulpif(isDevEnv(), sourcemaps.write({ includeContent: false })))
         .pipe(dest(stylesDest))
         .pipe(filter('**/*.css'))
         .pipe(stream())
         .pipe(rename({ suffix: '.min' }))
-        .pipe(gulpif(isDevEnv(baseConfig), sourcemaps.init({ loadMaps: true })))
+        .pipe(gulpif(isDevEnv(), sourcemaps.init({ loadMaps: true })))
         .pipe(csso())
-        .pipe(gulpif(isDevEnv(baseConfig), sourcemaps.write('./')))
+        .pipe(gulpif(isDevEnv(), sourcemaps.write('./')))
         .pipe(dest(stylesDest))
         .pipe(stream());
     }
 
     return src(stylesSrc, { allowEmpty: true })
       .pipe(plumber())
-      .pipe(gulpif(isDevEnv(baseConfig), sourcemaps.init()))
+      .pipe(gulpif(isDevEnv(), sourcemaps.init()))
       .pipe(
         sass(sassOptions).on('error', sassErrorHandler),
       )
-      .pipe(postcss(postcssPlugins))
-      .pipe(gulpif(!isDevEnv(baseConfig), csso()))
-      .pipe(gulpif(isDevEnv(baseConfig), sourcemaps.write('.')))
+      .pipe(postcss([...postcssPlugins, autoprefixer(autoprefixerOptions)]))
+      .pipe(gulpif(!isDevEnv(), csso()))
+      .pipe(gulpif(isDevEnv(), sourcemaps.write('.')))
       .pipe(dest(stylesDest))
       .pipe(filter('**/*.css'))
       .pipe(stream());

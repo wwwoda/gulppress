@@ -87,7 +87,7 @@ export default function (
     }
 
     return src(vendorSources, { allowEmpty: true })
-      .pipe(gulpif(!isDevEnv(baseConfig), uglify({
+      .pipe(gulpif(!isDevEnv(), uglify({
         output: {
           comments: saveLicense,
         },

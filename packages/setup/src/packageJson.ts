@@ -19,20 +19,13 @@ export class PackageJson {
   private static packageJsonPath: string;
 
   private static tasks: IndexedObject = {
-    dev: 'gulp dev --watch=scripts,styles',
-    build: 'gulp build --env=production',
-    'build:styles': 'gulp styles --env=production',
-    'build:scripts': 'gulp scripts --env=production',
-    clean: 'gulp clean',
-    assets: 'gulp assets',
-    favicon: 'gulp favicon',
-    fonts: 'gulp fonts',
-    icons: 'gulp icons',
-    images: 'gulp images',
-    scripts: 'gulp scripts',
-    styles: 'gulp styles',
-    translate: 'gulp translate',
-    vendorScripts: 'gulp vendorScripts',
+    dev: 'npm run development',
+    development: 'cross-env NODE_ENV=development gulp development',
+    serve: 'npm run watch',
+    watch: 'cross-env NODE_ENV=development gulp development --watch=scripts,styles',
+    prod: 'npm run build',
+    production: 'npm run build',
+    build: 'cross-env NODE_ENV=production gulp build',
   };
 
   public static init(cwd: string): Pkg {
@@ -99,14 +92,4 @@ export class PackageJson {
       JSON.stringify(data, null, 2),
     );
   }
-
-  // private static maybeAddDevDependency(dependency: string): void {
-  //   const { data } = PackageJson;
-  //   const {
-  //     devDependencies,
-  //   } = data;
-  //   if (Array.isArray(devDependencies) && !devDependencies.includes(dependency)) {
-  //     devDependencies.push(dependency);
-  //   }
-  // }
 }

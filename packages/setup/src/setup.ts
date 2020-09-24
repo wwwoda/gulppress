@@ -11,11 +11,9 @@ import { PackageJson } from './packageJson';
 import { TemplatesHandler } from './templates';
 
 import {
-  // Pkg,
   ProjectConfig,
-  DistStructure,
-  SrcStructure,
 } from './interfaces';
+
 import {
   directoryExists,
   fileExists,
@@ -54,11 +52,7 @@ export class Setup {
 
   private fileNameLocalConfig: string = 'gulppress.local.config.ts';
 
-  // private fileNamePackageJson: string = 'package.json';
-
   private gitIgnorePath: string;
-
-  // private pkg: Pkg;
 
   private projectType: ProjectType;
 
@@ -67,7 +61,6 @@ export class Setup {
   constructor(cwd: string) {
     this.cwd = cwd;
     this.configPath = path.resolve(this.cwd, this.fileNameConfig);
-    // this.packageJsonPath = path.resolve(this.cwd, this.fileNamePackageJson);
     this.gitIgnorePath = path.resolve(this.cwd, this.fileNameGitIgnore);
     this.themePaths = this.getThemePaths(this.cwd);
     this.projectType = this.getProjectType(this.themePaths);
@@ -111,14 +104,12 @@ export class Setup {
         dotEnvPath: answers.dotEnvPath
           ? getFormattedPath(path.relative(this.cwd, answers.dotEnvPath), this.cwd) : '',
         createSeparateMinFiles: answers.createSeparateMinFiles,
+        useYarn: answers.useYarn,
         environment: answers.dotEnvPath
           ? null : "\n    environment: 'development',",
-        srcStructure: answers.srcStructure,
-        srcStructurePath: this.getSrcStructure(answers.srcStructure),
-        distStructure: answers.distStructure,
-        distStructurePath: this.getDistStructure(answers.distStructure),
+        srcPath: this.getCleanPath(answers.srcPath),
+        distPath: this.getCleanPath(answers.distPath),
       };
-
       return config;
     });
   }
@@ -200,27 +191,8 @@ export class Setup {
     return themePaths;
   }
 
-  private getSrcStructure(structure: SrcStructure): string {
-    switch (structure) {
-      case 'src':
-        return '/src/';
-      case 'assets':
-      default:
-        return '/assets/src/';
-    }
-  }
-
-  private getDistStructure(structure: DistStructure): string {
-    // eslint-disable-next-line default-case
-    switch (structure) {
-      case 'dist':
-        return '/dist/';
-      case 'root':
-        return '/';
-      case 'assets':
-      default:
-        return '/assets/dist/';
-    }
+  private getCleanPath(p: string): string {
+    return `${p.startsWith('/') ? '' : '/'}${p}${p.endsWith('/') ? '' : '/'}`;
   }
 
   private getDevDependencies(projectConfig: ProjectConfig): string[] {
@@ -259,15 +231,19 @@ export async function setup(): Promise<void> {
 
   try {
     const done = await initiator.startSetup();
+    const useYarn = installWithYarn(done.projectConfig);
+    const command = useYarn ? 'yarn' : 'npm';
+    const add = useYarn ? 'add' : 'i';
+    const devParam = useYarn ? '--dev' : '-D';
     const spinner = ora({ spinner: 'dots3', discardStdin: false });
 
     if (done && done.devDependencies.length) {
       spinner.start('installing dev dependencies may take a while');
       try {
-        await execa('yarn', [
-          'add',
+        await execa(command, [
+          add,
           ...done.devDependencies,
-          '--dev',
+          devParam,
         ]);
         spinner.succeed('done installing dev dependencies\n');
       } catch (error) {

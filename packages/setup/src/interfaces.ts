@@ -1,9 +1,5 @@
 export type Feature = 'typescript' | 'eslint' | 'stylelint';
 
-export type DistStructure = 'assets' | 'dist' | 'root';
-
-export type SrcStructure = 'assets' | 'src';
-
 export type Task = 'styles' | 'browserSync' | 'favicon' | 'fonts' | 'icons' | 'images' | 'translation' | 'vendorScripts';
 
 export type Type = 'theme' | 'plugin' | 'bedrock';
@@ -21,22 +17,21 @@ export interface Pkg {
 }
 
 export interface ProjectConfig {
-  distStructurePath: string;
   domain: string;
   environment: string | null;
-  srcStructurePath: string;
   basePath: string;
   basePathClean: string;
   createSeparateMinFiles: boolean;
-  distStructure: DistStructure;
+  distPath: string;
   dotEnv: boolean;
   dotEnvPath: string;
   features: Feature[];
   projectName: string;
   projectURL: string;
-  srcStructure: SrcStructure;
+  srcPath: string;
   tasks: Task[]
   type: Type;
+  useYarn: boolean;
 }
 
 export interface ProjectDependencies {

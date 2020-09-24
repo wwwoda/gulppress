@@ -2,6 +2,10 @@
 import fs from 'fs';
 import inquirer from 'inquirer';
 
+import {
+  isYarn,
+} from './utils';
+
 const nodeEnvFile = require('node-env-file');
 
 interface InquirerConfig {
@@ -162,51 +166,28 @@ export class Inquirer {
         },
       },
       {
-        type: 'list',
-        name: 'srcStructure',
-        message: 'Select folder structure for your assets',
-        choices: [
-          {
-            name: '"/assets" folder containing both the source "/src" and output "/dist" folders',
-            value: 'assets',
-          }, {
-            name: '"/src" source folder in root (chose output folder structure in next step)',
-            value: 'src',
-          },
-        ],
-        default: (answers: inquirer.Answers) => {
-          if (answers.type === 'plugin') {
-            return 'src';
-          }
-          return 'assets';
-        },
+        type: 'input',
+        name: 'srcPath',
+        message: answers => `Source folder path relative to your ${answers.type === 'plugin' ? 'plugin' : 'theme'}`,
+        default: '/ressources/assets/',
       },
       {
-        type: 'list',
-        name: 'distStructure',
-        message: 'Select the build output folder structure for your assets',
-        choices: [
-          {
-            name: '"/assets" folder containing all destination folders ("/assets/js", "/assets/css", "/assets/images", ....)',
-            value: 'dist',
-          }, {
-            name: 'destination folders in root ("/js", "/css", "/images", ...)',
-            value: 'root',
-          },
-        ],
-        default: (answers: inquirer.Answers) => {
-          if (answers.srcStructure === 'src') {
-            return 'dist';
-          }
-          return 'assets';
-        },
-        when: answers => answers.srcStructure !== 'assets',
+        type: 'input',
+        name: 'distPath',
+        message: answers => `Output folder path relative to your ${answers.type === 'plugin' ? 'plugin' : 'theme'}`,
+        default: '/assets/',
       },
       {
         type: 'confirm',
         name: 'createSeparateMinFiles',
         message: 'Create separate .min files for scripts and styles?',
         default: false,
+      },
+      {
+        type: 'confirm',
+        name: 'useYarn',
+        message: 'Install dependencies with yarn instead of npm (yarn needs to be installed globally)?',
+        when: !isYarn(),
       },
     ];
 

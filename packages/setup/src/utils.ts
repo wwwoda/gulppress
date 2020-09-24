@@ -1,7 +1,10 @@
+import findUp from 'find-up';
 import fs from 'fs';
 import handlebars from 'handlebars';
 import path from 'path';
 import { ProjectConfig } from './interfaces';
+
+let isYarnCache: boolean | null = null;
 
 function getTargetFilePath(source: string, target: string): string {
   if (fs.existsSync(target)) {
@@ -38,6 +41,29 @@ export function resolveCWD(
   }
 
   return cwd;
+}
+
+export function isYarn(): boolean {
+  const cwd = process.cwd();
+  if (isYarnCache !== null) {
+    return isYarnCache;
+  }
+  try {
+    isYarnCache = findUp.sync('yarn.lock', { cwd }) != null;
+
+    return isYarnCache;
+  } catch (_) {
+    isYarnCache = false;
+
+    return isYarnCache;
+  }
+}
+
+export function installWithYarn(config: ProjectConfig | undefined): boolean {
+  if (typeof config !== 'undefined') {
+    return config.useYarn || isYarn();
+  }
+  return isYarn();
 }
 
 export function getFileContent(filePath: string): string {

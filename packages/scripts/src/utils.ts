@@ -15,11 +15,8 @@ interface WatchersStatus {
   [propName: string]: boolean;
 }
 
-export function getEnv(env?: string): string {
-  if (typeof argv.env === 'string' && ['development', 'staging', 'production'].indexOf(argv.env) !== -1) {
-    return argv.env;
-  }
-  return process.env.WP_ENV || env || 'production';
+export function getEnv(): string {
+  return process.env.NODE_ENV || process.env.WP_ENV || 'production';
 }
 
 export function getWatchers(): WatchersStatus {
@@ -47,9 +44,8 @@ export function getWatchers(): WatchersStatus {
   return watchers;
 }
 
-export function isDevEnv(config: gulppress.BaseConfig | null | undefined): boolean {
-  const env = (config && config.environment) || '';
-  if (getEnv(env) === 'development') {
+export function isDevEnv(): boolean {
+  if (getEnv() === 'development') {
     return true;
   }
 

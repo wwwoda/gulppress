@@ -24,7 +24,6 @@ declare namespace gulppress {
 
   export interface BaseConfig {
     envFile?: string | false;
-    environment?: 'development' | 'staging' | 'production';
     createSeparateMinFiles?: boolean;
   }
 
