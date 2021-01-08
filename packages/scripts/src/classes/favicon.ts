@@ -102,7 +102,9 @@ const faviconData: FaviconData = [
   {
     size: 270,
     error: '270x270 | Microsoft Tile',
-    html: '<meta name="msapplication-square150x150logo" content="/favicon-270.png"/>\n<meta name="msapplication-TileImage" content="/favicon-270.png" />',
+    html: `<meta name="msapplication-square150x150logo"
+      content="/favicon-270.png"/>\n<meta name="msapplication-TileImage"
+      content="/favicon-270.png" />`,
   },
   {
     size: 512,
@@ -110,7 +112,7 @@ const faviconData: FaviconData = [
   },
 ];
 
-export class FaviconHelper {
+export class Favicon {
   public size!: number;
 
   public color!: string;
@@ -132,12 +134,12 @@ export class FaviconHelper {
     console.log('---');
     console.log(chalk.yellow(`Your favicon base image’s size is ${size.width}x${size.height}`));
     console.log('---');
-    if (!FaviconHelper.isSquare(size)) {
+    if (!Favicon.isSquare(size)) {
       console.log(chalk.red('Your favicon base image should be square!'));
       console.log('---');
     }
 
-    const data = FaviconHelper.getFaviconDataSortedBySize();
+    const data = Favicon.getFaviconDataSortedBySize();
     if (imageSize < data[data.length - 1].size) {
       console.log(chalk.red('We recommed your favicon base image to be at least 512x512!'));
       console.log('---');
@@ -170,10 +172,11 @@ export class FaviconHelper {
   }
 
   public setColor(color: string): void {
-    const isvalidHexColor = FaviconHelper.isValidHexColor(color);
+    const isvalidHexColor = Favicon.isValidHexColor(color);
     if (isvalidHexColor === false) {
       console.log('---');
-      console.log(chalk.red(`Invalid HEX color configured: "${color}"! Example for correct color: "#ffffff"`));
+      console.log(chalk.red(`Invalid HEX color configured: "${color}"!
+        Example for correct color: "#ffffff"`));
       console.log('---');
     }
     this.color = isvalidHexColor === true ? color : this.defaultColor;
@@ -202,9 +205,9 @@ export class FaviconHelper {
   public static getReponsiveConfigs(sizes: Sizes): ResponsiveConfig[] {
     return sizes.map(size => {
       if (typeof size === 'number') {
-        return FaviconHelper.getResponsiveConfig(size);
+        return Favicon.getResponsiveConfig(size);
       }
-      return FaviconHelper.getResponsiveConfig(size.size, size.rename);
+      return Favicon.getResponsiveConfig(size.size, size.rename);
     });
   }
 
@@ -228,14 +231,14 @@ export class FaviconHelper {
     const manifest: Manifest = this.baseManifest;
 
 
-    if (FaviconHelper.isValidHexColor(color)) {
+    if (Favicon.isValidHexColor(color)) {
       manifest.theme_color = color;
       manifest.background_color = color;
     }
 
     [16, 48, 128, 192, 512].forEach(s => {
       if (size >= s) {
-        manifest.icons.push(FaviconHelper.getManifestIcon(s));
+        manifest.icons.push(Favicon.getManifestIcon(s));
       }
     });
 

@@ -1,6 +1,10 @@
 import * as yargs from 'yargs';
 import fancyLog from 'fancy-log';
 import browserSync from 'browser-sync';
+import { Globs, src } from 'gulp';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { SrcOptions } from 'vinyl-fs';
+
 import gulppress from './interfaces';
 
 const { argv } = yargs;
@@ -33,7 +37,9 @@ export function getWatchers(): WatchersStatus {
     argv.watch.split(',').forEach((watcher: string) => {
       if (!(watcher in watchers)) {
         fancyLog.error(
-          '--watch argument contains unkonwn entries.  (--watch=icons,images,scripts,styles,svg,vendorScripts)',
+          // eslint-disable-next-line quotes
+          `--watch argument contains unkonwn entries. \
+(--watch=icons,images,scripts,styles,svg,vendorScripts)`,
         );
       } else {
         watchers[watcher] = true;
@@ -63,4 +69,17 @@ export function getConfigSource(config: gulppress.BasicTaskConfig): string | str
 
 export function getConfigDestination(config: gulppress.BasicTaskConfig): string {
   return (config && config.dest) || '';
+}
+
+export function getStream(
+  globs?: Globs | NodeJS.ReadWriteStream,
+  options?: SrcOptions,
+): NodeJS.ReadWriteStream {
+  if (!globs) {
+    return src('.', options);
+  }
+  if (typeof globs === 'string' || Array.isArray(globs)) {
+    return src(globs, options);
+  }
+  return globs;
 }

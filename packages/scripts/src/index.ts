@@ -7,7 +7,7 @@ import scripts from './tasks/scripts';
 import serve from './tasks/serve';
 import styles from './tasks/styles';
 import translate from './tasks/translate';
-import vendorScripts from './tasks/vendor-scripts';
+import vendorScripts from './tasks/vendorScripts';
 import gulppress from './interfaces';
 
 import {

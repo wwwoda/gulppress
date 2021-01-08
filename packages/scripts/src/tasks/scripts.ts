@@ -1,59 +1,27 @@
-import chalk from 'chalk';
-import { reload } from 'browser-sync';
-import fancyLog from 'fancy-log';
-import {
-  dest,
-  parallel,
-  src,
-  TaskFunction,
-} from 'gulp';
-import plumber from 'gulp-plumber';
-import webpackStream from 'webpack-stream';
+import { parallel, TaskFunction } from 'gulp';
 
-import { ScriptsHelper } from '../module/scripts';
+import { WebpackConfig } from '../classes/webpackConfig';
 import gulpress from '../interfaces';
-import {
-  getWatchers,
-  isDevEnv,
-  getConfigSource,
-  getConfigDestination,
-} from '../utils';
-
-const named = require('vinyl-named');
+import { getConfigSource, getConfigDestination } from '../utils';
+import { compileScripts } from './scripts/compileScripts';
 
 export default function (
-  scriptConfig: gulpress.ScriptConfig | null | undefined,
+  config: gulpress.ScriptConfig,
   baseConfig: gulpress.BaseConfig,
 ): TaskFunction {
-  if (!scriptConfig) {
-    return parallel(cb => {
-      console.log(chalk.red('Scripts configuration missing!'));
-      cb();
-    });
-  }
+  const scriptSrc = getConfigSource(config);
+  const scriptDest = getConfigDestination(config);
+  WebpackConfig.init(config, baseConfig);
+  const webpackConfig = WebpackConfig.getWebpackConfig(scriptSrc, scriptDest);
 
-  const scriptSrc = getConfigSource(scriptConfig);
-  const scriptDest = getConfigDestination(scriptConfig);
-  ScriptsHelper.init(scriptConfig, baseConfig);
-  const webpackConfig = ScriptsHelper.getWebpackConfig(scriptSrc, scriptDest);
-
-  function compileScripts(): NodeJS.ReadWriteStream {
-    return src(scriptSrc, { allowEmpty: true })
-      .pipe(plumber())
-      .pipe(named())
-      .pipe(webpackStream(webpackConfig, undefined, () => {
-        if (getWatchers().scripts === true) {
-          reload();
-        }
-      }).on('error', (error: Error) => {
-        fancyLog.error(error.message);
-        if (!isDevEnv()) {
-          console.log('Aborting scripts build task due to error!');
-          process.exit(1);
-        }
-      }))
-      .pipe(dest(scriptDest));
-  }
-
-  return parallel(compileScripts);
+  return parallel(
+    Object.assign(
+      compileScripts(
+        config.src,
+        config.dest,
+        webpackConfig,
+      ),
+      { displayName: 'compileSscripts' },
+    ),
+  );
 }

@@ -1,10 +1,14 @@
 import autoprefixer from 'autoprefixer';
 import browserSync from 'browser-sync';
 import { Options as SassOptions } from 'node-sass';
+import { Globs } from 'gulp';
 
 declare namespace gulppress {
+  export type GlobsFunction = () => Globs;
+
+  export type FaviconSizes = Array<number | {size: number, rename: string}>;
   export interface BasicTaskConfig {
-    src: string | string[];
+    src: Globs;
     dest: string;
   }
 
@@ -54,11 +58,11 @@ declare namespace gulppress {
 
   export interface FaviconConfig extends BasicTaskConfig {
     color?: string;
-    sizes?: Array<number | {size: number, rename: string}>;
+    sizes?: FaviconSizes;
   }
 
   export interface FontsConfig extends BasicTaskConfig {
-    srcPath: string;
+    srcFolder: string;
   }
 
   export interface IconsConfig extends BasicTaskConfig {
@@ -82,36 +86,39 @@ declare namespace gulppress {
     watch?: string | Array<string>;
     sassOptions?: SassOptions;
     autoprefixerOptions?: autoprefixer.Options;
-    postcssPlugins?: [] | Array<CallableFunction>;
+    postcssPlugins?: any[];
   }
 
   export interface TranslationConfig extends BasicTaskConfig {
-    wpPotOptions?: {
-      bugReport?: string;
-      commentKeyword?: string;
-      domain?: string;
-      headers?: IndexedObject | boolean;
-      gettextFunctions?: IndexedObject;
-      lastTranslator?: string;
-      metadataFile?: string;
-      noFilePaths?: boolean;
-      package?: string;
-      relativeTo?: string;
-      globOpts?: IndexedObject;
-      team?: string;
-      ignoreTemplateNameHeader?: boolean;
-    };
+    wpPotOptions?: WpPotOptions;
   }
 
   export interface VendorScriptsConfig {
-    packages?: Array<string>;
-    dest?: string;
+    src?: Globs;
+    packages?: string[];
+    dest: string;
   }
 
   export type Targets = string | Array<string> | IndexedObject;
 
   export interface IndexedObject {
     [key: string]: string
+  }
+
+  export interface WpPotOptions {
+    bugReport?: string;
+    commentKeyword?: string;
+    domain?: string;
+    headers?: IndexedObject | boolean;
+    gettextFunctions?: IndexedObject;
+    lastTranslator?: string;
+    metadataFile?: string;
+    noFilePaths?: boolean;
+    package?: string;
+    relativeTo?: string;
+    globOpts?: IndexedObject;
+    team?: string;
+    ignoreTemplateNameHeader?: boolean;
   }
 }
 

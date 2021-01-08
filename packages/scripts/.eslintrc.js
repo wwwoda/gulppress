@@ -20,8 +20,10 @@ module.exports = {
 	],
 	rules: {
     'import/prefer-default-export': 'off',
+    'max-len': ['error', { 'code': 100, 'ignoreComments': true }],
     'no-console': 'off',
     'no-restricted-syntax': 'off',
+    'no-use-before-define': ['error', {'functions': false}],
     '@typescript-eslint/no-var-requires': 'off',
     '@typescript-eslint/no-namespace': 'off',
     '@typescript-eslint/no-empty-interface': 'off',

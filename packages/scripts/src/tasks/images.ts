@@ -1,68 +1,23 @@
-import chalk from 'chalk';
-import {
-  dest,
-  parallel,
-  src,
-  TaskFunction,
-} from 'gulp';
-import cache from 'gulp-cache';
-import changed from 'gulp-changed';
-import filter from 'gulp-filter';
-import gulpif from 'gulp-if';
-import imagemin from 'gulp-imagemin';
-import rename from 'gulp-rename';
+import { series, TaskFunction } from 'gulp';
 
 import gulpress from '../interfaces';
+import { getMinifyImagesStream } from './images/minifyImages';
+import { getcreatePhpPartialFromSvgStream } from './images/createPhpPartialFromSvg';
 
-export default function (config: gulpress.ImagesConfig | null | undefined): TaskFunction {
-  if (!config) {
-    return parallel(cb => {
-      console.log(chalk.red('Images configuration missing!'));
+/**
+ * Get composed images task
+ * @param config
+ */
+export default (config: gulpress.ImagesConfig):
+TaskFunction => series(
+  Object.assign(
+    (cb: CallableFunction) => {
+      const minifyStream = getMinifyImagesStream(config.src, config.dest);
+      if (config.destPhpPartials) {
+        getcreatePhpPartialFromSvgStream(minifyStream, config.destPhpPartials);
+      }
       cb();
-    });
-  }
-
-  const imagesDest = (config && config.dest) || '';
-  const imagesDestPhpPartials = (config && config.destPhpPartials) || '';
-  const imagesSrc = (config && config.src) || '';
-
-  function processImages(): NodeJS.ReadWriteStream {
-    return src(imagesSrc, { allowEmpty: true })
-      .pipe(
-        cache(
-          imagemin([
-            imagemin.gifsicle({
-              interlaced: true,
-            }),
-            imagemin.mozjpeg({
-              progressive: true,
-            }),
-            imagemin.optipng({
-              optimizationLevel: 3,
-            }),
-            imagemin.svgo({
-              plugins: [
-                {
-                  removeViewBox: false,
-                },
-                {
-                  cleanupIDs: false,
-                },
-              ],
-            }),
-          ]),
-        ),
-      )
-      .on('error', e => { console.log(e); })
-      .pipe(changed(imagesDest))
-      .pipe(dest(imagesDest))
-      .pipe(gulpif(!!imagesDestPhpPartials, filter(file => /svg$/.test(file.path))))
-      .pipe(gulpif(!!imagesDestPhpPartials, rename({
-        extname: '.php',
-      })))
-      .pipe(gulpif(!!imagesDestPhpPartials, changed(imagesDestPhpPartials || imagesDest)))
-      .pipe(gulpif(!!imagesDestPhpPartials, dest(imagesDestPhpPartials || imagesDest)));
-  }
-
-  return parallel(processImages);
-}
+    },
+    { displayName: 'processImages' },
+  ),
+);

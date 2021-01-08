@@ -13,7 +13,7 @@ import gulppress from '../interfaces';
 const HashAssetsPlugin = require('hash-assets-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
-export class ScriptsHelper {
+export class WebpackConfig {
   private static createSeparateMinFiles: boolean;
 
   private static isDevelopmentEnvironment: boolean;
@@ -28,11 +28,11 @@ export class ScriptsHelper {
     scriptConfig: gulppress.ScriptConfig,
     baseConfig: gulppress.BaseConfig,
   ) {
-    ScriptsHelper.createSeparateMinFiles = baseConfig?.createSeparateMinFiles === true;
-    ScriptsHelper.isDevelopmentEnvironment = isDevEnv();
-    ScriptsHelper.isTypescriptEnabled = scriptConfig.features?.typescript === true;
-    ScriptsHelper.isTypechecksEnabled = scriptConfig.features?.typeChecks === true;
-    ScriptsHelper.targets = (scriptConfig && scriptConfig.targets) || [
+    WebpackConfig.createSeparateMinFiles = baseConfig?.createSeparateMinFiles === true;
+    WebpackConfig.isDevelopmentEnvironment = isDevEnv();
+    WebpackConfig.isTypescriptEnabled = scriptConfig.features?.typescript === true;
+    WebpackConfig.isTypechecksEnabled = scriptConfig.features?.typeChecks === true;
+    WebpackConfig.targets = (scriptConfig && scriptConfig.targets) || [
       '> 1%',
       'ie >= 11',
       'last 1 Android versions',
@@ -47,14 +47,14 @@ export class ScriptsHelper {
   }
 
   private static getWebpackConfigExtensions(): string[] {
-    if (ScriptsHelper.isTypescriptEnabled === true) {
+    if (WebpackConfig.isTypescriptEnabled === true) {
       return ['.js', '.ts', 'json'];
     }
     return ['.js', 'json'];
   }
 
   private static getWebpackConfigTestValue(): RegExp {
-    return ScriptsHelper.isTypescriptEnabled === true ? /\.(ts|js)?$/ : /\.js?$/;
+    return WebpackConfig.isTypescriptEnabled === true ? /\.(ts|js)?$/ : /\.js?$/;
   }
 
   private static getWebpackConfigPresets(): any {
@@ -62,11 +62,11 @@ export class ScriptsHelper {
       [
         '@babel/preset-env',
         {
-          targets: ScriptsHelper.targets,
+          targets: WebpackConfig.targets,
         },
       ],
     ];
-    if (ScriptsHelper.isTypescriptEnabled === true) {
+    if (WebpackConfig.isTypescriptEnabled === true) {
       presets.push('@babel/preset-typescript');
     }
     return presets;
@@ -76,8 +76,8 @@ export class ScriptsHelper {
     const {
       createSeparateMinFiles,
       isDevelopmentEnvironment,
-    } = ScriptsHelper;
-    const source = ScriptsHelper.getSource(scriptSrc);
+    } = WebpackConfig;
+    const source = WebpackConfig.getSource(scriptSrc);
 
     const webpackConfig: Configuration = {
       watch: getWatchers().scripts === true,
@@ -87,12 +87,12 @@ export class ScriptsHelper {
       },
       module: {
         rules: [{
-          test: ScriptsHelper.getWebpackConfigTestValue(),
+          test: WebpackConfig.getWebpackConfigTestValue(),
           exclude: /node_modules/,
           use: [{
             loader: 'babel-loader',
             options: {
-              presets: ScriptsHelper.getWebpackConfigPresets(),
+              presets: WebpackConfig.getWebpackConfigPresets(),
               plugins: [
                 '@babel/proposal-class-properties',
                 '@babel/proposal-object-rest-spread',
@@ -102,12 +102,12 @@ export class ScriptsHelper {
         }],
       },
       resolve: {
-        extensions: ScriptsHelper.getWebpackConfigExtensions(),
+        extensions: WebpackConfig.getWebpackConfigExtensions(),
       },
       externals: {
         jquery: 'jQuery',
       },
-      plugins: ScriptsHelper.getWebpackPlugins(),
+      plugins: WebpackConfig.getWebpackPlugins(),
       cache: {},
       entry: Object.entries(source).length >= 1 ? source : '',
       devtool: isDevelopmentEnvironment ? 'inline-source-map' : false,
@@ -129,7 +129,7 @@ export class ScriptsHelper {
     const {
       isTypechecksEnabled,
       isTypescriptEnabled,
-    } = ScriptsHelper;
+    } = WebpackConfig;
     const plugins = [
       new HashAssetsPlugin({
         filename: '.assets.json',
@@ -156,10 +156,10 @@ export class ScriptsHelper {
     const sources: { [key: string]: string } = {};
     if (Array.isArray(scriptSrc)) {
       scriptSrc.forEach((entry: string) => {
-        Object.assign(sources, ScriptsHelper.getSourceEntry(entry));
+        Object.assign(sources, WebpackConfig.getSourceEntry(entry));
       });
     } else if (scriptSrc) {
-      Object.assign(sources, ScriptsHelper.getSourceEntry(scriptSrc));
+      Object.assign(sources, WebpackConfig.getSourceEntry(scriptSrc));
     }
     return sources;
   }
@@ -167,7 +167,7 @@ export class ScriptsHelper {
   private static getSourceEntry(
     entry: string,
   ): { [key: string]: string } {
-    const { createSeparateMinFiles } = ScriptsHelper;
+    const { createSeparateMinFiles } = WebpackConfig;
     const source: { [key: string]: string } = {};
     glob.sync(entry).forEach((result: string) => {
       const extension = path.extname(result);
