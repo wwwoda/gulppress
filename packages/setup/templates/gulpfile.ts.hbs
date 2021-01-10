@@ -1,134 +1,78 @@
-/* eslint-disable
-  global-require,
-  import/no-extraneous-dependencies,
-  import/no-unresolved,
-  no-console,
-  @typescript-eslint/no-var-requires
-*/
-
-import chalk from 'chalk';
-import { existsSync } from 'fs';
+/* eslint-disable import/no-extraneous-dependencies */
+import * as gulppress from '@gulppress/scripts';
 import {
   parallel,
   series,
   task,
   watch,
 } from 'gulp';
-import { relative, resolve } from 'path';
-import {
-  getAssetsTasks,
-  getBuildTasks,
-  getDevTasks,
-  getCleanTask,
-  getFaviconTask,
-  getFontsTask,
-  getIconsTask,
-  getImagesTask,
-  getScriptsTask,
-  getServeTask,
-  getStylesTask,
-  getTranslationTask,
-  getVendorScriptsTask,
-  getWatchers,
-  gulppress,
-} from '@gulppress/scripts';
-import mainConfig from './gulppress.config';
+import cache from 'gulp-cache';
 
-// try loading gulppress.local.config.ts
-const getLocalConfig = (): gulppress.ProjectConfig => {
-  try {
-    return require('./gulppress.local.config');
-  } catch (e) {
-    // console.log(chalk.yellow('Optional local config not found'));
-  }
-  return {};
-};
-const localConfig = getLocalConfig();
+const config = gulppress.config.getConfig(__dirname, './gulppress.config', './gulppress.local.config');
 
-// merge the main and local configs
-const getConfig = (): gulppress.ProjectConfig => {
-  if (typeof localConfig === 'object') {
-    return { ...mainConfig, ...localConfig };
-  }
-  return mainConfig || {};
-};
-const config = getConfig();
-
-// Load the env file if one is present
-if (config.base && typeof config.base.envFile === 'string' && config.base.envFile) {
-  const nodeEnvFile = require('node-env-file');
-  try {
-    if (existsSync(config.base.envFile)) {
-      nodeEnvFile(config.base.envFile, { raise: false });
-    }
-  } catch (err) {
-    console.error(chalk.bgRed('.env file not found, please check your configuration'));
-  }
-}
-
-// Make sure the scripts dest path is absolute
-if (config.scripts && config.scripts.dest) {
-  config.scripts.dest = resolve(__dirname, config.scripts.dest);
-}
-// Make sure the styles dest path is relative to the current path
-if (config.styles && config.styles.dest) {
-  config.styles.dest = relative(__dirname, config.styles.dest);
-}
-
-const assetsTasks = getAssetsTasks(config);
-const buildTasks = getBuildTasks(config);
-const devTasks = getDevTasks(config);
-const clean = getCleanTask(config);
-const compileScripts = getScriptsTask(config);
-const compileStyles = getStylesTask(config);
-const processFavicon = getFaviconTask(config);
-const processFonts = getFontsTask(config);
-const processIcons = getIconsTask(config);
-const processImages = getImagesTask(config);
-const startServer = getServeTask(config);
-const processTranslations = getTranslationTask(config);
-const processVendorScripts = getVendorScriptsTask(config);
-
-// task('watch', function (this: any) {
 task('watch', () => {
-  const watchers = getWatchers();
+  const watchers = gulppress.utils.getWatchers();
+
   if (config) {
     if (watchers.styles && config.styles && config.styles.watch) {
-      watch(config.styles.watch, series(compileStyles));
+      watch(
+        config.styles.watch,
+        series(gulppress.getStylesTask(config.styles, config.base.createSeparateMinFiles)),
+      );
     }
     if (watchers.icons && config.icons && config.icons.src) {
-      watch(config.icons.src, series(processIcons));
+      watch(config.icons.src, series(gulppress.getIconsTask(config.icons)));
     }
     if (watchers.images && config.images && config.images.src) {
-      watch(config.images.src, series(processImages));
+      watch(config.images.src, series(gulppress.getImagesTask(config.images)));
     }
   }
 });
 
-task('dev', series(
-  clean.scriptsStyles,
-  parallel(devTasks),
+task('development', series(
+  gulppress.getCleanTask(
+    config.scripts?.dest,
+    config.styles?.dest,
+  ),
+  parallel(gulppress.getDevTasks(config, config.browserList, config.base.createSeparateMinFiles)),
 ));
 
 task('assets', series(
-  clean.assets,
-  parallel(assetsTasks),
+  gulppress.getCleanTask(
+    config.favicon?.dest,
+    config.fonts?.dest,
+    config.icons?.dest,
+    config.images?.dest,
+    config.translation?.dest,
+    config.vendorScripts?.dest,
+  ),
+  parallel(gulppress.getAssetsTasks(config)),
 ));
 
 task('build', series(
-  clean.all,
-  parallel(buildTasks),
+  gulppress.getCleanTask(
+    config.scripts?.dest,
+    config.styles?.dest,
+    config.favicon?.dest,
+    config.fonts?.dest,
+    config.icons?.dest,
+    config.images?.dest,
+    config.translation?.dest,
+    config.vendorScripts?.dest,
+  ),
+  parallel(gulppress.getBuildTasks(config, config.browserList, config.base.createSeparateMinFiles)),
 ));
 
 task('default', series('build'));
 
-task('clean', series(clean.all));
-task('favicon', processFavicon);
-task('fonts', processFonts);
-task('icons', processIcons);
-task('images', processImages);
-task('scripts', compileScripts);
-task('serve', startServer);
-task('styles', compileStyles);
-task('translate', processTranslations);
-task('vendorScripts', processVendorScripts);
+task('clean', gulppress.getCleanTask());
+task('favicon', gulppress.getFaviconTask(config.favicon));
+task('fonts', gulppress.getFontsTask(config.fonts));
+task('icons', gulppress.getIconsTask(config.icons));
+task('images', gulppress.getImagesTask(config.images));
+task('scripts', gulppress.getScriptsTask(config.scripts, config.browserList, config.base.createSeparateMinFiles));
+task('serve', gulppress.getStartServerTask(config.browserSync));
+task('styles', gulppress.getStylesTask(config.styles, config.base.createSeparateMinFiles));
+task('translate', gulppress.getTranslationTask(config.translation));
+task('vendorScripts', gulppress.getVendorScriptsTask(config.vendorScripts, config.base.dirname));
+task('clearCache', () => cache.clearAll());

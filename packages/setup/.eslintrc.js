@@ -30,6 +30,13 @@ module.exports = {
 		'import/no-dynamic-require': 'off',
 		'import/prefer-default-export': 'off',
 		'no-console': 'off',
-    'no-restricted-syntax': 'off'
+    'no-restricted-syntax': 'off',
+    "sort-imports": ["error", {
+      "ignoreCase": false,
+      "ignoreDeclarationSort": false,
+      "ignoreMemberSort": false,
+      "memberSyntaxSortOrder": ["none", "all", "multiple", "single"],
+      "allowSeparatedGroups": false
+    }],
   }
 };

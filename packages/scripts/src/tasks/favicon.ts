@@ -1,42 +1,66 @@
-import { parallel, series, TaskFunction } from 'gulp';
+import { TaskFunction, parallel, series } from 'gulp';
 
-import gulppress from '../interfaces';
 import { Favicon } from '../classes/favicon';
+import { FaviconConfig } from '../types';
+import { getEmptyTask } from '../utils';
+import { createFaviconIconStream, createFaviconIconTask } from './favicon/createFaviconIcon';
+import { createFaviconImagesStream, createFaviconImagesTask } from './favicon/createFaviconImages';
+import {
+  createFaviconManifestStream,
+  createFaviconManifestTask,
+} from './favicon/createFaviconManifest';
+import { createFaviconHtmlStream, createFaviconHtmlTask } from './favicon/creatFaviconHtml';
+import { setFaviconColorStream, setFaviconColorTask } from './favicon/setFaviconColor';
 
-import { getCreateFaviconIconTask } from './favicon/createFaviconIcon';
-import { getCreateFaviconImagesTask } from './favicon/createFaviconImages';
-import { getFaviconCreateHtmlTask } from './favicon/creatFaviconHtml';
-import { getCreateFaviconManifestTask } from './favicon/createFaviconManifest';
-import { getSetFaviconColorTask } from './favicon/setFaviconColor';
+export function getFaviconTask(
+  config: FaviconConfig | undefined,
+): TaskFunction {
+  return config
+    ? composeFaviconTasks(config)
+    : getEmptyTask('Favicon task is missing config.');
+}
 
 /**
  * Get composed favicon task
  * @param config
  */
-export default function getFaviconTask(config: gulppress.FaviconConfig): TaskFunction {
+function composeFaviconTasks(config: FaviconConfig): TaskFunction {
   const favicon = new Favicon();
   return series(
     (Object.assign(
-      getCreateFaviconImagesTask(config.src, config.dest, config.sizes, favicon),
-      { displayName: 'faviconToImage' },
+      createFaviconImagesTask(config.src, config.dest, config.sizes, favicon),
+      { displayName: 'favicon::createImages' },
     )),
     (Object.assign(
-      getSetFaviconColorTask(config.color, favicon),
-      { displayName: 'setColor' },
+      setFaviconColorTask(config.color, favicon),
+      { displayName: 'favicon:setColor' },
     )),
     parallel(
       (Object.assign(
-        getCreateFaviconIconTask(config.src, config.dest, favicon),
-        { displayName: 'faviconToIco' },
+        createFaviconIconTask(config.src, config.dest, favicon),
+        { displayName: 'favicon:createIcon' },
       )),
       (Object.assign(
-        getFaviconCreateHtmlTask(config.dest, favicon),
-        { displayName: 'createHtml' },
+        createFaviconHtmlTask(config.dest, favicon),
+        { displayName: 'favicon:createHtml' },
       )),
       (Object.assign(
-        getCreateFaviconManifestTask(config.dest, favicon),
-        { displayName: 'createManifest' },
+        createFaviconManifestTask(config.dest, favicon),
+        { displayName: 'favicon:createManifest' },
       )),
     ),
   );
 }
+
+export const subtasks = {
+  createFaviconHtmlStream,
+  createFaviconHtmlTask,
+  createFaviconIconStream,
+  createFaviconIconTask,
+  createFaviconImagesStream,
+  createFaviconImagesTask,
+  createFaviconManifestStream,
+  createFaviconManifestTask,
+  setFaviconColorStream,
+  setFaviconColorTask,
+};

@@ -1,3 +1,5 @@
+import { TaskFunction, src } from 'gulp';
+
 import { Favicon } from '../../classes/favicon';
 
 /**
@@ -5,12 +7,17 @@ import { Favicon } from '../../classes/favicon';
  * @param color HEX color string, for example "#ffffff"
  * @param favicon
  */
-export function getSetFaviconColorTask(
+export function setFaviconColorTask(
   color: string = '',
   favicon: Favicon,
-) {
-  return (cb: CallableFunction): NodeJS.ReadWriteStream => {
-    favicon.setColor(color);
-    return cb();
-  };
+): TaskFunction {
+  return () => setFaviconColorStream(color, favicon);
+}
+
+export function setFaviconColorStream(
+  color: string = '',
+  favicon: Favicon,
+): NodeJS.ReadWriteStream {
+  favicon.setColor(color);
+  return src('.', { allowEmpty: true });
 }

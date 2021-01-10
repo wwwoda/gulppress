@@ -35,6 +35,7 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.9.6",
     "@babel/preset-env": "^7.9.6",
     "@babel/preset-typescript": "^7.9.0",
+    "@fullhuman/postcss-purgecss": "^3.1.3",
     "autoprefixer": "^9.7.6",
     "babel-loader": "^8.1.0",
     "browser-sync": "^2.26.7",
@@ -58,7 +59,7 @@
     "gulp-imagemin": "^7.1.0",
     "gulp-merge-json": "^2.1.1",
     "gulp-plumber": "^1.2.1",
-    "gulp-postcss": "^8.0.0",
+    "gulp-postcss": "^9.0.0",
     "gulp-rename": "^2.0.0",
     "gulp-responsive": "^3.0.1",
     "gulp-sass": "^4.1.0",
@@ -72,12 +73,16 @@
     "hash-assets-webpack-plugin": "^1.0.0",
     "image-size": "^0.8.3",
     "jpegtran-bin": "^4.0.0",
+    "merge-stream": "^2.0.0",
     "node-env-file": "^0.1.8",
     "node-sass": "^4.14.1",
     "path": "^0.12.7",
+    "postcss": "^7.0.35",
     "postcss-calc": "^7.0.2",
     "postcss-css-variables": "^0.17.0",
     "postcss-easing-gradients": "^3.0.1",
+    "postcss-reporter": "^7.0.2",
+    "purgecss-with-wordpress": "^3.1.3",
     "read-pkg-up": "^7.0.1",
     "through2": "^3.0.1",
     "ts-node": "^8.10.1",
@@ -119,7 +124,16 @@
     "@types/webpack-stream": "^3.2.11",
     "@types/yargs": "^15.0.4",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
-    "@typescript-eslint/parser": "^2.33.0"
+    "@typescript-eslint/parser": "^2.33.0",
+    "import-sort": "^6.0.0",
+    "import-sort-parser-typescript": "^6.0.0"
+  },
+  "importSort": {
+    ".ts": {
+      "parser": "typescript",
+      "style": "module-scoped",
+      "options": {}
+    }
   },
   "gitHead": "659ad56087c4ec75a9343ecfe1e8e07113ac68ba"
 }

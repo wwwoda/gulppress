@@ -1,53 +1,41 @@
-import * as yargs from 'yargs';
-import fancyLog from 'fancy-log';
 import browserSync from 'browser-sync';
-import { Globs, src } from 'gulp';
-// eslint-disable-next-line import/no-extraneous-dependencies
+import {
+  Globs,
+  TaskFunction,
+  parallel,
+  src,
+} from 'gulp';
 import { SrcOptions } from 'vinyl-fs';
+import * as yargs from 'yargs';
 
-import gulppress from './interfaces';
+import { WatchersStatus } from './types';
 
 const { argv } = yargs;
-
-interface WatchersStatus {
-  icons: boolean;
-  images: boolean;
-  scripts: boolean;
-  styles: boolean;
-  svg: boolean;
-  vendorScripts: boolean;
-  [propName: string]: boolean;
-}
 
 export function getEnv(): string {
   return process.env.NODE_ENV || process.env.WP_ENV || 'production';
 }
 
 export function getWatchers(): WatchersStatus {
-  const watchers: WatchersStatus = {
-    icons: false,
-    images: false,
-    scripts: false,
-    styles: false,
-    svg: false,
-    vendorScripts: false,
-  };
-
-  if (typeof argv.watch === 'string') {
-    argv.watch.split(',').forEach((watcher: string) => {
-      if (!(watcher in watchers)) {
-        fancyLog.error(
-          // eslint-disable-next-line quotes
-          `--watch argument contains unkonwn entries. \
-(--watch=icons,images,scripts,styles,svg,vendorScripts)`,
-        );
-      } else {
-        watchers[watcher] = true;
-      }
-    });
+  if (typeof argv.watch !== 'string') {
+    return {};
   }
+  const args = argv.watch.split(',');
 
-  return watchers;
+  return {
+    icons: args.includes('icons'),
+    images: args.includes('images'),
+    scripts: args.includes('scripts'),
+    styles: args.includes('styles'),
+  };
+}
+
+export function shouldWatch(): boolean {
+  if (typeof argv.watch !== 'string') {
+    return false;
+  }
+  const args = argv.watch.split(',');
+  return ['icons', 'images', 'scripts', 'styles'].some(i => args.includes(i));
 }
 
 export function isDevEnv(): boolean {
@@ -63,14 +51,6 @@ export function reload(done: CallableFunction): void {
   done();
 }
 
-export function getConfigSource(config: gulppress.BasicTaskConfig): string | string[] {
-  return (config && config.src) || '';
-}
-
-export function getConfigDestination(config: gulppress.BasicTaskConfig): string {
-  return (config && config.dest) || '';
-}
-
 export function getStream(
   globs?: Globs | NodeJS.ReadWriteStream,
   options?: SrcOptions,
@@ -82,4 +62,15 @@ export function getStream(
     return src(globs, options);
   }
   return globs;
+}
+
+export function getEmptyTask(displayName: string): TaskFunction {
+  return parallel(
+    (Object.assign(
+      (cb: CallableFunction) => {
+        cb();
+      },
+      { displayName },
+    )),
+  );
 }

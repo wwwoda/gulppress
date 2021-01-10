@@ -1,21 +1,21 @@
 import {
-  dest,
   Globs,
-  src,
   TaskFunction,
+  dest,
+  src,
 } from 'gulp';
 
 const gulpBuster = require('gulp-buster');
 
-export function getBustCacheTask(
+export function bustCacheTask(
   globs: Globs,
   folder: string,
   fileName: string = '.assets.json',
 ): TaskFunction {
-  return () => (getBustCacheStream(globs, folder, fileName));
+  return () => (bustCacheStream(globs, folder, fileName));
 }
 
-export function getBustCacheStream(
+export function bustCacheStream(
   globs: Globs,
   folder: string,
   fileName: string = '.assets.json',

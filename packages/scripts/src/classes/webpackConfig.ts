@@ -1,14 +1,15 @@
+import path from 'path';
 
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import glob from 'glob';
-import path from 'path';
+import { Globs } from 'gulp';
 import { Configuration, Plugin } from 'webpack';
 
+import * as gulppress from '../types';
 import {
   getWatchers,
   isDevEnv,
 } from '../utils';
-import gulppress from '../interfaces';
 
 const HashAssetsPlugin = require('hash-assets-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
@@ -22,28 +23,37 @@ export class WebpackConfig {
 
   private static isTypescriptEnabled: boolean;
 
-  private static targets: gulppress.Targets;
+  private static presetTargets: gulppress.PresetTargets;
 
   public static init(
-    scriptConfig: gulppress.ScriptConfig,
-    baseConfig: gulppress.BaseConfig,
+    // scriptConfig: gulppress.ScriptConfig,
+    // baseConfig: gulppress.BaseConfig,
+    typescript: boolean = true,
+    typechecks: boolean = true,
+    presetTargets: gulppress.PresetTargets = '> 0.25%, not dead',
+    createSeparateMinFiles: boolean = false,
   ) {
-    WebpackConfig.createSeparateMinFiles = baseConfig?.createSeparateMinFiles === true;
+    WebpackConfig.createSeparateMinFiles = createSeparateMinFiles;
     WebpackConfig.isDevelopmentEnvironment = isDevEnv();
-    WebpackConfig.isTypescriptEnabled = scriptConfig.features?.typescript === true;
-    WebpackConfig.isTypechecksEnabled = scriptConfig.features?.typeChecks === true;
-    WebpackConfig.targets = (scriptConfig && scriptConfig.targets) || [
-      '> 1%',
-      'ie >= 11',
-      'last 1 Android versions',
-      'last 1 ChromeAndroid versions',
-      'last 2 Chrome versions',
-      'last 2 Firefox versions',
-      'last 2 Safari versions',
-      'last 2 iOS versions',
-      'last 2 Edge versions',
-      'last 2 Opera versions',
-    ];
+    WebpackConfig.isTypescriptEnabled = typescript;
+    WebpackConfig.isTypechecksEnabled = typechecks;
+    WebpackConfig.presetTargets = presetTargets;
+    // WebpackConfig.createSeparateMinFiles = baseConfig?.createSeparateMinFiles === true;
+    // WebpackConfig.isDevelopmentEnvironment = isDevEnv();
+    // WebpackConfig.isTypescriptEnabled = scriptConfig.features?.typescript === true;
+    // WebpackConfig.isTypechecksEnabled = scriptConfig.features?.typeChecks === true;
+    // WebpackConfig.targets = (scriptConfig && scriptConfig.targets) || [
+    //   '> 1%',
+    //   'ie >= 11',
+    //   'last 1 Android versions',
+    //   'last 1 ChromeAndroid versions',
+    //   'last 2 Chrome versions',
+    //   'last 2 Firefox versions',
+    //   'last 2 Safari versions',
+    //   'last 2 iOS versions',
+    //   'last 2 Edge versions',
+    //   'last 2 Opera versions',
+    // ];
   }
 
   private static getWebpackConfigExtensions(): string[] {
@@ -62,7 +72,7 @@ export class WebpackConfig {
       [
         '@babel/preset-env',
         {
-          targets: WebpackConfig.targets,
+          targets: WebpackConfig.presetTargets,
         },
       ],
     ];
@@ -72,7 +82,7 @@ export class WebpackConfig {
     return presets;
   }
 
-  public static getWebpackConfig(scriptSrc: string | string[], scriptDest: string): Configuration {
+  public static getWebpackConfig(scriptSrc: Globs, scriptDest: string): Configuration {
     const {
       createSeparateMinFiles,
       isDevelopmentEnvironment,

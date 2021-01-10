@@ -1,7 +1,7 @@
-import chalk from 'chalk';
 import fs from 'fs';
 import path from 'path';
-// import pkgDir from 'pkg-dir';
+
+import chalk from 'chalk';
 import readPkg from 'read-pkg-up';
 
 export class VendorPackages {

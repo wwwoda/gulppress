@@ -1,23 +1,51 @@
-import { series, TaskFunction } from 'gulp';
+import { TaskFunction, series } from 'gulp';
 
-import gulpress from '../interfaces';
-import { getMinifyImagesStream } from './images/minifyImages';
-import { getcreatePhpPartialFromSvgStream } from './images/createPhpPartialFromSvg';
+import { ImagesConfig } from '../types';
+import { getEmptyTask } from '../utils';
+import {
+  createPhpPartialFromSvgStream,
+  createPhpPartialFromSvgTask,
+} from './images/createPhpPartialFromSvg';
+import { minifyImagesStream, minifyImagesTask } from './images/minifyImages';
+
+export function getImagesTask(
+  config: ImagesConfig | undefined,
+): TaskFunction {
+  return config
+    ? composeImagesTasks(config)
+    : getEmptyTask('Images task is missing config.');
+}
 
 /**
  * Get composed images task
  * @param config
  */
-export default (config: gulpress.ImagesConfig):
-TaskFunction => series(
-  Object.assign(
-    (cb: CallableFunction) => {
-      const minifyStream = getMinifyImagesStream(config.src, config.dest);
-      if (config.destPhpPartials) {
-        getcreatePhpPartialFromSvgStream(minifyStream, config.destPhpPartials);
-      }
-      cb();
-    },
-    { displayName: 'processImages' },
-  ),
-);
+function composeImagesTasks(config: ImagesConfig): TaskFunction {
+  return series(
+    Object.assign(
+      <T extends Function>(cb: T) => {
+        const minifyStream = minifyImagesStream(
+          config.src,
+          config.dest,
+          config.imagemin,
+        );
+        if (config.destPhpPartials) {
+          createPhpPartialFromSvgStream(minifyStream, config.destPhpPartials);
+        }
+        cb();
+      },
+      {
+        displayName: config.destPhpPartials
+          ? 'images:minify-and-create-partials'
+          : 'images:minify',
+      },
+    ),
+  );
+}
+
+export const subtasks = {
+  createPhpPartialFromSvgTask,
+  createPhpPartialFromSvgStream,
+  minifyImagesTask,
+  minifyImagesStream,
+};

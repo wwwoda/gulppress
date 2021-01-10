@@ -1,4 +1,4 @@
-import { dest, src } from 'gulp';
+import { TaskFunction, dest, src } from 'gulp';
 
 import { Favicon } from '../../classes/favicon';
 
@@ -9,16 +9,21 @@ const file = require('gulp-file');
  * @param folder destination folder
  * @param favicon
  */
-export function getFaviconCreateHtmlTask(
+export function createFaviconHtmlTask(
   folder: string,
   favicon: Favicon,
-) {
-  return (): NodeJS.ReadWriteStream => {
-    const html = favicon.getHtml();
-    if (!html) {
-      return src('./');
-    }
-    return file('favicon.html', html, { src: true })
-      .pipe(dest(folder));
-  };
+): TaskFunction {
+  return () => createFaviconHtmlStream(folder, favicon);
+}
+
+export function createFaviconHtmlStream(
+  folder: string,
+  favicon: Favicon,
+): NodeJS.ReadWriteStream {
+  const html = favicon.getHtml();
+  if (!html) {
+    return src('./', { allowEmpty: true });
+  }
+  return file('favicon.html', html, { src: true })
+    .pipe(dest(folder));
 }

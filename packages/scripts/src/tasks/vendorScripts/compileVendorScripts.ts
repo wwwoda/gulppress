@@ -1,30 +1,31 @@
 import {
-  dest,
-  src,
   Globs,
   TaskFunction,
+  dest,
+  src,
 } from 'gulp';
 import gulpif from 'gulp-if';
 import rename from 'gulp-rename';
 import uglify from 'gulp-uglify';
 import readPkg from 'read-pkg-up';
-import { VendorPackages } from '../../classes/vendorPackages';
 
-import gulppress from '../../interfaces';
+import { VendorPackages } from '../../classes/vendorPackages';
+import * as gulppress from '../../types';
 import { isDevEnv } from '../../utils';
 
 const saveLicense = require('uglify-save-license');
 
 
-export function getCompileVendorScriptsTask(
+export function compileVendorScriptsTask(
+  dirname: string,
   globs: Globs | gulppress.GlobsFunction,
   folder: string,
 ): TaskFunction {
-  return (cb: CallableFunction) => (getCompileVendorScriptsStream(cb, globs, folder));
+  return () => (compileVendorScriptsStream(dirname, globs, folder));
 }
 
-export function getCompileVendorScriptsStream(
-  cb: CallableFunction,
+export function compileVendorScriptsStream(
+  dirname: string,
   globs?: Globs | gulppress.GlobsFunction,
   folder?: string,
 ): NodeJS.ReadWriteStream {
@@ -33,9 +34,9 @@ export function getCompileVendorScriptsStream(
     globs = globs();
   }
   if (!globs || globs.length < 1 || !folder) {
-    return cb();
+    return src('./', { allowEmpty: true });
   }
-  return src(globs, { base: process.cwd() })
+  return src(globs, { base: dirname })
     .pipe(gulpif(!isDevEnv(), uglify({
       output: {
         comments: saveLicense,

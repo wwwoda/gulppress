@@ -1,12 +1,13 @@
-import chalk from 'chalk';
 import browserSync from 'browser-sync';
+import chalk from 'chalk';
+import fancyLog from 'fancy-log';
 import {
-  dest,
   Globs,
+  TaskFunction,
+  dest,
   src,
 } from 'gulp';
 import csso from 'gulp-csso';
-import fancyLog from 'fancy-log';
 import filter from 'gulp-filter';
 import gulpif from 'gulp-if';
 import plumber from 'gulp-plumber';
@@ -20,28 +21,28 @@ import { isDevEnv } from '../../utils';
 
 const { stream } = browserSync;
 
-export function getCompileStylesTask(
+export function compileStylesTask(
   globs: Globs,
   folder: string,
   sassOptions: SassOptions | undefined,
   postcssPlugins: any[] | undefined,
   createSeparateMinFiles: boolean = false,
-) {
-  return (): NodeJS.ReadWriteStream => {
+): TaskFunction {
+  return () => {
     if (createSeparateMinFiles === true) {
-      return (getCompileStylesWithMinFileTask(globs, folder, sassOptions, postcssPlugins))();
+      return compileStylesWithMinFileStream(globs, folder, sassOptions, postcssPlugins);
     }
-    return (getCompileStylesWithoutMinFileTask(globs, folder, sassOptions, postcssPlugins))();
+    return compileStylesWithoutMinFileStream(globs, folder, sassOptions, postcssPlugins);
   };
 }
 
-export function getCompileStylesWithoutMinFileTask(
+export function compileStylesWithoutMinFileStream(
   globs: Globs,
   folder: string,
   sassOptions: SassOptions | undefined,
   postcssPlugins: any[] | undefined,
-) {
-  return (): NodeJS.ReadWriteStream => src(globs, { allowEmpty: true })
+): NodeJS.ReadWriteStream {
+  return src(globs, { allowEmpty: true })
     .pipe(plumber())
     .pipe(gulpif(isDevEnv(), sourcemaps.init()))
     .pipe(
@@ -56,13 +57,13 @@ export function getCompileStylesWithoutMinFileTask(
     .pipe(stream());
 }
 
-export function getCompileStylesWithMinFileTask(
+export function compileStylesWithMinFileStream(
   globs: Globs,
   folder: string,
   sassOptions: SassOptions | undefined,
   postcssPlugins: any[] | undefined,
-) {
-  return (): NodeJS.ReadWriteStream => src(globs, { allowEmpty: true })
+): NodeJS.ReadWriteStream {
+  return src(globs, { allowEmpty: true })
     .pipe(plumber())
     .pipe(gulpif(isDevEnv(), sourcemaps.init()))
     .pipe(

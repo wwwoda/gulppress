@@ -1,27 +1,46 @@
-import { parallel, TaskFunction } from 'gulp';
+import { TaskFunction, parallel } from 'gulp';
+import { Configuration as WebpackConfiguration } from 'webpack';
 
 import { WebpackConfig } from '../classes/webpackConfig';
-import gulpress from '../interfaces';
-import { getConfigSource, getConfigDestination } from '../utils';
-import { compileScripts } from './scripts/compileScripts';
+import { PresetTargets, ScriptConfig } from '../types';
+import { getEmptyTask } from '../utils';
+import { compileScriptsStream, compileScriptsTask } from './scripts/compileScripts';
 
-export default function (
-  config: gulpress.ScriptConfig,
-  baseConfig: gulpress.BaseConfig,
+export function getScriptsTask(
+  config: ScriptConfig | undefined,
+  presetTargets?: PresetTargets,
+  createSeparateMinFiles?: boolean,
 ): TaskFunction {
-  const scriptSrc = getConfigSource(config);
-  const scriptDest = getConfigDestination(config);
-  WebpackConfig.init(config, baseConfig);
-  const webpackConfig = WebpackConfig.getWebpackConfig(scriptSrc, scriptDest);
+  return config
+    ? composeScriptsTasks(config, presetTargets, createSeparateMinFiles)
+    : getEmptyTask('Images task is missing config.');
+}
+
+function composeScriptsTasks(
+  config: ScriptConfig,
+  presetTargets?: PresetTargets,
+  createSeparateMinFiles?: boolean,
+): TaskFunction {
+  const webpackConfig = config.webpackConfig || ((): WebpackConfiguration => {
+    WebpackConfig.init(
+      config.features?.typescript,
+      config.features?.typeChecks,
+      presetTargets,
+      createSeparateMinFiles,
+    );
+    return WebpackConfig.getWebpackConfig(config.src, config.dest);
+  })();
 
   return parallel(
     Object.assign(
-      compileScripts(
+      compileScriptsTask(
         config.src,
         config.dest,
         webpackConfig,
       ),
-      { displayName: 'compileSscripts' },
+      { displayName: 'scripts:compile' },
     ),
   );
 }
+
+export const subtasks = { compileScriptsTask, compileScriptsStream };

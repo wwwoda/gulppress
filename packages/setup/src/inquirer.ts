@@ -1,5 +1,5 @@
-
 import fs from 'fs';
+
 import inquirer from 'inquirer';
 
 import {
@@ -131,6 +131,49 @@ export class Inquirer {
           }
           return features;
         },
+      },
+      {
+        type: 'checkbox',
+        name: 'postcss',
+        message: 'Select PostCSS plugins to include',
+        pageSize: 99,
+        choices: [
+          {
+            // https://github.com/postcss/postcss-calc
+            name: 'PostCSS Calc',
+            value: 'postcss-calc',
+            checked: true,
+          }, {
+            // https://github.com/larsenwork/postcss-easing-gradients
+            name: 'PostCSS Easing Gradients',
+            value: 'postcss-easing-gradients',
+            checked: true,
+          }, {
+            // https://github.com/MadLittleMods/postcss-css-variables
+            name: 'PostCSS CSS Variables',
+            value: 'postcss-css-variables',
+            checked: true,
+          }, {
+            // https://github.com/postcss/postcss-import
+            name: 'PostCSS Import',
+            value: 'postcss-import',
+            checked: true,
+          }, {
+            // https://github.com/FullHuman/postcss-purgecss
+            name: 'PostCSS Purgecss',
+            value: 'postcss-purgecss',
+            checked: true,
+          }, {
+            // https://github.com/postcss/postcss-reporter
+            name: 'PostCSS Reporter',
+            value: 'postcss-reporter',
+            checked: true,
+          }, {
+            name: 'tailwindcss',
+            value: 'tailwindcss',
+            checked: true,
+          },
+        ],
       },
       {
         type: 'confirm',

@@ -1,4 +1,9 @@
-import { dest, Globs, src } from 'gulp';
+import {
+  Globs,
+  TaskFunction,
+  dest,
+  src,
+} from 'gulp';
 import cache from 'gulp-cache';
 import changed from 'gulp-changed';
 import gulpif from 'gulp-if';
@@ -11,12 +16,20 @@ import rename from 'gulp-rename';
  * @param folder destination folder for images
  * @param phpPartialsFolder destination folder for PHP partials created from SVGs
  */
-export function getCreateIconsTask(
+export function createIconsTask(
   globs: Globs,
   folder: string,
   phpPartialsFolder: string | null | undefined,
-) {
-  return (): NodeJS.ReadWriteStream => src(globs, { allowEmpty: true })
+): TaskFunction {
+  return () => createIconsStream(globs, folder, phpPartialsFolder);
+}
+
+export function createIconsStream(
+  globs: Globs,
+  folder: string,
+  phpPartialsFolder: string | null | undefined,
+): NodeJS.ReadWriteStream {
+  return src(globs, { allowEmpty: true })
     .pipe(
       cache(
         imagemin([
@@ -30,7 +43,9 @@ export function getCreateIconsTask(
               },
             ],
           }),
-        ]),
+        ], {
+          silent: true,
+        } as imagemin.Options),
       ),
     )
     .pipe(changed(folder))

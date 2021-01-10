@@ -1,8 +1,13 @@
-import { dest, Globs, src } from 'gulp';
+import {
+  Globs,
+  TaskFunction,
+  dest,
+  src,
+} from 'gulp';
 import imagemin from 'gulp-imagemin';
-import gulppress from '../../interfaces';
 
 import { Favicon } from '../../classes/favicon';
+import * as gulppress from '../../types';
 
 const responsive = require('gulp-responsive');
 
@@ -28,17 +33,34 @@ const defaultFaviconSizes = [
  * @param sizes
  * @param favicon
  */
-export function getCreateFaviconImagesTask(
+export function createFaviconImagesTask(
   globs: Globs,
   folder: string,
   sizes: gulppress.FaviconSizes = [],
   favicon: Favicon,
-) {
+): TaskFunction {
+  return () => createFaviconImagesStream(
+    globs,
+    folder,
+    [
+      ...sizes,
+      ...defaultFaviconSizes,
+    ],
+    favicon,
+  );
+}
+
+export function createFaviconImagesStream(
+  globs: Globs,
+  folder: string,
+  sizes: gulppress.FaviconSizes = [],
+  favicon: Favicon,
+): NodeJS.ReadWriteStream {
   const faviconSizes = [
     ...sizes,
     ...defaultFaviconSizes,
   ];
-  return (): NodeJS.ReadWriteStream => src(globs, { allowEmpty: true })
+  return src(globs, { allowEmpty: true })
     .pipe(favicon.processImage)
     .pipe(responsive({
       'favicon.png': Favicon.getReponsiveConfigs(faviconSizes),

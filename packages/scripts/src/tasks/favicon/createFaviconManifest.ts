@@ -10,16 +10,21 @@ const file = require('gulp-file');
  * @param folder destination folder
  * @param favicon
  */
-export function getCreateFaviconManifestTask(
+export function createFaviconManifestTask(
   folder: string,
   favicon: Favicon,
 ) {
-  return (): NodeJS.ReadWriteStream => {
-    const manifest = favicon.getManifest();
-    if (!manifest) {
-      return src('./');
-    }
-    return file('manifest.json', manifest, { src: true })
-      .pipe(dest(folder));
-  };
+  return () => createFaviconManifestStream(folder, favicon);
+}
+
+export function createFaviconManifestStream(
+  folder: string,
+  favicon: Favicon,
+): NodeJS.ReadWriteStream {
+  const manifest = favicon.getManifest();
+  if (!manifest) {
+    return src('./', { allowEmpty: true });
+  }
+  return file('manifest.json', manifest, { src: true })
+    .pipe(dest(folder));
 }

@@ -1,22 +1,39 @@
-import { series, TaskFunction } from 'gulp';
+import { TaskFunction, series } from 'gulp';
 
-import gulppress from '../interfaces';
 import { VendorPackages } from '../classes/vendorPackages';
-// import { getCompileVendorPackagesTask } from './vendorScripts/compileVendorPackages';
-import { getCompileVendorScriptsStream } from './vendorScripts/compileVendorScripts';
-// import { createVendorScriptsVersionFile } from './vendorScripts/createVendorPackagesVersionFile';
-import { getBustCacheStream } from './utils/bustCache';
-import { getMergeCacheBusterJsonStream } from './vendorScripts/mergeJson';
+import { VendorScriptsConfig } from '../types';
+import { getEmptyTask } from '../utils';
+import { bustCacheStream } from './utils/bustCache';
+import {
+  compileVendorScriptsStream,
+  compileVendorScriptsTask,
+} from './vendorScripts/compileVendorScripts';
+import {
+  mergeCacheBusterJsonStream,
+  mergeCacheBusterJsonTask,
+} from './vendorScripts/mergeCacheBusterJson';
 
-export default function (config: gulppress.VendorScriptsConfig): TaskFunction {
+export function getVendorScriptsTask(
+  config: VendorScriptsConfig | undefined,
+  dirname: string,
+): TaskFunction {
+  return config
+    ? composeVendorScriptsTasks(config, dirname)
+    : getEmptyTask('Vendor scripts task is missing config.');
+}
+
+function composeVendorScriptsTasks(
+  config: VendorScriptsConfig,
+  dirname: string,
+): TaskFunction {
   const packages = new VendorPackages();
   const scripts = typeof config.src === 'string' ? [config.src] : config.src || [];
   return series(
     (Object.assign(
-      (cb: CallableFunction) => {
+      () => {
         packages.init(config.packages);
-        return getCompileVendorScriptsStream(
-          cb,
+        return compileVendorScriptsStream(
+          dirname,
           () => [...scripts, ...packages.getSources()],
           config.dest,
         );
@@ -24,10 +41,10 @@ export default function (config: gulppress.VendorScriptsConfig): TaskFunction {
       { displayName: 'compileVendorScripts' },
     )),
     (Object.assign(
-      (cb: CallableFunction) => {
-        const cacheBuster = getBustCacheStream(`${config.dest}/*.js`, config.dest, '.assets.json');
+      <T extends Function>(cb: T) => {
+        const cacheBuster = bustCacheStream(`${config.dest}/*.js`, config.dest, '.assets.json');
         cacheBuster.on('finish', () => {
-          getMergeCacheBusterJsonStream(config.dest, () => packages.getVersions());
+          mergeCacheBusterJsonStream(config.dest, () => packages.getVersions());
           return cb();
         });
       },
@@ -35,3 +52,10 @@ export default function (config: gulppress.VendorScriptsConfig): TaskFunction {
     )),
   );
 }
+
+export const subtasks = {
+  compileVendorScriptsStream,
+  compileVendorScriptsTask,
+  mergeCacheBusterJsonStream,
+  mergeCacheBusterJsonTask,
+};

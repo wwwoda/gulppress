@@ -1,15 +1,27 @@
-import { parallel, TaskFunction } from 'gulp';
+import { TaskFunction, parallel } from 'gulp';
 
-import gulpress from '../interfaces';
-import { getCreateIconsTask } from './icons/createIcons';
+import { IconsConfig } from '../types';
+import { getEmptyTask } from '../utils';
+import { createIconsStream, createIconsTask } from './icons/createIcons';
+
+export function getIconsTask(
+  config: IconsConfig | undefined,
+): TaskFunction {
+  return config
+    ? composeIconsTasks(config)
+    : getEmptyTask('Icons task is missing config.');
+}
 
 /**
  * Get composed icons task
  * @param config
  */
-export default (config: gulpress.IconsConfig):
-TaskFunction => parallel((
-  Object.assign(
-    getCreateIconsTask(config.src, config.dest, config.destPhpPartials),
-    { displayName: 'processIcons' },
-  )));
+function composeIconsTasks(config: IconsConfig): TaskFunction {
+  return parallel((
+    Object.assign(
+      createIconsTask(config.src, config.dest, config.destPhpPartials),
+      { displayName: 'icons:create' },
+    )));
+}
+
+export const subtasks = { createIconsTask, createIconsStream };

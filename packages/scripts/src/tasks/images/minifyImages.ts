@@ -1,38 +1,41 @@
 import {
-  dest,
   Globs,
   TaskFunction,
+  dest,
 } from 'gulp';
 import cache from 'gulp-cache';
 import changed from 'gulp-changed';
 import imagemin from 'gulp-imagemin';
+
+import { ImageMin } from '../../types';
 import { getStream } from '../../utils';
 
-export function getMinifyImagesTask(
+export function minifyImagesTask(
   globs: Globs | NodeJS.ReadWriteStream,
   folder: string,
 ): TaskFunction {
-  return () => (getMinifyImagesStream(globs, folder));
+  return () => (minifyImagesStream(globs, folder));
 }
 
-export function getMinifyImagesStream(
+export function minifyImagesStream(
   globs: Globs | NodeJS.ReadWriteStream,
   folder: string,
+  imageminConfig?: ImageMin,
 ): NodeJS.ReadWriteStream {
   return getStream(globs, { allowEmpty: true })
     .pipe(
       cache(
         imagemin([
-          imagemin.gifsicle({
+          imagemin.gifsicle(imageminConfig?.gifsicle || {
             interlaced: true,
           }),
-          imagemin.mozjpeg({
+          imagemin.mozjpeg(imageminConfig?.mozjpeg || {
             progressive: true,
           }),
-          imagemin.optipng({
+          imagemin.optipng(imageminConfig?.optipng || {
             optimizationLevel: 3,
           }),
-          imagemin.svgo({
+          imagemin.svgo(imageminConfig?.svgo || {
             plugins: [
               {
                 removeViewBox: false,
@@ -42,7 +45,7 @@ export function getMinifyImagesStream(
               },
             ],
           }),
-        ]),
+        ], imageminConfig?.options || {}),
       ),
     )
     .on('error', e => { console.log(e); })

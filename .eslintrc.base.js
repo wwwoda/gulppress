@@ -1,5 +1,8 @@
 module.exports = {
 	extends: [
+    'plugin:import/errors',
+    'plugin:import/warnings',
+    'plugin:import/typescript',
     'airbnb-typescript/base',
     "plugin:@typescript-eslint/recommended",
 	],
@@ -21,6 +24,12 @@ module.exports = {
     '@typescript-eslint/no-var-requires': 'off',
     '@typescript-eslint/no-namespace': 'off',
     '@typescript-eslint/no-empty-interface': 'off',
+    // "sort-imports": ["error", {
+    //   "ignoreCase": false,
+    //   "ignoreDeclarationSort": false,
+    //   "ignoreMemberSort": false,
+    //   "memberSyntaxSortOrder": ["none", "all", "multiple", "single"],
+    // }],
 	},
 	settings: {
 		'import/parsers': {
