@@ -17,8 +17,7 @@ export function createWoff2FromTtfTask(srcGlobs: Globs): TaskFunction {
   return () => createWoff2FromTtfStream(srcGlobs);
 }
 
-export function createWoff2FromTtfStream(srcGlo
-  bs: Globs): NodeJS.ReadWriteStream {
+export function createWoff2FromTtfStream(srcGlobs: Globs): NodeJS.ReadWriteStream {
   return src(srcGlobs, { allowEmpty: true, base: './' })
     .pipe(filter(file => /ttf$/.test(file.path)))
     .pipe(ttf2woff2())
