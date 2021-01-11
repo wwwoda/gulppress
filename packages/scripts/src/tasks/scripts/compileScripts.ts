@@ -15,19 +15,19 @@ import { getWatchers, isDevEnv } from '../../utils';
 const named = require('vinyl-named');
 
 export function compileScriptsTask(
-  globs: Globs,
-  folder: string,
+  srcGlobs: Globs,
+  destFolder: string,
   webpackConfig: WebpackConfiguration,
 ): TaskFunction {
-  return () => compileScriptsStream(globs, folder, webpackConfig);
+  return () => compileScriptsStream(srcGlobs, destFolder, webpackConfig);
 }
 
 export function compileScriptsStream(
-  globs: Globs,
-  folder: string,
+  srcGlobs: Globs,
+  destFolder: string,
   webpackConfig: WebpackConfiguration,
 ): NodeJS.ReadWriteStream {
-  return src(globs, { allowEmpty: true })
+  return src(srcGlobs, { allowEmpty: true })
     .pipe(plumber())
     .pipe(named())
     .pipe(webpackStream(webpackConfig, undefined, () => {
@@ -35,7 +35,7 @@ export function compileScriptsStream(
         reload();
       }
     }).on('error', onWebpackError))
-    .pipe(dest(folder));
+    .pipe(dest(destFolder));
 }
 
 function onWebpackError(this: any, error: Error) {

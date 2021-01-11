@@ -1,8 +1,8 @@
 import { TaskFunction, parallel } from 'gulp';
+import { createIconsStream, createIconsTask } from './icons/createIcons';
 
 import { IconsConfig } from '../types';
 import { getEmptyTask } from '../utils';
-import { createIconsStream, createIconsTask } from './icons/createIcons';
 
 export function getIconsTask(
   config: IconsConfig | undefined,

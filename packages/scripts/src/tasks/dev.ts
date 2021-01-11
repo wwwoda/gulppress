@@ -1,10 +1,10 @@
 import { TaskFunction, parallel, series } from 'gulp';
+import { getEmptyTask, shouldWatch } from '../utils';
 
 import { MainConfig } from '../types';
-import { getEmptyTask, shouldWatch } from '../utils';
-import { getStartServerTask } from './browserSync';
 import { getCleanTask } from './clean';
 import { getScriptsTask } from './scripts';
+import { getStartServerTask } from './browserSync';
 import { getStylesTask } from './styles';
 import { getWatchTask } from './watch';
 
@@ -20,6 +20,7 @@ export function getDevTask(config: MainConfig): TaskFunction {
 }
 
 export function getDevTasks(config: MainConfig): TaskFunction[] {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const devTasks: any[] = [];
   if (config.scripts) {
     devTasks.push(getScriptsTask(

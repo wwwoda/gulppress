@@ -3,7 +3,7 @@ import path from 'path';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import glob from 'glob';
 import { Globs } from 'gulp';
-import { Configuration, Plugin } from 'webpack';
+import { Configuration } from 'webpack';
 
 import * as gulppress from '../types';
 import {
@@ -26,8 +26,6 @@ export class WebpackConfig {
   private static presetTargets: gulppress.PresetTargets;
 
   public static init(
-    // scriptConfig: gulppress.ScriptConfig,
-    // baseConfig: gulppress.BaseConfig,
     typescript: boolean = true,
     typechecks: boolean = true,
     presetTargets: gulppress.PresetTargets = '> 0.25%, not dead',
@@ -38,22 +36,6 @@ export class WebpackConfig {
     WebpackConfig.isTypescriptEnabled = typescript;
     WebpackConfig.isTypechecksEnabled = typechecks;
     WebpackConfig.presetTargets = presetTargets;
-    // WebpackConfig.createSeparateMinFiles = baseConfig?.createSeparateMinFiles === true;
-    // WebpackConfig.isDevelopmentEnvironment = isDevEnv();
-    // WebpackConfig.isTypescriptEnabled = scriptConfig.features?.typescript === true;
-    // WebpackConfig.isTypechecksEnabled = scriptConfig.features?.typeChecks === true;
-    // WebpackConfig.targets = (scriptConfig && scriptConfig.targets) || [
-    //   '> 1%',
-    //   'ie >= 11',
-    //   'last 1 Android versions',
-    //   'last 1 ChromeAndroid versions',
-    //   'last 2 Chrome versions',
-    //   'last 2 Firefox versions',
-    //   'last 2 Safari versions',
-    //   'last 2 iOS versions',
-    //   'last 2 Edge versions',
-    //   'last 2 Opera versions',
-    // ];
   }
 
   private static getWebpackConfigExtensions(): string[] {
@@ -82,17 +64,17 @@ export class WebpackConfig {
     return presets;
   }
 
-  public static getWebpackConfig(scriptSrc: Globs, scriptDest: string): Configuration {
+  public static getWebpackConfig(srcGlobs: Globs, destFolder: string): Configuration {
     const {
       createSeparateMinFiles,
       isDevelopmentEnvironment,
     } = WebpackConfig;
-    const source = WebpackConfig.getSource(scriptSrc);
+    const source = WebpackConfig.getSource(srcGlobs);
 
     const webpackConfig: Configuration = {
       watch: getWatchers().scripts === true,
       output: {
-        path: scriptDest,
+        path: destFolder,
         filename: '[name].js',
       },
       module: {
@@ -118,7 +100,6 @@ export class WebpackConfig {
         jquery: 'jQuery',
       },
       plugins: WebpackConfig.getWebpackPlugins(),
-      cache: {},
       entry: Object.entries(source).length >= 1 ? source : '',
       devtool: isDevelopmentEnvironment ? 'inline-source-map' : false,
       mode: isDevelopmentEnvironment ? 'development' : 'production',
@@ -135,7 +116,7 @@ export class WebpackConfig {
     return webpackConfig;
   }
 
-  private static getWebpackPlugins(): Plugin[] {
+  private static getWebpackPlugins(): any[] {
     const {
       isTypechecksEnabled,
       isTypescriptEnabled,

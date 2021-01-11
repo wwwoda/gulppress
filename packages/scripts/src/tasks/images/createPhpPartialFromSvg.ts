@@ -8,30 +8,30 @@ import { getStream } from '../../utils';
 /**
  * Create favicon PNGs
  * @param globs Takes a glob string or an array of glob strings as the first argument
- * @param folder destination folder for images
+ * @param destFolder destination folder for images
  */
 export function createPhpPartialFromSvgTask(
   globs: Globs | NodeJS.ReadWriteStream,
-  folder: string,
+  destFolder: string,
 ): TaskFunction {
-  return () => (createPhpPartialFromSvgStream(globs, folder));
+  return () => (createPhpPartialFromSvgStream(globs, destFolder));
 }
 
 /**
  * Create favicon PNGs
- * @param globs Takes a glob string or an array of glob strings as the first argument
- * @param folder destination folder for images
+ * @param srcGlobs Takes a glob string or an array of glob strings as the first argument
+ * @param destFolder destination folder for images
  */
 export function createPhpPartialFromSvgStream(
-  globs: Globs | NodeJS.ReadWriteStream,
-  folder: string,
+  srcGlobs: Globs | NodeJS.ReadWriteStream,
+  destFolder: string,
 ): NodeJS.ReadWriteStream {
   const svgFilter = filter('**/*.svg');
-  return getStream(globs, { allowEmpty: true })
+  return getStream(srcGlobs, { allowEmpty: true })
     .pipe(svgFilter)
     .pipe(rename({
       extname: '.php',
     }))
-    .pipe(changed(folder))
-    .pipe(dest(folder));
+    .pipe(changed(destFolder))
+    .pipe(dest(destFolder));
 }

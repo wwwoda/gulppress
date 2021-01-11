@@ -8,24 +8,24 @@ import {
 const gulpBuster = require('gulp-buster');
 
 export function bustCacheTask(
-  globs: Globs,
-  folder: string,
+  srcGlobs: Globs,
+  destFolder: string,
   fileName: string = '.assets.json',
 ): TaskFunction {
-  return () => (bustCacheStream(globs, folder, fileName));
+  return () => (bustCacheStream(srcGlobs, destFolder, fileName));
 }
 
 export function bustCacheStream(
-  globs: Globs,
-  folder: string,
+  srcGlobs: Globs,
+  destFolder: string,
   fileName: string = '.assets.json',
 ): NodeJS.ReadWriteStream {
-  return src(globs)
+  return src(srcGlobs)
     .pipe(
       gulpBuster({
         fileName,
-        relativePath: folder,
+        relativePath: destFolder,
       }),
     )
-    .pipe(dest(folder));
+    .pipe(dest(destFolder));
 }

@@ -14,32 +14,32 @@ const pngFilter = filter('**/*.png');
 
 /**
  * Create favicon.ico file
- * @param globs Takes a glob string or an array of glob strings as the first argument
- * @param folder destination folder
+ * @param srcGlobs Takes a glob string or an array of glob strings as the first argument
+ * @param destFolder destination folder
  * @param favicon
  */
 export function createFaviconIconTask(
-  globs: Globs,
-  folder: string,
+  srcGlobs: Globs,
+  destFolder: string,
   favicon: Favicon,
 ): TaskFunction {
-  return () => createFaviconIconStream(globs, folder, favicon);
+  return () => createFaviconIconStream(srcGlobs, destFolder, favicon);
 }
 
 export function createFaviconIconStream(
-  globs: Globs,
-  folder: string,
+  srcGlobs: Globs,
+  destFolder: string,
   favicon: Favicon,
 ): NodeJS.ReadWriteStream {
   if (favicon.size < 16) {
     return src('./', { allowEmpty: true });
   }
 
-  return src(globs, { allowEmpty: true })
+  return src(srcGlobs, { allowEmpty: true })
     .pipe(pngFilter)
     .pipe(ico('favicon.ico', {
       resize: true,
       sizes: [16, 32, 48],
     }))
-    .pipe(dest(folder));
+    .pipe(dest(destFolder));
 }

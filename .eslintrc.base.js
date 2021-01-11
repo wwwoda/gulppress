@@ -4,13 +4,8 @@ module.exports = {
     'plugin:import/warnings',
     'plugin:import/typescript',
     'airbnb-typescript/base',
-    "plugin:@typescript-eslint/recommended",
 	],
 	parser: '@typescript-eslint/parser',
-	parserOptions: {
-		project: './tsconfig.json',
-		tsconfigRootDir: __dirname,
-	},
 	plugins: [
     '@typescript-eslint',
 	],
@@ -18,27 +13,15 @@ module.exports = {
 		'import/named': 'off',
 		'import/no-cycle': 'off',
 		'import/no-dynamic-require': 'off',
+    'import/no-extraneous-dependencies' : 'off',
 		'import/prefer-default-export': 'off',
+    'max-len': ['error', { 'code': 100, 'ignoreComments': true }],
     'no-console': 'off',
     'no-restricted-syntax': 'off',
+    'no-use-before-define': ['error', {'functions': false}],
     '@typescript-eslint/no-var-requires': 'off',
     '@typescript-eslint/no-namespace': 'off',
     '@typescript-eslint/no-empty-interface': 'off',
-    // "sort-imports": ["error", {
-    //   "ignoreCase": false,
-    //   "ignoreDeclarationSort": false,
-    //   "ignoreMemberSort": false,
-    //   "memberSyntaxSortOrder": ["none", "all", "multiple", "single"],
-    // }],
-	},
-	settings: {
-		'import/parsers': {
-			'@typescript-eslint/parser': ['.ts', '.tsx'],
-		},
-		'import/resolver': {
-			typescript: {
-				directory: __dirname,
-			},
-		},
+    '@typescript-eslint/no-use-before-define': ['error', {'functions': false}],
 	},
 };

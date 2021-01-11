@@ -28,20 +28,20 @@ const defaultFaviconSizes = [
 
 /**
  * Create favicon PNGs
- * @param globs Takes a glob string or an array of glob strings as the first argument
- * @param folder destination folder
+ * @param srcGlobs Takes a glob string or an array of glob strings as the first argument
+ * @param destFolder destination folder
  * @param sizes
  * @param favicon
  */
 export function createFaviconImagesTask(
-  globs: Globs,
-  folder: string,
+  srcGlobs: Globs,
+  destFolder: string,
   sizes: gulppress.FaviconSizes = [],
   favicon: Favicon,
 ): TaskFunction {
   return () => createFaviconImagesStream(
-    globs,
-    folder,
+    srcGlobs,
+    destFolder,
     [
       ...sizes,
       ...defaultFaviconSizes,
@@ -51,8 +51,8 @@ export function createFaviconImagesTask(
 }
 
 export function createFaviconImagesStream(
-  globs: Globs,
-  folder: string,
+  srcGlobs: Globs,
+  destFolder: string,
   sizes: gulppress.FaviconSizes = [],
   favicon: Favicon,
 ): NodeJS.ReadWriteStream {
@@ -60,7 +60,7 @@ export function createFaviconImagesStream(
     ...sizes,
     ...defaultFaviconSizes,
   ];
-  return src(globs, { allowEmpty: true })
+  return src(srcGlobs, { allowEmpty: true })
     .pipe(favicon.processImage)
     .pipe(responsive({
       'favicon.png': Favicon.getReponsiveConfigs(faviconSizes),
@@ -71,5 +71,5 @@ export function createFaviconImagesStream(
       silent: true,
     }))
     .pipe(imagemin())
-    .pipe(dest(folder));
+    .pipe(dest(destFolder));
 }

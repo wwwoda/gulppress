@@ -11,22 +11,22 @@ const sort = require('gulp-sort');
 const wpPot = require('gulp-wp-pot');
 
 export function createPotFileTask(
-  globs: Globs,
-  folder: string,
+  srcGlobs: Globs,
+  destFolder: string,
   wpPotOptions: gulppress.WpPotOptions = {},
 ): TaskFunction {
-  return () => createPotFileStream(globs, folder, wpPotOptions);
+  return () => createPotFileStream(srcGlobs, destFolder, wpPotOptions);
 }
 
 export function createPotFileStream(
-  globs: Globs,
-  folder: string,
+  srcGlobs: Globs,
+  destFolder: string,
   wpPotOptions: gulppress.WpPotOptions = {},
 ): NodeJS.ReadWriteStream {
-  return src(globs, { allowEmpty: true })
+  return src(srcGlobs, { allowEmpty: true })
     .pipe(sort())
     .pipe(
       wpPot(wpPotOptions),
     )
-    .pipe(dest(`${folder}`));
+    .pipe(dest(`${destFolder}`));
 }

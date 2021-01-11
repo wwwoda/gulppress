@@ -18,25 +18,25 @@ const saveLicense = require('uglify-save-license');
 
 export function compileVendorScriptsTask(
   dirname: string,
-  globs: Globs | gulppress.GlobsFunction,
-  folder: string,
+  srcGlobs: Globs | gulppress.GlobsFunction,
+  destFolder: string,
 ): TaskFunction {
-  return () => (compileVendorScriptsStream(dirname, globs, folder));
+  return () => (compileVendorScriptsStream(dirname, srcGlobs, destFolder));
 }
 
 export function compileVendorScriptsStream(
   dirname: string,
-  globs?: Globs | gulppress.GlobsFunction,
-  folder?: string,
+  srcGlobs?: Globs | gulppress.GlobsFunction,
+  destFolder?: string,
 ): NodeJS.ReadWriteStream {
-  if (typeof globs === 'function') {
+  if (typeof srcGlobs === 'function') {
     // eslint-disable-next-line no-param-reassign
-    globs = globs();
+    srcGlobs = srcGlobs();
   }
-  if (!globs || globs.length < 1 || !folder) {
+  if (!srcGlobs || srcGlobs.length < 1 || !destFolder) {
     return src('./', { allowEmpty: true });
   }
-  return src(globs, { base: dirname })
+  return src(srcGlobs, { base: dirname })
     .pipe(gulpif(!isDevEnv(), uglify({
       output: {
         comments: saveLicense,
@@ -68,5 +68,5 @@ export function compileVendorScriptsStream(
         extname,
       };
     }))
-    .pipe(dest(folder));
+    .pipe(dest(destFolder));
 }

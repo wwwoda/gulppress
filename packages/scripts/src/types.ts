@@ -1,4 +1,3 @@
-import autoprefixer from 'autoprefixer';
 import browserSync from 'browser-sync';
 import { Globs } from 'gulp';
 import imagemin from 'gulp-imagemin';
@@ -19,7 +18,7 @@ export interface BasicTaskConfig {
 
 export interface LocalConfig {
   assets? : string | string[];
-  browserList?: string | Array<string> | IndexedObject;
+  browserList?: string | string[] | IndexedObject;
   browserSync?: browserSync.Options
   scripts?: ScriptConfig;
   styles?: StylesConfig;
@@ -89,7 +88,7 @@ export interface ImagesConfig extends BasicTaskConfig {
 
 export interface ScriptConfig extends BasicTaskConfig {
   webpackConfig?: WebpackConfiguration;
-  watch?: string | Array<string>;
+  watch?: string | string[];
   targets?: PresetTargets;
   features?: {
     typescript?: boolean;
@@ -98,9 +97,8 @@ export interface ScriptConfig extends BasicTaskConfig {
 }
 
 export interface StylesConfig extends BasicTaskConfig {
-  watch?: string | Array<string>;
+  watch?: string | string[];
   sassOptions?: SassOptions;
-  autoprefixerOptions?: autoprefixer.Options;
   postcssPlugins?: any[];
 }
 
@@ -114,7 +112,7 @@ export interface VendorScriptsConfig {
   dest: string;
 }
 
-export type PresetTargets = string | Array<string> | IndexedObject;
+export type PresetTargets = string | string[] | IndexedObject;
 
 export interface IndexedObject {
   [key: string]: string

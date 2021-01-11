@@ -6,29 +6,18 @@ module.exports = {
 		node: true,
 	},
 	extends: [
-    'airbnb-typescript/base',
+    '../../.eslintrc.base.js',
 	],
 	parser: '@typescript-eslint/parser',
 	parserOptions: {
 		project: './tsconfig.json',
 		tsconfigRootDir: __dirname,
-		ecmaVersion: 2018,
-		sourceType: 'module'
+		// ecmaVersion: 2018,
+		// sourceType: 'module'
 	},
-	plugins: [
-    '@typescript-eslint',
-	],
-	rules: {
-    'import/no-extraneous-dependencies' : 'off',
-		'import/prefer-default-export': 'off',
-    'max-len': ['error', { 'code': 100, 'ignoreComments': true }],
-    'no-console': 'off',
-    'no-restricted-syntax': 'off',
-    'no-use-before-define': ['error', {'functions': false}],
-    '@typescript-eslint/no-var-requires': 'off',
-    '@typescript-eslint/no-namespace': 'off',
-    '@typescript-eslint/no-empty-interface': 'off',
-	},
+	// plugins: [
+  //   '@typescript-eslint',
+	// ],
   settings: {
     'import/resolver': {
       node: {

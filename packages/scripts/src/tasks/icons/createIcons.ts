@@ -12,24 +12,24 @@ import rename from 'gulp-rename';
 
 /**
  * Minif SVGs and turn them into PHP partials
- * @param globs Takes a glob string or an array of glob strings as the first argument
- * @param folder destination folder for images
+ * @param srcGlobs Takes a glob string or an array of glob strings as the first argument
+ * @param destFolder destination folder for images
  * @param phpPartialsFolder destination folder for PHP partials created from SVGs
  */
 export function createIconsTask(
-  globs: Globs,
-  folder: string,
+  srcGlobs: Globs,
+  destFolder: string,
   phpPartialsFolder: string | null | undefined,
 ): TaskFunction {
-  return () => createIconsStream(globs, folder, phpPartialsFolder);
+  return () => createIconsStream(srcGlobs, destFolder, phpPartialsFolder);
 }
 
 export function createIconsStream(
-  globs: Globs,
-  folder: string,
+  srcGlobs: Globs,
+  destFolder: string,
   phpPartialsFolder: string | null | undefined,
 ): NodeJS.ReadWriteStream {
-  return src(globs, { allowEmpty: true })
+  return src(srcGlobs, { allowEmpty: true })
     .pipe(
       cache(
         imagemin([
@@ -48,11 +48,11 @@ export function createIconsStream(
         } as imagemin.Options),
       ),
     )
-    .pipe(changed(folder))
-    .pipe(dest(folder))
+    .pipe(changed(destFolder))
+    .pipe(dest(destFolder))
     .pipe(gulpif(!!phpPartialsFolder, rename({
       extname: '.php',
     })))
-    .pipe(gulpif(!!phpPartialsFolder, changed(phpPartialsFolder || folder)))
-    .pipe(gulpif(!!phpPartialsFolder, dest(phpPartialsFolder || folder)));
+    .pipe(gulpif(!!phpPartialsFolder, changed(phpPartialsFolder || destFolder)))
+    .pipe(gulpif(!!phpPartialsFolder, dest(phpPartialsFolder || destFolder)));
 }

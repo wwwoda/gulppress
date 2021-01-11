@@ -5,17 +5,17 @@ import * as gulppress from '../../types';
 const mergeJson = require('gulp-merge-json');
 
 export function mergeCacheBusterJsonTask(
-  folder: string,
+  destFolder: string,
   json: gulppress.IndexedObject | (() => gulppress.IndexedObject),
 ): TaskFunction {
-  return () => (mergeCacheBusterJsonStream(folder, json));
+  return () => (mergeCacheBusterJsonStream(destFolder, json));
 }
 
 export function mergeCacheBusterJsonStream(
-  folder: string,
+  destFolder: string,
   json: gulppress.IndexedObject | (() => gulppress.IndexedObject),
 ): NodeJS.ReadWriteStream {
-  return src(`${folder}/.assets.json`)
+  return src(`${destFolder}/.assets.json`)
     .pipe(
       mergeJson({
         fileName: '.assets.json',
@@ -25,5 +25,5 @@ export function mergeCacheBusterJsonStream(
         }),
       }),
     )
-    .pipe(dest(folder));
+    .pipe(dest(destFolder));
 }

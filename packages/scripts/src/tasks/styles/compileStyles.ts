@@ -23,26 +23,26 @@ const { stream } = browserSync;
 
 export function compileStylesTask(
   globs: Globs,
-  folder: string,
+  destFolder: string,
   sassOptions: SassOptions | undefined,
   postcssPlugins: any[] | undefined,
   createSeparateMinFiles: boolean = false,
 ): TaskFunction {
   return () => {
     if (createSeparateMinFiles === true) {
-      return compileStylesWithMinFileStream(globs, folder, sassOptions, postcssPlugins);
+      return compileStylesWithMinFileStream(globs, destFolder, sassOptions, postcssPlugins);
     }
-    return compileStylesWithoutMinFileStream(globs, folder, sassOptions, postcssPlugins);
+    return compileStylesWithoutMinFileStream(globs, destFolder, sassOptions, postcssPlugins);
   };
 }
 
 export function compileStylesWithoutMinFileStream(
-  globs: Globs,
-  folder: string,
+  srcGlobs: Globs,
+  destFolder: string,
   sassOptions: SassOptions | undefined,
   postcssPlugins: any[] | undefined,
 ): NodeJS.ReadWriteStream {
-  return src(globs, { allowEmpty: true })
+  return src(srcGlobs, { allowEmpty: true })
     .pipe(plumber())
     .pipe(gulpif(isDevEnv(), sourcemaps.init()))
     .pipe(
@@ -52,18 +52,18 @@ export function compileStylesWithoutMinFileStream(
     .on('error', onPostCSSError)
     .pipe(gulpif(!isDevEnv(), csso()))
     .pipe(gulpif(isDevEnv(), sourcemaps.write('.')))
-    .pipe(dest(folder))
+    .pipe(dest(destFolder))
     .pipe(filter('**/*.css'))
     .pipe(stream());
 }
 
 export function compileStylesWithMinFileStream(
-  globs: Globs,
-  folder: string,
+  srcGlobs: Globs,
+  destFolder: string,
   sassOptions: SassOptions | undefined,
   postcssPlugins: any[] | undefined,
 ): NodeJS.ReadWriteStream {
-  return src(globs, { allowEmpty: true })
+  return src(srcGlobs, { allowEmpty: true })
     .pipe(plumber())
     .pipe(gulpif(isDevEnv(), sourcemaps.init()))
     .pipe(
@@ -72,14 +72,14 @@ export function compileStylesWithMinFileStream(
     .pipe(postcss(postcssPlugins))
     .on('error', onPostCSSError)
     .pipe(gulpif(isDevEnv(), sourcemaps.write({ includeContent: false })))
-    .pipe(dest(folder))
+    .pipe(dest(destFolder))
     .pipe(filter('**/*.css'))
     .pipe(stream())
     .pipe(rename({ suffix: '.min' }))
     .pipe(gulpif(isDevEnv(), sourcemaps.init({ loadMaps: true })))
     .pipe(csso())
     .pipe(gulpif(isDevEnv(), sourcemaps.write('./')))
-    .pipe(dest(folder))
+    .pipe(dest(destFolder))
     .pipe(stream());
 }
 

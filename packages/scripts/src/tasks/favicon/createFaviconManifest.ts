@@ -7,18 +7,18 @@ const file = require('gulp-file');
 
 /**
  * Create manifest.json file
- * @param folder destination folder
+ * @param destFolder destination folder
  * @param favicon
  */
 export function createFaviconManifestTask(
-  folder: string,
+  destFolder: string,
   favicon: Favicon,
 ) {
-  return () => createFaviconManifestStream(folder, favicon);
+  return () => createFaviconManifestStream(destFolder, favicon);
 }
 
 export function createFaviconManifestStream(
-  folder: string,
+  destFolder: string,
   favicon: Favicon,
 ): NodeJS.ReadWriteStream {
   const manifest = favicon.getManifest();
@@ -26,5 +26,5 @@ export function createFaviconManifestStream(
     return src('./', { allowEmpty: true });
   }
   return file('manifest.json', manifest, { src: true })
-    .pipe(dest(folder));
+    .pipe(dest(destFolder));
 }

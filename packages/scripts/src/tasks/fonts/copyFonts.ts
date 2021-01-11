@@ -9,16 +9,16 @@ import filter from 'gulp-filter';
 
 /**
  * Create favicon PNGs
- * @param globs Takes a glob string or an array of glob strings as the first argument
- * @param folder destination folder
+ * @param srcGlobs Takes a glob string or an array of glob strings as the first argument
+ * @param destFolder destination folder
  */
-export function copyFontsTask(globs: Globs, folder: string): TaskFunction {
-  return () => copyFontsStream(globs, folder);
+export function copyFontsTask(srcGlobs: Globs, destFolder: string): TaskFunction {
+  return () => copyFontsStream(srcGlobs, destFolder);
 }
 
-export function copyFontsStream(globs: Globs, folder: string): NodeJS.ReadWriteStream {
-  return src(globs, { allowEmpty: true })
+export function copyFontsStream(srcGlobs: Globs, destFolder: string): NodeJS.ReadWriteStream {
+  return src(srcGlobs, { allowEmpty: true })
     .pipe(filter(file => /(woff|woff2)$/.test(file.path)))
-    .pipe(changed(folder))
-    .pipe(dest(folder));
+    .pipe(changed(destFolder))
+    .pipe(dest(destFolder));
 }

@@ -11,18 +11,18 @@ import { ImageMin } from '../../types';
 import { getStream } from '../../utils';
 
 export function minifyImagesTask(
-  globs: Globs | NodeJS.ReadWriteStream,
-  folder: string,
+  srcGlobs: Globs | NodeJS.ReadWriteStream,
+  destFolder: string,
 ): TaskFunction {
-  return () => (minifyImagesStream(globs, folder));
+  return () => (minifyImagesStream(srcGlobs, destFolder));
 }
 
 export function minifyImagesStream(
-  globs: Globs | NodeJS.ReadWriteStream,
-  folder: string,
+  srcGlobs: Globs | NodeJS.ReadWriteStream,
+  destFolder: string,
   imageminConfig?: ImageMin,
 ): NodeJS.ReadWriteStream {
-  return getStream(globs, { allowEmpty: true })
+  return getStream(srcGlobs, { allowEmpty: true })
     .pipe(
       cache(
         imagemin([
@@ -49,6 +49,6 @@ export function minifyImagesStream(
       ),
     )
     .on('error', e => { console.log(e); })
-    .pipe(changed(folder))
-    .pipe(dest(folder));
+    .pipe(changed(destFolder))
+    .pipe(dest(destFolder));
 }
