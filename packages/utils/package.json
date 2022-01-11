@@ -1,0 +1,29 @@
+{
+  "name": "@gulppress/utils",
+  "version": "0.11.0",
+  "private": false,
+  "homepage": "https://github.com/wwwoda/gulppress",
+  "license": "MIT",
+  "author": "Woda Digital",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "types"
+  ],
+  "scripts": {
+    "build": "yarn clean && tsc -p tsconfig.json",
+    "dev": "yarn clean && tsc -p tsconfig.json --watch",
+    "clean": "rimraf './lib' && rm -f ./tsconfig.tsbuildinfo",
+    "lint": "eslint src --ext='.ts,.js'"
+  },
+  "dependencies": {
+    "gulp": "^4"
+  },
+  "devDependencies": {
+    "@types/gulp": "^4.0.9"
+  },
+  "engines": {
+    "node": ">=12"
+  }
+}

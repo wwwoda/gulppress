@@ -1,0 +1,14 @@
+{
+  "extends": "@wwwoda/tsconfig",
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "commonjs",
+    "lib": [
+      "esnext"
+    ],
+    "esModuleInterop": true
+  },
+  "exclude": [
+    "archive"
+  ]
+}

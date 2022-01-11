@@ -1,0 +1,20 @@
+import { TaskFunction } from 'gulp';
+import { FaviconConfig } from '../types';
+import { createFaviconIconStream, createFaviconIconTask } from './favicon/createFaviconIcon';
+import { createFaviconImagesStream, createFaviconImagesTask } from './favicon/createFaviconImages';
+import { createFaviconManifestStream, createFaviconManifestTask } from './favicon/createFaviconManifest';
+import { createFaviconHtmlStream, createFaviconHtmlTask } from './favicon/creatFaviconHtml';
+import { setFaviconColorStream, setFaviconColorTask } from './favicon/setFaviconColor';
+export declare function getFaviconTask(config: FaviconConfig | undefined): TaskFunction;
+export declare const subtasks: {
+    createFaviconHtmlStream: typeof createFaviconHtmlStream;
+    createFaviconHtmlTask: typeof createFaviconHtmlTask;
+    createFaviconIconStream: typeof createFaviconIconStream;
+    createFaviconIconTask: typeof createFaviconIconTask;
+    createFaviconImagesStream: typeof createFaviconImagesStream;
+    createFaviconImagesTask: typeof createFaviconImagesTask;
+    createFaviconManifestStream: typeof createFaviconManifestStream;
+    createFaviconManifestTask: typeof createFaviconManifestTask;
+    setFaviconColorStream: typeof setFaviconColorStream;
+    setFaviconColorTask: typeof setFaviconColorTask;
+};

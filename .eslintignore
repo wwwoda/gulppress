@@ -1,1 +1,5 @@
-packages/**/lib/**
+node_modules
+archive
+packages/**/lib
+packages/**/node_modules
+packages/**/.eslintrc.cjs

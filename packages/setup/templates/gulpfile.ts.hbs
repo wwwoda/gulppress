@@ -1,78 +1,23 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import * as gulppress from '@gulppress/scripts';
-import {
-  parallel,
-  series,
-  task,
-  watch,
-} from 'gulp';
+import { task } from 'gulp';
 import cache from 'gulp-cache';
 
 const config = gulppress.config.getConfig(__dirname, './gulppress.config', './gulppress.local.config');
+const { tasks } = gulppress;
 
-task('watch', () => {
-  const watchers = gulppress.utils.getWatchers();
-
-  if (config) {
-    if (watchers.styles && config.styles && config.styles.watch) {
-      watch(
-        config.styles.watch,
-        series(gulppress.getStylesTask(config.styles, config.base.createSeparateMinFiles)),
-      );
-    }
-    if (watchers.icons && config.icons && config.icons.src) {
-      watch(config.icons.src, series(gulppress.getIconsTask(config.icons)));
-    }
-    if (watchers.images && config.images && config.images.src) {
-      watch(config.images.src, series(gulppress.getImagesTask(config.images)));
-    }
-  }
-});
-
-task('development', series(
-  gulppress.getCleanTask(
-    config.scripts?.dest,
-    config.styles?.dest,
-  ),
-  parallel(gulppress.getDevTasks(config, config.browserList, config.base.createSeparateMinFiles)),
-));
-
-task('assets', series(
-  gulppress.getCleanTask(
-    config.favicon?.dest,
-    config.fonts?.dest,
-    config.icons?.dest,
-    config.images?.dest,
-    config.translation?.dest,
-    config.vendorScripts?.dest,
-  ),
-  parallel(gulppress.getAssetsTasks(config)),
-));
-
-task('build', series(
-  gulppress.getCleanTask(
-    config.scripts?.dest,
-    config.styles?.dest,
-    config.favicon?.dest,
-    config.fonts?.dest,
-    config.icons?.dest,
-    config.images?.dest,
-    config.translation?.dest,
-    config.vendorScripts?.dest,
-  ),
-  parallel(gulppress.getBuildTasks(config, config.browserList, config.base.createSeparateMinFiles)),
-));
-
-task('default', series('build'));
-
-task('clean', gulppress.getCleanTask());
-task('favicon', gulppress.getFaviconTask(config.favicon));
-task('fonts', gulppress.getFontsTask(config.fonts));
-task('icons', gulppress.getIconsTask(config.icons));
-task('images', gulppress.getImagesTask(config.images));
-task('scripts', gulppress.getScriptsTask(config.scripts, config.browserList, config.base.createSeparateMinFiles));
-task('serve', gulppress.getStartServerTask(config.browserSync));
-task('styles', gulppress.getStylesTask(config.styles, config.base.createSeparateMinFiles));
-task('translate', gulppress.getTranslationTask(config.translation));
-task('vendorScripts', gulppress.getVendorScriptsTask(config.vendorScripts, config.base.dirname));
+task('default', tasks.build.getBuildTask(config));
+task('watch', tasks.watch.getWatchTask(config));
+task('development', tasks.dev.getDevTask(config));
+task('assets', tasks.assets.getAssetsTask(config));
+task('build', tasks.build.getBuildTask(config));
+task('favicon', tasks.favicon.getFaviconTask(config.favicon));
+task('fonts', tasks.fonts.getFontsTask(config.fonts));
+task('icons', tasks.icons.getIconsTask(config.icons));
+task('images', tasks.images.getImagesTask(config.images));
+task('scripts', tasks.scripts.getScriptsTask(config.scripts, config.browserList, config.base.createSeparateMinFiles));
+task('serve', tasks.browserSync.getStartServerTask(config.browserSync));
+task('styles', tasks.styles.getStylesTask(config.styles, config.base.createSeparateMinFiles));
+task('translate', tasks.translate.getTranslationTask(config.translation));
+task('vendorScripts', tasks.vendorScripts.getVendorScriptsTask(config.vendorScripts, config.base.dirname));
 task('clearCache', () => cache.clearAll());

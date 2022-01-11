@@ -1,0 +1,35 @@
+{
+  "name": "@gulppress/translate",
+  "version": "0.11.0",
+  "private": false,
+  "homepage": "https://github.com/wwwoda/gulppress",
+  "license": "MIT",
+  "author": "Woda Digital",
+  "main": "lib/index.js",
+  "types": "types/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "yarn clean && tsc -p tsconfig.json",
+    "dev": "yarn clean && tsc -p tsconfig.json --watch",
+    "clean": "rimraf './lib' && rm -f ./tsconfig.tsbuildinfo",
+    "lint": "eslint src --ext='.ts,.js'"
+  },
+  "dependencies": {
+    "@gulppress/utils": "*",
+    "gulp": "^4",
+    "gulp-sort": "^2.0.0",
+    "gulp-wp-pot": "^2.5.0",
+    "vinyl": "^2.2.1"
+  },
+  "devDependencies": {
+    "@types/gulp": "^4.0.9"
+  },
+  "peerDependencies": {
+    "gulp": "^4"
+  },
+  "engines": {
+    "node": ">=12"
+  }
+}

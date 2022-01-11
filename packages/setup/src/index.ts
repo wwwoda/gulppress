@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import chalk from 'chalk';
+import log from 'fancy-log';
 import { setup } from './setup';
 
 const currentNodeVersion = process.versions.node;
@@ -9,7 +10,7 @@ const major = parseInt(semver[0], 10);
 // If below Node 8.
 if (major < 12) {
   // eslint-disable-next-line  no-console
-  console.error(
+  log.error(
     chalk.red(`GulpPress requires Node 12 or higher while you are running Node ${currentNodeVersion}\n
     //   Please update your version of Node.`),
   );
@@ -19,7 +20,7 @@ if (major < 12) {
 // Makes the script crash on unhandled rejections instead of silently
 // ignoring them. In the future, promise rejections that are not handled will
 // terminate the Node.js process with a non-zero exit code.
-process.on('unhandledRejection', err => {
+process.on('unhandledRejection', (err) => {
   throw err;
 });
 

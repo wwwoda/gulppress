@@ -2,6 +2,7 @@
 
 # Compiled libraries
 packages/*/lib
+packages/*/.turbo
 
 # Lerna
 lerna-debug.log*
