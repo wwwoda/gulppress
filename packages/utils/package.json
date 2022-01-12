@@ -8,8 +8,7 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
-    "lib",
-    "types"
+    "lib"
   ],
   "scripts": {
     "build": "yarn clean && tsc -p tsconfig.json",
@@ -21,7 +20,8 @@
     "gulp": "^4"
   },
   "devDependencies": {
-    "@types/gulp": "^4.0.9"
+    "@types/gulp": "^4.0.9",
+    "@gulppress/types": "*"
   },
   "engines": {
     "node": ">=12"

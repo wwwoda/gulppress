@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@gulppress/utils": "*",
+    "@gulppress/types": "*",
     "gulp": "^4",
     "gulp-cache": "^1.1.3",
     "gulp-changed": "^4.0.3",

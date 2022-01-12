@@ -3,10 +3,13 @@
 	"compilerOptions": {
     "rootDir": "src",
 		"outDir": "lib",
+    "typeRoots": [
+      "node_modules/@gulppress/types/@types",
+      "node_modules/@types"
+    ]
   },
   "include": [
-    "src",
-    "types"
+    "src"
   ],
   "exclude": [
     "**/node_modules/**",

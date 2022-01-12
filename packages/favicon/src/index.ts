@@ -1,11 +1,11 @@
 import { TaskFunction, parallel } from 'gulp';
 import { addDisplayNameToTask } from '@gulppress/utils';
+import type { FaviconConfig } from '@gulppress/types';
 import { createFaviconImagesTask } from './task/create-favicon-images-task';
 import { createFaviconHtmlTask } from './task/create-favicon-html-task';
 import { createFaviconIconTask } from './task/create-favicon-icon-task';
 import { createFaviconManifestTask } from './task/create-favicon-manifest-task';
 import { createFaviconSvgTask } from './task/create-favicon-svg-task';
-import type { FaviconConfig } from './types';
 
 const getFaviconTask = (
   config: FaviconConfig,

@@ -1,3 +1,3 @@
-import type { BaseConfig } from '@gulppress/utils';
+import type { BaseConfig } from '.';
 
 export type FontsConfig = BaseConfig;

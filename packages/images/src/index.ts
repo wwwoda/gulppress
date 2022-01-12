@@ -1,9 +1,9 @@
 import type { TaskFunction, TaskFunctionCallback } from 'gulp';
 import { addDisplayNameToTask } from '@gulppress/utils';
+import type { ImagesConfig } from '@gulppress/types';
 import { createGenerateSvgPhpPartialStream } from './stream/generate-svg-php-partials-stream';
 import { createProcessImagesStream } from './stream/process-images-stream';
 import { createClearImagesTask } from './task/clear-cache-task';
-import type { ImagesConfig } from './types';
 
 const getImagesTask = (config: ImagesConfig): TaskFunction => addDisplayNameToTask(
   config.destPhpPartials

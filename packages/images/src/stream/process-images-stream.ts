@@ -1,3 +1,4 @@
+import type { ImageMinConfig } from '@gulppress/types';
 import {
   Globs,
   dest,
@@ -7,7 +8,6 @@ import cache from 'gulp-cache';
 import changed from 'gulp-changed';
 import imagemin from 'gulp-imagemin';
 import { cacheName } from '../cache';
-import type { ImageMinConfig } from '../types';
 
 export const createProcessImagesStream = (
   srcGlobs: Globs,

@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@gulppress/utils": "*",
+    "@gulppress/types": "*",
     "gulp": "^4",
     "gulp-sort": "^2.0.0",
     "gulp-wp-pot": "^2.5.0",

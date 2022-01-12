@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "turbo run dev --parallel --no-cache",
     "test": "turbo run test",
-    "build": "turbo run build",
+    "build": "lerna run build",
     "clean": "lerna clean",
     "lerna": "lerna",
     "lint": "lerna run lint",
@@ -53,8 +53,9 @@
   "turbo": {
     "pipeline": {
       "build": {
-        "dependsOn": ["build"],
-        "outputs": ["lib/**"]
+        "dependsOn": ["^build"],
+        "outputs": ["lib/**"],
+        "cache": false
       },
       "dev": {
         "dependsOn": ["^dev"],

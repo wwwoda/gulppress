@@ -6,7 +6,7 @@ import Vinyl, { BufferFile } from 'vinyl';
 import rename from 'rename';
 import path from 'path';
 import picomatch from 'picomatch';
-import type { SharpConfig } from '../types';
+import type { SharpConfig } from '@gulppress/types';
 
 type Configs = SharpConfig[] | Record<string, SharpConfig | SharpConfig[]>;
 

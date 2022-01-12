@@ -1,9 +1,8 @@
-// https://stackoverflow.com/questions/51093666/conditional-gulp-task-inside-gulp-paralell-or-gulp-series
+import type { ManifestProperties } from '@gulppress/types';
 import { dest } from 'gulp';
 
 import { createStream } from '../file';
 import { getManifestString } from '../manifest';
-import type { ManifestProperties } from '../types';
 
 export const createFaviconManifestStream = (
   destFolder: string,

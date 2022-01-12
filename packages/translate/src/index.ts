@@ -1,7 +1,7 @@
 import type { TaskFunction } from 'gulp';
 import { addDisplayNameToTask } from '@gulppress/utils';
+import type { TranslationConfig } from '@gulppress/types';
 import { createPotFileTask } from './task/create-pot-file-task';
-import type { TranslationConfig } from './types';
 
 const getTranslationTask = (config: TranslationConfig): TaskFunction => addDisplayNameToTask(
   'translate',

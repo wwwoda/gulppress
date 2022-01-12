@@ -4,7 +4,6 @@ import type { FontsConfig } from '@gulppress/types';
 import { createWoffFromTtfTask } from './task/create-woff-from-ttf-task';
 import { createWoff2FromTtfTask } from './task/create-woff2-from-ttf-stream-task';
 import { copyFontsTask } from './task/copy-fonts-task';
-// import type { FontsConfig } from './types';
 
 const getFontsTask = (config: FontsConfig): TaskFunction => series(
   parallel(
