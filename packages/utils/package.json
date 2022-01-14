@@ -17,10 +17,13 @@
     "lint": "eslint src --ext='.ts,.js'"
   },
   "dependencies": {
+    "chalk": "^4.0.0",
+    "fancy-log": "^2.0.0",
     "gulp": "^4"
   },
   "devDependencies": {
     "@types/gulp": "^4.0.9",
+    "@types/undertaker": "^1.2.7",
     "@gulppress/types": "*"
   },
   "engines": {

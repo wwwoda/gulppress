@@ -10,4 +10,5 @@ export const createProcessImagesTask = (
   srcGlobs: Globs,
   destFolder: string,
   imageminConfig?: ImageMinConfig,
-): TaskFunction => () => createProcessImagesStream(srcGlobs, destFolder, imageminConfig);
+  cacheName?: string,
+): TaskFunction => () => createProcessImagesStream(srcGlobs, destFolder, imageminConfig, cacheName);

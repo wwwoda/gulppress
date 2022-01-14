@@ -1,5 +1,5 @@
-import { TaskFunction, parallel } from 'gulp';
-import { addDisplayNameToTask } from '@gulppress/utils';
+import { TaskFunction, parallel, series } from 'gulp';
+import { addDisplayNameToTask, getSuccessLogger } from '@gulppress/utils';
 import type { FaviconConfig } from '@gulppress/types';
 import { createFaviconImagesTask } from './task/create-favicon-images-task';
 import { createFaviconHtmlTask } from './task/create-favicon-html-task';
@@ -7,29 +7,34 @@ import { createFaviconIconTask } from './task/create-favicon-icon-task';
 import { createFaviconManifestTask } from './task/create-favicon-manifest-task';
 import { createFaviconSvgTask } from './task/create-favicon-svg-task';
 
+const getDisplayName = (displayName?: string): string => displayName || 'favicon';
+
 const getFaviconTask = (
   config: FaviconConfig,
-): TaskFunction => parallel(
-  addDisplayNameToTask(
-    'favicon:create images',
-    createFaviconImagesTask(config.src, config.dest),
+): TaskFunction => series(
+  parallel(
+    addDisplayNameToTask(
+      `${getDisplayName(config.displayName)}:create icon.png(s)`,
+      createFaviconImagesTask(config.src, config.dest),
+    ),
+    addDisplayNameToTask(
+      `${getDisplayName(config.displayName)}:create favicon.svg`,
+      createFaviconSvgTask(config.src, config.dest),
+    ),
+    addDisplayNameToTask(
+      `${getDisplayName(config.displayName)}:create favicon.ico`,
+      createFaviconIconTask(config.src, config.dest),
+    ),
+    addDisplayNameToTask(
+      `${getDisplayName(config.displayName)}:create html code`,
+      createFaviconHtmlTask(config.dest),
+    ),
+    addDisplayNameToTask(
+      `${getDisplayName(config.displayName)}:create manifest.json`,
+      createFaviconManifestTask(config.dest, config.manifest),
+    ),
   ),
-  addDisplayNameToTask(
-    'favicon:create-svg',
-    createFaviconSvgTask(config.src, config.dest),
-  ),
-  addDisplayNameToTask(
-    'favicon:createIcon',
-    createFaviconIconTask(config.src, config.dest),
-  ),
-  addDisplayNameToTask(
-    'favicon:createHtml',
-    createFaviconHtmlTask(config.dest),
-  ),
-  addDisplayNameToTask(
-    'favicon:createManifest',
-    createFaviconManifestTask(config.dest, config.manifest),
-  ),
+  getSuccessLogger(getDisplayName(config.displayName)),
 );
 
 export default getFaviconTask;

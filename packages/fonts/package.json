@@ -6,7 +6,7 @@
   "license": "MIT",
   "author": "Woda Digital",
   "main": "lib/index.js",
-  "types": "types/index.d.ts",
+  "types": "lib/index.d.ts",
   "files": [
     "lib"
   ],

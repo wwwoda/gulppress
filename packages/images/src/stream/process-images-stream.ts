@@ -7,12 +7,12 @@ import {
 import cache from 'gulp-cache';
 import changed from 'gulp-changed';
 import imagemin from 'gulp-imagemin';
-import { cacheName } from '../cache';
 
 export const createProcessImagesStream = (
   srcGlobs: Globs,
   destFolder: string,
   imageminConfig: ImageMinConfig = {},
+  cacheName = 'images',
 ): NodeJS.ReadWriteStream => src(srcGlobs, { allowEmpty: true })
   .pipe(
     cache(

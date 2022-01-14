@@ -31,6 +31,7 @@ task('icons', getImagesTask({
   src: './assets/icons/**/*',
   dest: './build/icons',
   destPhpPartials: './build/partials/icons',
+  displayName: 'icons',
 }));
 
 task('translate', getTranslationTask({
@@ -48,6 +49,7 @@ task('clear-cache', getClearImagesCacheTask());
 task('default', parallel(
   'favicon',
   'fonts',
+  'icons',
   'images',
   'translate',
 ));

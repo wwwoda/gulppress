@@ -2,11 +2,7 @@
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
     "rootDir": "src",
-		"outDir": "lib",
-    "typeRoots": [
-      "node_modules/@gulppress/modules/lib",
-      "node_modules/@types"
-    ]
+		"outDir": "lib"
   },
   "include": [
     "src"

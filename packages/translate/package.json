@@ -6,7 +6,7 @@
   "license": "MIT",
   "author": "Woda Digital",
   "main": "lib/index.js",
-  "types": "types/index.d.ts",
+  "types": "lib/index.d.ts",
   "files": [
     "lib"
   ],
@@ -19,6 +19,7 @@
   "dependencies": {
     "@gulppress/utils": "*",
     "@gulppress/types": "*",
+    "fancy-log": "^2.0.0",
     "gulp": "^4",
     "gulp-sort": "^2.0.0",
     "gulp-wp-pot": "^2.5.0",
