@@ -1,6 +1,6 @@
 {
   "name": "@gulppress/test",
-  "version": "0.0.1-1",
+  "version": "0.0.1-2",
   "private": true,
   "description": "",
   "main": "index.js",
@@ -12,11 +12,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@gulppress/utils": "^0.0.1-2",
-    "@gulppress/favicon": "^0.0.1-2",
+    "@gulppress/favicon": "^0.0.1-3",
     "@gulppress/fonts": "^0.0.1-2",
     "@gulppress/images": "^0.0.1-2",
     "@gulppress/translate": "^0.0.1-2",
+    "@gulppress/utils": "^0.0.1-2",
     "gulp": "^4",
     "laravel-mix": "^6.0.39"
   },
