@@ -12,7 +12,7 @@ import {
   getFilePath,
   getFlushFunction,
   Stats,
-} from '@gulppress/gulp-factory-utils';
+} from '@gulppress/gulp-plugin-utils';
 import type {
   ImageFormat,
   ImageFactoryConfigs,

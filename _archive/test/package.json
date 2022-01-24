@@ -1,5 +1,6 @@
 {
   "name": "@gulppress/test",
+  "version": "0.1.0-alpha.0",
   "private": true,
   "description": "",
   "main": "index.js",
