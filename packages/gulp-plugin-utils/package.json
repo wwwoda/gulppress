@@ -2,6 +2,9 @@
   "name": "@gulppress/gulp-plugin-utils",
   "version": "0.0.0",
   "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "homepage": "https://github.com/wwwoda/gulppress",
   "license": "MIT",
   "author": "Woda Digital",
