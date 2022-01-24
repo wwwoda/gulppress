@@ -1,6 +1,6 @@
 {
   "name": "@gulppress/gulp-factory-utils",
-  "version": "0.0.1",
+  "version": "0.1.0-alpha.0",
   "private": false,
   "homepage": "https://github.com/wwwoda/gulppress",
   "license": "MIT",
