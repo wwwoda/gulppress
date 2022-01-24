@@ -27,6 +27,24 @@ task('images', getImagesTask({
   destPhpPartials: './build/partials/images',
 }));
 
+task('images', getImagesTask({
+  src: './assets/images/**/*',
+  dest: './build/images',
+  destPhpPartials: './build/partials/images',
+  imageFactoryConfigs: {
+    'austria*.png': [
+      { resize: { width: 100 }, format: ['webp', 'jpeg', 'png'], rename: { suffix: '-100' } },
+      { resize: { width: 150 }, format: ['webp', 'jpeg', 'png'], rename: { suffix: '-150' } },
+      { resize: { width: 200 }, format: ['webp', 'jpeg', 'png'], rename: { suffix: '-200' } },
+    ],
+    'foo*.png': {
+      resize: {
+        width: 100,
+      },
+    },
+  },
+}));
+
 task('icons', getImagesTask({
   src: './assets/icons/**/*',
   dest: './build/icons',

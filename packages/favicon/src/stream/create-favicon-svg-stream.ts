@@ -10,6 +10,6 @@ export const createFaviconSvgStream = (
   srcGlobs: Globs,
   destFolder: string,
 ): NodeJS.ReadWriteStream => src(srcGlobs, { allowEmpty: true })
-  .pipe(imagemin())
+  .pipe(imagemin({ silent: true }))
   .pipe(rename({ basename: 'icon' }))
   .pipe(dest(destFolder));

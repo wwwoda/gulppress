@@ -1,6 +1,7 @@
 ## Project specifics ##
 
 # Compiled libraries
+packages/*/ignore
 packages/*/lib
 packages/*/.turbo
 

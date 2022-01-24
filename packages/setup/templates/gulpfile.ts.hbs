@@ -1,0 +1,47 @@
+import { parallel, task } from 'gulp';
+{{#if_task "favicon"}}import getFaviconTask from '@gulppress/favicon';{{/if_task}}
+{{#if_task "fonts"}}import getFontsTask from '@gulppress/fonts';{{/if_task}}
+{{#if_task "images"}}import getImagesTask, { getClearImagesCacheTask } from '@gulppress/images';{{/if_task}}
+{{#if_task "translate"}}import getTranslationTask from '@gulppress/translate';{{/if_task}}
+
+{{#if_task "favicon"}}task('favicon', getFaviconTask({
+  src: './assets/images/1000.svg',
+  dest: './build/favicon',
+  manifest: {
+    name: 'Test',
+    short_name: 'Test',
+    background_color: '#ffffff',
+    theme_color: '#ffffff',
+    display: 'browser',
+  },
+}));{{/if_task}}
+
+{{#if_task "fonts"}}task('fonts', getFontsTask({
+  src: './assets/fonts/**/*',
+  dest: './build/fonts',
+}));{{/if_task}}
+
+{{#if_task "images"}}task('images', getImagesTask({
+  src: './assets/images/**/*',
+  dest: './build/images',
+  destPhpPartials: './build/partials/images',
+}));
+
+task('clear-cache', getClearImagesCacheTask());{{/if_task}}
+
+{{#if_task "translate"}}task('translate', getTranslationTask({
+  src: 'php/**/*.php',
+  dest: 'build/languages/test.pot',
+  // Available gulp-wp-pot options: https://github.com/wp-pot/wp-pot#options
+  wpPotOptions: {
+    domain: 'test',
+    package: 'test',
+  },
+}));{{/if_task}}
+
+task('default', parallel(
+  {{#if_task "favicon"}}'favicon',{{/if_task}}
+  {{#if_task "fonts"}}'fonts',{{/if_task}}
+  {{#if_task "images"}}'images',{{/if_task}}
+  {{#if_task "translate"}}'translate',{{/if_task}}
+));

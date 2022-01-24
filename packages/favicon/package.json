@@ -17,6 +17,7 @@
     "lint": "eslint src --ext='.ts,.js'"
   },
   "dependencies": {
+    "@gulppress/gulp-image-factory": "*",
     "@gulppress/utils": "*",
     "@gulppress/types": "*",
     "gulp": "^4",

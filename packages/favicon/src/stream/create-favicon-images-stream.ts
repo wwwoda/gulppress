@@ -5,13 +5,13 @@ import {
 } from 'gulp';
 import imagemin from 'gulp-imagemin';
 import sharp from 'sharp';
-import resizeFavicon from '../plugin/sharp';
+import processImages from '@gulppress/gulp-image-factory';
 
 export const createFaviconImagesStream = (
   srcGlobs: Globs,
   destFolder: string,
 ): NodeJS.ReadWriteStream => src(srcGlobs, { allowEmpty: true })
-  .pipe(resizeFavicon({
+  .pipe(processImages({
     '*.svg': [
       {
         format: 'png',
@@ -41,6 +41,8 @@ export const createFaviconImagesStream = (
         rename: 'icon-512.png',
       },
     ],
+  }, {
+    silent: true,
   }))
-  .pipe(imagemin())
+  .pipe(imagemin({ silent: true }))
   .pipe(dest(destFolder));

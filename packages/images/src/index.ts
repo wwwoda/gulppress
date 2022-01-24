@@ -16,8 +16,10 @@ const getImagesTask = (config: ImagesConfig): TaskFunction => series(
       const imagesStream = createProcessImagesStream(
         config.src,
         config.dest,
-        config.imagemin,
-        config.displayName,
+        config.imageMinOptions,
+        config.imageFactoryConfigs,
+        config.imageFactoryOptions,
+        `${getDisplayName(config.displayName)} => process images`,
       );
       if (config.destPhpPartials) {
         const svgStream = createGenerateSvgPhpPartialStream(imagesStream, config.destPhpPartials);

@@ -1,4 +1,5 @@
-import type { ImageMinConfig } from '@gulppress/types';
+import sharpImages, { ImageFactoryConfigs, ImageFactoryOptions } from '@gulppress/gulp-image-factory';
+import type { ImageMinOptions } from '@gulppress/types';
 import {
   Globs,
   dest,
@@ -11,33 +12,38 @@ import imagemin from 'gulp-imagemin';
 export const createProcessImagesStream = (
   srcGlobs: Globs,
   destFolder: string,
-  imageminConfig: ImageMinConfig = {},
-  cacheName = 'images',
-): NodeJS.ReadWriteStream => src(srcGlobs, { allowEmpty: true })
+  imageMinOptions?: ImageMinOptions,
+  imageFactoryConfigs?: ImageFactoryConfigs,
+  imageFactoryOptions?: ImageFactoryOptions,
+  displayName = 'images',
+): NodeJS.ReadWriteStream => src(srcGlobs, {
+  silent: true,
+})
+  .pipe(sharpImages(imageFactoryConfigs || {}, { ...imageFactoryOptions, name: displayName }))
   .pipe(
     cache(
       imagemin(
         [
-          imagemin.gifsicle(imageminConfig.gifsicle || {}),
-          imagemin.mozjpeg(imageminConfig.mozjpeg || {}),
-          imagemin.optipng(imageminConfig.optipng || {}),
+          imagemin.gifsicle(imageMinOptions?.gifsicle || {}),
+          imagemin.mozjpeg(imageMinOptions?.mozjpeg || {}),
+          imagemin.optipng(imageMinOptions?.optipng || {}),
           imagemin.svgo({
             plugins: [
               { removeViewBox: false },
               { cleanupIDs: false },
             ],
-            ...(imageminConfig.svgo || {}),
+            ...(imageMinOptions?.svgo || {}),
           }),
         ],
-        imageminConfig.options || {},
+        imageMinOptions?.options || {},
       ),
       {
-        name: cacheName,
+        name: displayName,
       },
     ),
   )
   .on('error', (e: any) => {
-    console.log(e); console.log(imageminConfig);
+    console.log(e);
   })
   .pipe(changed(destFolder))
   .pipe(dest(destFolder));

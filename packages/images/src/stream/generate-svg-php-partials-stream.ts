@@ -7,7 +7,9 @@ import rename from 'gulp-rename';
 export const createGenerateSvgPhpPartialStream = (
   input: Globs | NodeJS.ReadWriteStream,
   destFolder: string,
-): NodeJS.ReadWriteStream => createStream(input)
+): NodeJS.ReadWriteStream => createStream(input, {
+  silent: true,
+})
   .pipe(filter('**/*.svg'))
   .pipe(rename({
     extname: '.php',
