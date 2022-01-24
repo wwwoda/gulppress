@@ -19,7 +19,7 @@ export const createFaviconIconStream = (
         height: 32,
         fit: sharp.fit.inside,
       },
-      rename: 'faviconico.png',
+      rename: 'favicon.png',
     }],
   }, {
     silent: true,

@@ -43,6 +43,8 @@ export const createFaviconImagesStream = (
     ],
   }, {
     silent: true,
+    passThroughMatched: false,
+    passThroughUnmatched: false,
   }))
   .pipe(imagemin({ silent: true }))
   .pipe(dest(destFolder));

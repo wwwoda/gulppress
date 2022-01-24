@@ -12,11 +12,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@gulppress/utils": "*",
-    "@gulppress/favicon": "*",
-    "@gulppress/fonts": "*",
-    "@gulppress/images": "*",
-    "@gulppress/translate": "*",
+    "@gulppress/utils": "^0.0.1-2",
+    "@gulppress/favicon": "^0.0.1-2",
+    "@gulppress/fonts": "^0.0.1-2",
+    "@gulppress/images": "^0.0.1-2",
+    "@gulppress/translate": "^0.0.1-2",
     "gulp": "^4",
     "laravel-mix": "^6.0.39"
   },
