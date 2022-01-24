@@ -1,4 +1,3 @@
-// https://www.webstoemp.com/blog/blazing-fast-image-transforms-with-sharp-gulp/
 import type { Transform } from 'stream';
 import PluginError from 'plugin-error';
 import * as through from 'through2';
