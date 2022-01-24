@@ -17,7 +17,7 @@
     "lint": "eslint src --ext='.ts,.js'"
   },
   "dependencies": {
-    "@gulppress/gulp-plugin-utils": "^0.1.0-alpha.0",
+    "@gulppress/gulp-plugin-utils": "^0.0.1-1",
     "chalk": "^4.0.0",
     "fancy-log": "^2.0.0",
     "picomatch": "^2.3.1",

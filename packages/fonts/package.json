@@ -17,8 +17,8 @@
     "lint": "eslint src --ext='.ts,.js'"
   },
   "dependencies": {
-    "@gulppress/types": "^0.1.0-alpha.0",
-    "@gulppress/utils": "^0.1.0-alpha.0",
+    "@gulppress/types": "^0.0.1-1",
+    "@gulppress/utils": "^0.0.1-1",
     "gulp": "^4",
     "gulp-changed": "^4.0.3",
     "gulp-filter": "^7.0.0",

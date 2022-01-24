@@ -22,7 +22,7 @@
     "gulp": "^4"
   },
   "devDependencies": {
-    "@gulppress/types": "^0.1.0-alpha.0",
+    "@gulppress/types": "^0.0.1-1",
     "@types/gulp": "^4.0.9",
     "@types/undertaker": "^1.2.7"
   },
