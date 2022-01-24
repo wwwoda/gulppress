@@ -1,6 +1,12 @@
-.turbo
-src
+*.log
 .eslintignore
 .eslintrc.cjs
 .npmignore
+.turbo
+logs
+node_modules/
+npm-debug.log*
+src
 tsconfig.json
+yarn-debug.log*
+yarn-error.log*
