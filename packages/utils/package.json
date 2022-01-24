@@ -1,6 +1,6 @@
 {
   "name": "@gulppress/utils",
-  "version": "0.0.1-1",
+  "version": "0.0.1-2",
   "private": false,
   "homepage": "https://github.com/wwwoda/gulppress",
   "license": "MIT",
@@ -22,7 +22,7 @@
     "gulp": "^4"
   },
   "devDependencies": {
-    "@gulppress/types": "^0.0.1-1",
+    "@gulppress/types": "^0.0.1-2",
     "@types/gulp": "^4.0.9",
     "@types/undertaker": "^1.2.7"
   },
