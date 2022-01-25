@@ -1,6 +1,7 @@
 import { parallel, task } from 'gulp';
 import getFaviconTask from '@gulppress/favicon';
-import getFontsTask from '@gulppress/fonts';
+// import getFontsTask from '@gulppress/fonts';
+import getFontsTask from '@gulppress/fonts-new';
 import getImagesTask, { getClearImagesCacheTask } from '@gulppress/images';
 import getTranslationTask from '@gulppress/translate';
 
@@ -16,9 +17,28 @@ task('favicon', getFaviconTask({
   },
 }));
 
+// task('fonts', getFontsTask({
+//   src: './assets/fonts/**/*',
+//   dest: './build/fonts',
+// }));
+
 task('fonts', getFontsTask({
   src: './assets/fonts/**/*',
   dest: './build/fonts',
+  fontFactoryConfigs: {
+    '*.ttf': {
+      format: ['woff', 'woff2'],
+      subsetText: 'äöüÄÖÜ',
+    },
+    'inter-bold.woff': {
+      format: ['woff', 'woff2'],
+      subsetText: 'äöüÄÖÜ',
+    },
+  },
+  fontFactoryOptions: {
+    passThroughMatched: false,
+    passThroughUnmatched: false,
+  },
 }));
 
 task('images', getImagesTask({

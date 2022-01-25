@@ -1,8 +1,10 @@
 import type { FontFactoryConfigs, FontFactoryOptions } from '@gulppress/gulp-font-factory';
-import type { BaseConfig } from './config';
+import type { Globs } from 'gulp';
 
-export type FontsConfig = BaseConfig;
-export interface Fonts2Config extends BaseConfig {
+export interface FontsConfig {
+  src: Globs;
+  dest: string;
+  displayName?: string;
   fontFactoryConfigs?: FontFactoryConfigs;
   fontFactoryOptions?: FontFactoryOptions;
 }

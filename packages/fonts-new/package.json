@@ -1,5 +1,5 @@
 {
-  "name": "@gulppress/types",
+  "name": "@gulppress/fonts-new",
   "version": "0.0.1-2",
   "private": false,
   "homepage": "https://github.com/wwwoda/gulppress",
@@ -17,14 +17,20 @@
     "lint": "eslint src --ext='.ts,.js'"
   },
   "dependencies": {
-    "@gulppress/gulp-image-factory": "^0.0.1-2",
-    "@gulppress/gulp-font-factory": "./packages/gulp-font-factory",
-    "@types/glob": "^7.2.0",
+    "@gulppress/gulp-font-factory": "*",
+    "@gulppress/utils": "^0.0.1-2",
+    "gulp": "^4",
+    "gulp-changed": "^4.0.3",
+    "gulp-filter": "^7.0.0",
+    "vinyl": "^2.2.1"
+  },
+  "devDependencies": {
     "@types/gulp": "^4.0.9",
-    "@types/gulp-imagemin": "^7.0.3",
-    "@types/node": "^17.0.10",
-    "@types/vinyl": "^2.0.6",
-    "type-fest": "^2.9.0"
+    "@types/gulp-changed": "^0.0.34",
+    "@types/gulp-filter": "^3.0.34"
+  },
+  "peerDependencies": {
+    "gulp": "^4"
   },
   "engines": {
     "node": ">=12"
