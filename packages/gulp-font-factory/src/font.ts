@@ -3,10 +3,12 @@
 import type { BufferFile } from 'vinyl';
 import { Font, FontEditor, woff2 } from 'fonteditor-core';
 import pako from 'pako';
+import arrayUniq from 'array-uniq';
 import type { FontConfig, FontFormatWrite } from './types';
 import type { FontFormatRead } from '.';
 import { getFileFormat } from './format';
-import { arrayUnique, getSubsetText, stringToCodePoints } from './util';
+import { getSubsetText } from './util';
+import { getCodePointsForUnicodeBlocks, stringToCodePoints } from './ranges';
 
 export const createFontPromise = (
   file: BufferFile,
@@ -39,6 +41,7 @@ export const createFont = (
     compound2simple,
     hinting,
     subsetText,
+    subsetUnicodeBlockRanges,
     subset,
   } = config;
 
@@ -67,11 +70,14 @@ export const createFont = (
   if (typeof subsetText === 'string' && subsetText !== '') {
     codes.push(...stringToCodePoints(getSubsetText(subsetText)));
   }
+  if (Array.isArray(subsetUnicodeBlockRanges) && subsetUnicodeBlockRanges.length > 0) {
+    codes.push(...getCodePointsForUnicodeBlocks(...subsetUnicodeBlockRanges));
+  }
   if (Array.isArray(subset) && subset.length > 0) {
     codes.push(...subset);
   }
   if (codes.length > 0) {
-    readOptions.subset = arrayUnique(codes);
+    readOptions.subset = arrayUniq(codes);
   }
 
   const font = Font.create(file.contents, readOptions);

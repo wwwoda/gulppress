@@ -1,7 +1,6 @@
 import { parallel, task } from 'gulp';
 import getFaviconTask from '@gulppress/favicon';
-// import getFontsTask from '@gulppress/fonts';
-import getFontsTask from '@gulppress/fonts-new';
+import getFontsTask from '@gulppress/fonts';
 import getImagesTask, { getClearImagesCacheTask } from '@gulppress/images';
 import getTranslationTask from '@gulppress/translate';
 
@@ -23,17 +22,19 @@ task('favicon', getFaviconTask({
 // }));
 
 task('fonts', getFontsTask({
-  src: './assets/fonts/**/*',
+  src: './assets/fonts/**/*.ttf',
   dest: './build/fonts',
   fontFactoryConfigs: {
-    '*.ttf': {
+    '*.ttf': [{
       format: ['woff', 'woff2'],
-      subsetText: 'äöüÄÖÜ',
-    },
-    'inter-bold.woff': {
+      subsetUnicodeBlockRanges: ['Latin Alphabet', 'Digits', 'German', 'Punctuation & Symbols Minimal'],
+      rename: {
+        suffix: '-subset',
+      },
+    }, {
       format: ['woff', 'woff2'],
-      subsetText: 'äöüÄÖÜ',
-    },
+      subsetUnicodeBlockRanges: ['Basic Latin', 'Latin-1 Supplement', 'German'],
+    }],
   },
   fontFactoryOptions: {
     passThroughMatched: false,

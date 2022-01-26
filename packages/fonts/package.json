@@ -17,13 +17,11 @@
     "lint": "eslint src --ext='.ts,.js'"
   },
   "dependencies": {
-    "@gulppress/types": "^0.0.1-2",
+    "@gulppress/gulp-font-factory": "*",
     "@gulppress/utils": "^0.0.1-2",
     "gulp": "^4",
     "gulp-changed": "^4.0.3",
     "gulp-filter": "^7.0.0",
-    "gulp-ttf2woff": "^1.1.1",
-    "gulp-ttf2woff2": "^3.0.0",
     "vinyl": "^2.2.1"
   },
   "devDependencies": {

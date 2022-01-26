@@ -18,7 +18,6 @@
   },
   "dependencies": {
     "@gulppress/gulp-image-factory": "^0.0.1-2",
-    "@gulppress/gulp-font-factory": "./packages/gulp-font-factory",
     "@types/glob": "^7.2.0",
     "@types/gulp": "^4.0.9",
     "@types/gulp-imagemin": "^7.0.3",

@@ -1,23 +1,7 @@
-import { range } from 'lodash';
+import arrayUniq from 'array-uniq';
+import { getTextForUnicodeBlock } from './ranges';
 
-export const arrayUnique = <T>(arr: readonly T[]): T[] => ([...new Set(arr)]);
-
-export const stringToCodePoints = (str: string, unique = false): number[] => {
-  const codes = str.split('').map((char) => char.charCodeAt(0));
-  return unique === true ? arrayUnique(codes) : codes;
-};
-
-export const stripDuplicateCharacters = (str: string): string => arrayUnique(str.split('')).join('');
-
-export const charCodeRangeToText = (
-  from: number,
-  to: number,
-): string => String.fromCharCode(...range(from, to));
-
-export const basicLatinText = charCodeRangeToText(33, 126);
-export const latinSupplementText = charCodeRangeToText(160, 255);
-export const latinExtendedAText = charCodeRangeToText(256, 383);
-export const latinExtendedBText = charCodeRangeToText(384, 591);
+export const stripDuplicateCharacters = (str: string): string => arrayUniq(str.split('')).join('');
 
 export const getCleanText = (str: string): string => str
   .trim()
@@ -33,6 +17,7 @@ export const getSubsetText = (
   let text = str;
 
   if (withBasicLatin === true) {
+    const basicLatinText = getTextForUnicodeBlock('Basic Latin');
     text = stripDuplicateCharacters(text + basicLatinText);
   }
 

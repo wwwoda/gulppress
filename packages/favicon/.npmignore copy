@@ -1,6 +1,0 @@
-.turbo
-src
-.eslintignore
-.eslintrc.cjs
-.npmignore
-tsconfig.json

@@ -7,7 +7,7 @@
       "node_modules/@gulppress/types/@types",
       "node_modules/@types"
     ],
-    "preserveSymlinks": true
+    "esModuleInterop": true
   },
   "include": [
     "src"
