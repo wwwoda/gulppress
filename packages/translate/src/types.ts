@@ -1,5 +1,5 @@
+import type { BaseConfig } from '@gulppress/utils';
 import type { IOptions } from 'glob';
-import type { BaseConfig } from '.';
 
 interface GetTextFunction {
   name: string;
@@ -24,6 +24,5 @@ export interface WpPotOptions {
   ignoreTemplateNameHeader?: boolean;
 }
 export interface TranslationConfig extends BaseConfig {
-
   wpPotOptions?: WpPotOptions;
 }

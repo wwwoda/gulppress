@@ -4,7 +4,7 @@ import type { Options as MozjpegOptions } from 'imagemin-mozjpeg';
 import type { Options as OptipngOptions } from 'imagemin-optipng';
 import type { Options as SvgoOptions } from 'imagemin-svgo';
 import type { ImageFactoryConfigs, ImageFactoryOptions } from '@gulppress/gulp-image-factory';
-import type { BaseConfig } from '.';
+import type { BaseConfig } from '@gulppress/utils';
 
 export interface ImagesConfig extends BaseConfig {
   destPhpPartials?: string | null | undefined;

@@ -1,7 +1,7 @@
+import type { BaseConfig } from '@gulppress/utils';
 import type rename from 'rename';
 import type sharp from 'sharp';
 import type { SetOptional } from 'type-fest';
-import type { BaseConfig } from '.';
 
 export interface FaviconConfig extends BaseConfig {
   manifest: ManifestProperties;

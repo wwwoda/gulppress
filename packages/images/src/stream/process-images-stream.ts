@@ -1,5 +1,4 @@
 import sharpImages, { ImageFactoryConfigs, ImageFactoryOptions } from '@gulppress/gulp-image-factory';
-import type { ImageMinOptions } from '@gulppress/types';
 import {
   Globs,
   dest,
@@ -8,6 +7,7 @@ import {
 import cache from 'gulp-cache';
 import changed from 'gulp-changed';
 import imagemin from 'gulp-imagemin';
+import type { ImageMinOptions } from '../types';
 
 export const createProcessImagesStream = (
   srcGlobs: Globs,

@@ -1,4 +1,4 @@
-import type { ManifestIcon, ManifestProperties } from '@gulppress/types';
+import type { ManifestIcon, ManifestProperties } from './types';
 
 export const getManifestString = (
   manifestProps: ManifestProperties,

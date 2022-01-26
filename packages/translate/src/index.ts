@@ -1,14 +1,5 @@
-import { series, TaskFunction } from 'gulp';
-import { addDisplayNameToTask, getSuccessLogger } from '@gulppress/utils';
-import type { TranslationConfig } from '@gulppress/types';
-import { createPotFileTask } from './task/create-pot-file-task';
+import { getTask as getTranslationTask } from './task';
 
-const getTranslationTask = (config: TranslationConfig): TaskFunction => series(
-  addDisplayNameToTask(
-    config.displayName || 'create pot file',
-    createPotFileTask(config.src, config.dest, config.wpPotOptions),
-  ),
-  getSuccessLogger(config.displayName || 'translation'),
-);
-
+export * from './task';
+export * from './types';
 export default getTranslationTask;

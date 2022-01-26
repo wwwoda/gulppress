@@ -1,5 +1,5 @@
-import type { ManifestProperties } from '@gulppress/types';
 import { dest } from 'gulp';
+import type { ManifestProperties } from '../types';
 
 import { createStream } from '../file';
 import { getManifestString } from '../manifest';

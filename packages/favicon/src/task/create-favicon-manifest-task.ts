@@ -1,4 +1,4 @@
-import type { ManifestProperties } from '@gulppress/types';
+import type { ManifestProperties } from '../types';
 import { createFaviconManifestStream } from '../stream/create-favicon-manifest-stream';
 
 export const createFaviconManifestTask = (
