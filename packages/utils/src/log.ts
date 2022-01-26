@@ -16,3 +16,7 @@ export const getSuccessLogger = (name: string) => addDisplayNameToTask(
     done();
   },
 );
+
+export const logError = (error: Error): void => {
+  log(error);
+};

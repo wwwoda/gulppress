@@ -72,7 +72,7 @@ export default (
     );
 
     if (!Array.isArray(matchingConfigs)) {
-      callback(matchingConfigs);
+      callback();
       return;
     }
 
@@ -104,6 +104,7 @@ const getPromises = (
   file: BufferFile,
   configs: FontConfig[],
   stats: Stats,
+  callback: through2.TransformCallback,
 ): Array<Promise<void>> => configs.flatMap((config: FontConfig) => {
   const toFormats = getWriteFormats(file, config);
   const fonts = toFormats.map(

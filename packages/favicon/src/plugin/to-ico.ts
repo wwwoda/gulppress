@@ -39,6 +39,7 @@ const createIco = (): Transform => through.obj(function (
 
   promise.then((): void => {
     callback();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }, (err: any): void => {
     callback(new PluginError('gulpppress-favicon', err, { message: 'Error while transforming file' }));
   });

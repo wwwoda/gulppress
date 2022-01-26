@@ -12,7 +12,7 @@
     "build": "turbo run build",
     "clean": "lerna clean",
     "lerna": "lerna",
-    "lint": "lerna run lint",
+    "lint": "turbo run lint",
     "nuke": "rm -r node_modules; for d in packages/*/node_modules; do echo $d; rm -r $d; done",
     "type-check": "lerna run type-check"
   },
@@ -66,6 +66,12 @@
         ],
         "outputs": [
           "lib/**"
+        ],
+        "cache": false
+      },
+      "lint": {
+        "dependsOn": [
+          "^lint"
         ],
         "cache": false
       }

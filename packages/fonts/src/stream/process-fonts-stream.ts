@@ -1,4 +1,5 @@
 import processFonts, { FontFactoryConfigs, FontFactoryOptions } from '@gulppress/gulp-font-factory';
+import { logError } from '@gulppress/utils';
 import {
   Globs,
   dest,
@@ -15,7 +16,6 @@ export const createProcessFontsStream = (
   silent: true,
 })
   .pipe(processFonts(factoryConfigs || {}, { ...factoryOptions, name: displayName }))
-  .on('error', (e: any) => {
-    console.log(e);
-  })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  .on('error', logError)
   .pipe(dest(destFolder));

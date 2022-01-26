@@ -1,4 +1,5 @@
 import sharpImages, { ImageFactoryConfigs, ImageFactoryOptions } from '@gulppress/gulp-image-factory';
+import { logError } from '@gulppress/utils';
 import {
   Globs,
   dest,
@@ -42,8 +43,6 @@ export const createProcessImagesStream = (
       },
     ),
   )
-  .on('error', (e: any) => {
-    console.log(e);
-  })
+  .on('error', logError)
   .pipe(changed(destFolder))
   .pipe(dest(destFolder));
