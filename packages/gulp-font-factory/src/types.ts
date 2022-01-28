@@ -25,6 +25,8 @@ export interface FontConfig {
   subset?: TTF.CodePoint[];
   hinting?: boolean;
   compound2simple?: boolean;
+  withBasicLatin?: boolean;
+  trimText?: boolean;
 }
 
 export type UnicodeBlockName = 'Latin Alphabet'

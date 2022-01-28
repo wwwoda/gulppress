@@ -43,6 +43,8 @@ export const createFont = (
     subsetText,
     subsetUnicodeBlockRanges,
     subset,
+    withBasicLatin,
+    trimText,
   } = config;
 
   const readOptions: FontEditor.FontReadOptions = {
@@ -67,8 +69,9 @@ export const createFont = (
   }
 
   const codes = [];
-  if (typeof subsetText === 'string' && subsetText !== '') {
-    codes.push(...stringToCodePoints(getSubsetText(subsetText)));
+  if (typeof subsetText === 'string') {
+    const text = getSubsetText(subsetText, withBasicLatin, trimText);
+    codes.push(...stringToCodePoints(text));
   }
   if (Array.isArray(subsetUnicodeBlockRanges) && subsetUnicodeBlockRanges.length > 0) {
     codes.push(...getCodePointsForUnicodeBlocks(...subsetUnicodeBlockRanges));

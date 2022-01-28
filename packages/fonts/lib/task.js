@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getTask = exports.getDisplayName = void 0;
+const gulp_1 = require("gulp");
+const utils_1 = require("@gulppress/utils");
+const process_fonts_task_1 = require("./task/process-fonts-task");
+const getDisplayName = (displayName) => displayName || 'fonts';
+exports.getDisplayName = getDisplayName;
+const getTask = (config) => (0, gulp_1.series)((0, utils_1.addDisplayNameToTask)(`${(0, exports.getDisplayName)(config.displayName)}:process fonts`, (0, process_fonts_task_1.createProcessFontsTask)(config.src, config.dest, config.fontFactoryConfigs, config.fontFactoryOptions)), (0, utils_1.getSuccessLogger)((0, exports.getDisplayName)(config.displayName)));
+exports.getTask = getTask;

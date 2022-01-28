@@ -15,7 +15,10 @@ export const createProcessFontsStream = (
 ): NodeJS.ReadWriteStream => src(srcGlobs, {
   silent: true,
 })
-  .pipe(processFonts(factoryConfigs || {}, { ...factoryOptions, name: displayName }))
+  .pipe(processFonts(factoryConfigs || {}, {
+    name: displayName,
+    ...factoryOptions,
+  }))
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   .on('error', logError)
   .pipe(dest(destFolder));

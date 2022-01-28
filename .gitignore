@@ -3,7 +3,6 @@ _archive
 
 # Compiled libraries
 packages/*/ignore
-packages/*/lib
 packages/*/.turbo
 
 # Lerna
