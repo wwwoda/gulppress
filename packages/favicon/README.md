@@ -156,12 +156,10 @@ The `display` member is a string that determines the developers’ preferred dis
 
 Please check out the [type definitions](https://github.com/wwwoda/gulppress/blob/master/packages/favicon/src/types.ts) for all other options.
 
-## Further Reading
-
-More information about web app manifestes
+## Related
 
 * [Web app manifests](https://developer.mozilla.org/en-US/docs/Web/Manifest) on MDN Web Docs
-* Official w3c [specification](https://w3c.github.io/manifest/)
+* Official w3c web app manifest [specification](https://w3c.github.io/manifest/)
 
 ## License
 

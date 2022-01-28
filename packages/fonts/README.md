@@ -20,7 +20,7 @@ You can find more examples and detailed documetation in the [readme](https://git
 
 ### Basic
 
-This very basic configuration wihtout any subsetting will make sure that every font is availables as `woff` and `woff2`
+This very basic configuration wihtout any subsetting will make sure that every font is availables in the `woff` and `woff2` format.
 
 ```js
 import { parallel, task } from 'gulp';
@@ -35,7 +35,13 @@ task('fonts', getFontsTask({
 }));
 ```
 
-### Separate config per font family, subsetting and minimal subset for 2-stage font loading
+### Advanced
+
+The following configuration shows advanced options like
+
+- Individual configurations for different font families
+- Subsetting of fonts
+- Create additional versions of a font with a critical subset used in a [2-stage font loading strategy](https://www.zachleat.com/web/comprehensive-webfonts/)
 
 ```js
 import { parallel, task } from 'gulp';
@@ -94,6 +100,10 @@ Passed to `gulppress/gulp-font-factory`. Check out the [configurations API](http
 Type: `Object`
 
 Passed to `gulppress/gulp-font-factory`. More on [options](https://github.com/wwwoda/gulppress/blob/master/packages/gulp-font-factory/README.md#).
+
+## Related
+
+* [@gulppress/gulp-font-factory](https://github.com/wwwoda/gulppress/blob/master/packages/gulp-font-factory/README.md)
 
 ## License
 
