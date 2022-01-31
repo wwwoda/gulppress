@@ -37,7 +37,7 @@ task('fonts', getFontsTask({
 
 ### Advanced
 
-The following configuration shows advanced options like
+The following configuration illustrates advanced features like
 
 - Individual configurations for different font families
 - Subsetting of fonts
@@ -60,7 +60,12 @@ task('fonts', getFontsTask({
                 },
             }, {
                 format: ['woff', 'woff2'],
-                subsetUnicodeBlockRanges: ['Basic Latin', 'Latin-1 Supplement', 'Latin Extended-A', 'Latin Extended-B'],
+                subsetUnicodeBlockRanges: [
+                    'Basic Latin',
+                    'Latin-1 Supplement',
+                    'Latin Extended-A',
+                    'Latin Extended-B',
+                ],
             }
         ],
         'merriweather-*': {
@@ -99,7 +104,7 @@ Passed to `gulppress/gulp-font-factory`. Check out the [configurations API](http
 
 Type: `Object`
 
-Passed to `gulppress/gulp-font-factory`. More on [options](https://github.com/wwwoda/gulppress/blob/master/packages/gulp-font-factory/README.md#).
+Passed to `gulppress/gulp-font-factory`. Check out the [options API](https://github.com/wwwoda/gulppress/blob/master/packages/gulp-font-factory/README.md#).
 
 ## Related
 
