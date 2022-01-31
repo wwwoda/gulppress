@@ -1,6 +1,6 @@
 {
   "name": "@gulppress/gulp-font-factory",
-  "version": "0.0.1-0.0.1-1.0",
+  "version": "0.0.1-1",
   "private": false,
   "homepage": "https://github.com/wwwoda/gulppress",
   "license": "MIT",
@@ -33,5 +33,5 @@
   "engines": {
     "node": ">=12"
   },
-  "gitHead": "274fd44fae03c0872b392ff0481eaa601a7b708e"
+  "gitHead": "c4c88e80e13443c30edc1ae0e37aef100f0e7ac8"
 }
