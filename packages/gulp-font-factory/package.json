@@ -1,6 +1,6 @@
 {
   "name": "@gulppress/gulp-font-factory",
-  "version": "0.0.0",
+  "version": "0.0.1-0.0.1-1.0",
   "private": false,
   "homepage": "https://github.com/wwwoda/gulppress",
   "license": "MIT",
@@ -17,7 +17,7 @@
     "lint": "eslint src --ext='.ts,.js'"
   },
   "dependencies": {
-    "@gulppress/gulp-plugin-utils": "^0.0.1-2",
+    "@gulppress/gulp-plugin-utils": "^0.0.1-3",
     "array-uniq": "^2.1.0",
     "fonteditor-core": "^2.1.8",
     "lodash": "^4.17.21",
