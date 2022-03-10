@@ -1,0 +1,37 @@
+{
+  "name": "@gulppress/zip",
+  "version": "0.0.0",
+  "private": false,
+  "homepage": "https://github.com/wwwoda/gulppress",
+  "license": "MIT",
+  "author": "Woda Digital",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "yarn clean && tsc -p tsconfig.json",
+    "dev": "yarn clean && tsc -p tsconfig.json --watch",
+    "clean": "rimraf './lib' && rm -f ./tsconfig.tsbuildinfo",
+    "lint": "eslint src --ext='.ts,.js'"
+  },
+  "dependencies": {
+    "@gulppress/utils": "^0.0.1-4",
+    "fancy-log": "^2.0.0",
+    "gulp": "^4",
+    "gulp-wp-zip": "^5.1.0",
+    "vinyl": "^2.2.1"
+  },
+  "devDependencies": {
+    "@types/gulp": "^4.0.9",
+    "@types/gulp-zip": "^4.0.2"
+  },
+  "peerDependencies": {
+    "gulp": "^4"
+  },
+  "engines": {
+    "node": ">=12"
+  },
+  "gitHead": "c4c88e80e13443c30edc1ae0e37aef100f0e7ac8"
+}

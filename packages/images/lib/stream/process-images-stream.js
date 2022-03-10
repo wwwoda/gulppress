@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createProcessImagesStream = void 0;
 const gulp_image_factory_1 = __importDefault(require("@gulppress/gulp-image-factory"));
+const utils_1 = require("@gulppress/utils");
 const gulp_1 = require("gulp");
 const gulp_cache_1 = __importDefault(require("gulp-cache"));
 const gulp_changed_1 = __importDefault(require("gulp-changed"));
@@ -27,9 +28,7 @@ const createProcessImagesStream = (srcGlobs, destFolder, imageMinOptions, imageF
 ], imageMinOptions?.options || {}), {
     name: displayName,
 }))
-    .on('error', (e) => {
-    console.log(e);
-})
+    .on('error', utils_1.logError)
     .pipe((0, gulp_changed_1.default)(destFolder))
     .pipe((0, gulp_1.dest)(destFolder));
 exports.createProcessImagesStream = createProcessImagesStream;

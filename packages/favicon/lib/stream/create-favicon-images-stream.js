@@ -8,10 +8,10 @@ const gulp_1 = require("gulp");
 const gulp_imagemin_1 = __importDefault(require("gulp-imagemin"));
 const sharp_1 = __importDefault(require("sharp"));
 const gulp_image_factory_1 = __importDefault(require("@gulppress/gulp-image-factory"));
-const createFaviconImagesStream = (srcGlobs, destFolder) => (0, gulp_1.src)(srcGlobs, { allowEmpty: true })
-    .pipe((0, gulp_image_factory_1.default)({
-    '*.svg': [
-        {
+const createFaviconImagesStream = (srcGlobs, destFolder, createAppleTouchIcon, createManifestIcons) => {
+    const configs = [];
+    if (createAppleTouchIcon === true) {
+        configs.push({
             format: 'png',
             resize: {
                 width: 180,
@@ -19,8 +19,10 @@ const createFaviconImagesStream = (srcGlobs, destFolder) => (0, gulp_1.src)(srcG
                 fit: sharp_1.default.fit.inside,
             },
             rename: 'apple-touch-icon.png',
-        },
-        {
+        });
+    }
+    if (createManifestIcons === true) {
+        configs.push({
             format: 'png',
             resize: {
                 width: 192,
@@ -28,8 +30,7 @@ const createFaviconImagesStream = (srcGlobs, destFolder) => (0, gulp_1.src)(srcG
                 fit: sharp_1.default.fit.inside,
             },
             rename: 'icon-192.png',
-        },
-        {
+        }, {
             format: 'png',
             resize: {
                 width: 512,
@@ -37,13 +38,17 @@ const createFaviconImagesStream = (srcGlobs, destFolder) => (0, gulp_1.src)(srcG
                 fit: sharp_1.default.fit.inside,
             },
             rename: 'icon-512.png',
-        },
-    ],
-}, {
-    silent: true,
-    passThroughMatched: false,
-    passThroughUnmatched: false,
-}))
-    .pipe((0, gulp_imagemin_1.default)({ silent: true }))
-    .pipe((0, gulp_1.dest)(destFolder));
+        });
+    }
+    return (0, gulp_1.src)(srcGlobs, { allowEmpty: true })
+        .pipe((0, gulp_image_factory_1.default)({
+        '*.svg': [...configs],
+    }, {
+        silent: true,
+        passThroughMatched: false,
+        passThroughUnmatched: false,
+    }))
+        .pipe((0, gulp_imagemin_1.default)({ silent: true }))
+        .pipe((0, gulp_1.dest)(destFolder));
+};
 exports.createFaviconImagesStream = createFaviconImagesStream;

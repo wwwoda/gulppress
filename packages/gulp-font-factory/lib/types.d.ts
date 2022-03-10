@@ -15,10 +15,19 @@ export declare type FontFormatRead = FontFormatWrite | 'eot' | 'svg' | 'otf';
 export interface FontConfig {
     rename?: string | rename.Transformer;
     format?: FontFormatWrite | FontFormatWrite[];
-    subsetText?: string;
-    subsetUnicodeBlockRanges?: UnicodeBlockName[];
     subset?: TTF.CodePoint[];
+    subsetText?: string;
+    subsetUnicodeBlocks?: UnicodeBlockName[];
+    subsetUnicodeRanges?: UnicodeRange[];
     hinting?: boolean;
     compound2simple?: boolean;
+    withBasicLatin?: boolean;
+    trimText?: boolean;
 }
-export declare type UnicodeBlockName = 'Latin Alphabet' | 'Digits' | 'Punctuation & Symbols' | 'Basic Latin' | 'Latin-1 Supplement' | 'Latin Extended-A' | 'Latin Extended-B' | 'IPA Extensions' | 'Spacing Modifier Letters' | 'Combining Diacritical Marks' | 'Greek and Coptic' | 'Cyrillic' | 'Cyrillic Supplement' | 'German' | 'Punctuation & Symbols Minimal';
+export declare type UnicodeBlockName = 'Basic Latin' | 'Latin-1 Supplement' | 'Latin Extended-A' | 'Latin Extended-B' | 'IPA Extensions' | 'Spacing Modifier Letters' | 'Combining Diacritical Marks' | 'Greek and Coptic' | 'Cyrillic' | 'Cyrillic Supplementary' | 'Armenian' | 'Hebrew' | 'Arabic' | 'Phonetic Extensions' | 'Latin Extended Additional' | 'Greek Extended' | 'General Punctuation' | 'Superscripts and Subscripts' | 'Currency Symbols' | 'Combining Diacritical Marks for Symbols' | 'Letterlike Symbols' | 'Number Forms' | 'Arrows' | 'Mathematical Operators' | 'Miscellaneous Technical' | 'Latin Alphabet' | 'Digits' | 'German Alphabet' | 'Punctuation & Symbols';
+export declare type UnicodeRange = [string, string];
+export interface UnicodeBlock {
+    name: UnicodeBlockName;
+    ranges?: UnicodeRange[];
+    text?: string;
+}

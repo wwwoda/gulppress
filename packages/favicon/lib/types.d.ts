@@ -3,7 +3,9 @@ import type rename from 'rename';
 import type sharp from 'sharp';
 import type { SetOptional } from 'type-fest';
 export interface FaviconConfig extends BaseConfig {
-    manifest: ManifestProperties;
+    manifest?: ManifestProperties;
+    omitHtml?: true;
+    omitAppleTouchIcon?: true;
 }
 export interface SharpConfig {
     format?: keyof sharp.FormatEnum;
@@ -12,11 +14,11 @@ export interface SharpConfig {
     rename: string | rename.Transformer;
 }
 export interface ManifestProperties {
-    background_color: string;
+    background_color?: string;
     categories?: string[];
     description?: string;
     dir?: ManifestDIR;
-    display: ManifestDisplay;
+    display?: ManifestDisplay;
     display_override?: ManifestDisplayOverride[];
     iarc_rating_id?: string;
     icons?: ManifestIcon[];
@@ -30,7 +32,7 @@ export interface ManifestProperties {
     short_name: string;
     shortcuts?: ManifestShortscut[];
     start_url?: string;
-    theme_color: string;
+    theme_color?: string;
 }
 export interface ManifestImage {
     src: string;

@@ -4,7 +4,9 @@ import type sharp from 'sharp';
 import type { SetOptional } from 'type-fest';
 
 export interface FaviconConfig extends BaseConfig {
-  manifest: ManifestProperties;
+  manifest?: ManifestProperties;
+  omitHtml?: true;
+  omitAppleTouchIcon?: true;
 }
 
 export interface SharpConfig {

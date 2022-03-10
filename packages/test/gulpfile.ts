@@ -20,30 +20,31 @@ task('fonts', getFontsTask({
   src: './assets/fonts/**/*',
   dest: './build/fonts',
   fontFactoryConfigs: {
-    '*.ttf': [{
-      format: ['woff', 'woff2', 'ttf'],
-      subsetUnicodeBlockRanges: ['Latin Alphabet', 'Digits', 'German', 'Punctuation & Symbols Minimal'],
-      rename: {
-        suffix: '-subset',
-      },
-    }, {
-      format: ['woff', 'woff2', 'ttf'],
-      subsetUnicodeBlockRanges: ['Basic Latin', 'Latin-1 Supplement', 'German'],
-    }],
+    // '*.ttf': [{
+    //   format: ['woff', 'woff2', 'ttf'],
+    //   subsetUnicodeBlocks: ['Latin Alphabet', 'Digits'],
+    //   rename: {
+    //     suffix: '-subset',
+    //   },
+    // }, {
+    //   format: ['woff', 'woff2', 'ttf'],
+    //   subsetUnicodeBlocks: ['Basic Latin', 'Latin-1 Supplement'],
+    // }],
     '*.woff': {
       format: ['woff', 'woff2', 'ttf'],
-      subsetUnicodeBlockRanges: ['Basic Latin'],
-      rename: {
-        suffix: '-from-woff',
-      },
+      subsetUnicodeRanges: [['\u0021', '\u0029'], ['\u0041', '\u0050']],
+      // subsetUnicodeBlocks: ['Basic Latin'],
+      // rename: {
+      //   suffix: '-from-woff',
+      // },
     },
-    '*.woff2': {
-      format: ['woff', 'woff2', 'ttf'],
-      subsetText: 'ABCabc',
-      rename: {
-        suffix: '-from-woff2',
-      },
-    },
+    // '*.woff2': {
+    //   format: ['woff', 'woff2', 'ttf'],
+    //   subsetText: 'ABCabc',
+    //   rename: {
+    //     suffix: '-from-woff2',
+    //   },
+    // },
   },
   fontFactoryOptions: {
     passThroughMatched: false,

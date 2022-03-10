@@ -11,28 +11,42 @@ const getDisplayName = (displayName?: string): string => displayName || 'favicon
 
 export const getTask = (
   config: FaviconConfig,
-): TaskFunction => series(
-  parallel(
-    addDisplayNameToTask(
-      `${getDisplayName(config.displayName)}:create icon.png(s)`,
-      createFaviconImagesTask(config.src, config.dest),
-    ),
-    addDisplayNameToTask(
-      `${getDisplayName(config.displayName)}:create favicon.svg`,
-      createFaviconSvgTask(config.src, config.dest),
-    ),
+): TaskFunction => {
+  const tasks = [
     addDisplayNameToTask(
       `${getDisplayName(config.displayName)}:create favicon.ico`,
       createFaviconIconTask(config.src, config.dest),
     ),
     addDisplayNameToTask(
-      `${getDisplayName(config.displayName)}:create html code`,
-      createFaviconHtmlTask(config.dest),
+      `${getDisplayName(config.displayName)}:create favicon.svg`,
+      createFaviconSvgTask(config.src, config.dest),
     ),
-    addDisplayNameToTask(
+  ];
+  if (config.manifest) {
+    tasks.push(addDisplayNameToTask(
       `${getDisplayName(config.displayName)}:create manifest.json`,
       createFaviconManifestTask(config.dest, config.manifest),
-    ),
-  ),
-  getSuccessLogger(getDisplayName(config.displayName)),
-);
+    ));
+  }
+  if (config.omitAppleTouchIcon !== true || config.manifest) {
+    tasks.push(addDisplayNameToTask(
+      `${getDisplayName(config.displayName)}:create icon.png(s)`,
+      createFaviconImagesTask(
+        config.src,
+        config.dest,
+        !config.omitAppleTouchIcon,
+        !!config.manifest,
+      ),
+    ));
+  }
+  if (config.omitHtml !== true) {
+    tasks.push(addDisplayNameToTask(
+      `${getDisplayName(config.displayName)}:create html code`,
+      createFaviconHtmlTask(config.dest),
+    ));
+  }
+  return series(
+    parallel(...tasks),
+    getSuccessLogger(getDisplayName(config.displayName)),
+  );
+};

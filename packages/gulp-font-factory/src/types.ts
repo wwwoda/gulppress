@@ -20,19 +20,17 @@ export type FontFormatRead = FontFormatWrite | 'eot' | 'svg' | 'otf';
 export interface FontConfig {
   rename?: string | rename.Transformer;
   format?: FontFormatWrite | FontFormatWrite[];
-  subsetText?: string;
-  subsetUnicodeBlockRanges?: UnicodeBlockName[],
   subset?: TTF.CodePoint[];
+  subsetText?: string;
+  subsetUnicodeBlocks?: UnicodeBlockName[],
+  subsetUnicodeRanges?: UnicodeRange[];
   hinting?: boolean;
   compound2simple?: boolean;
   withBasicLatin?: boolean;
   trimText?: boolean;
 }
 
-export type UnicodeBlockName = 'Latin Alphabet'
-| 'Digits'
-| 'Punctuation & Symbols'
-| 'Basic Latin'
+export type UnicodeBlockName = 'Basic Latin'
 | 'Latin-1 Supplement'
 | 'Latin Extended-A'
 | 'Latin Extended-B'
@@ -41,6 +39,31 @@ export type UnicodeBlockName = 'Latin Alphabet'
 | 'Combining Diacritical Marks'
 | 'Greek and Coptic'
 | 'Cyrillic'
-| 'Cyrillic Supplement'
-| 'German'
-| 'Punctuation & Symbols Minimal';
+| 'Cyrillic Supplementary'
+| 'Armenian'
+| 'Hebrew'
+| 'Arabic'
+| 'Phonetic Extensions'
+| 'Latin Extended Additional'
+| 'Greek Extended'
+| 'General Punctuation'
+| 'Superscripts and Subscripts'
+| 'Currency Symbols'
+| 'Combining Diacritical Marks for Symbols'
+| 'Letterlike Symbols'
+| 'Number Forms'
+| 'Arrows'
+| 'Mathematical Operators'
+| 'Miscellaneous Technical'
+| 'Latin Alphabet'
+| 'Digits'
+| 'German Alphabet'
+| 'Punctuation & Symbols';
+
+export type UnicodeRange = [string, string];
+
+export interface UnicodeBlock {
+  name: UnicodeBlockName;
+  ranges?: UnicodeRange[];
+  text?: string;
+}

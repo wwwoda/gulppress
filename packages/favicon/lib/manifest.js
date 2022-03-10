@@ -17,6 +17,11 @@ const getManifestJson = (manifestProps) => {
         },
         ...extractIconsFromManifestProperties(manifestProps),
     ];
-    return { ...manifestProps, icons };
+    return {
+        background_color: '#ffffff',
+        theme_color: '#ffffff',
+        ...manifestProps,
+        icons,
+    };
 };
 const extractIconsFromManifestProperties = (manifestProps) => manifestProps.icons || [];

@@ -8,7 +8,11 @@ import { createFaviconImagesStream } from '../stream/create-favicon-images-strea
 export const createFaviconImagesTask = (
   srcGlobs: Globs,
   destFolder: string,
+  createAppleTouchIcon: boolean,
+  createManifestIcons: boolean,
 ): TaskFunction => () => createFaviconImagesStream(
   srcGlobs,
   destFolder,
+  createAppleTouchIcon,
+  createManifestIcons,
 );

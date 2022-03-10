@@ -54,6 +54,7 @@ _encoding, callback) {
     });
     promise.then(() => {
         callback();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
     }, (err) => {
         callback(new plugin_error_1.default('gulpppress-favicon', err, { message: 'Error while transforming file' }));
     });

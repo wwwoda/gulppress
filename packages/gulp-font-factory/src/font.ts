@@ -8,7 +8,7 @@ import type { FontConfig, FontFormatWrite } from './types';
 import type { FontFormatRead } from '.';
 import { getFileFormat } from './format';
 import { getSubsetText } from './util';
-import { getCodePointsForUnicodeBlocks, stringToCodePoints } from './ranges';
+import { getCodePointsForUnicodeBlocks, rangesToCodePoints, stringToCodePoints } from './ranges';
 
 export const createFontPromise = (
   file: BufferFile,
@@ -40,11 +40,12 @@ export const createFont = (
   const {
     compound2simple,
     hinting,
-    subsetText,
-    subsetUnicodeBlockRanges,
     subset,
-    withBasicLatin,
+    subsetText,
+    subsetUnicodeBlocks,
+    subsetUnicodeRanges,
     trimText,
+    withBasicLatin,
   } = config;
 
   const readOptions: FontEditor.FontReadOptions = {
@@ -69,15 +70,18 @@ export const createFont = (
   }
 
   const codes = [];
+  if (Array.isArray(subset) && subset.length > 0) {
+    codes.push(...subset);
+  }
   if (typeof subsetText === 'string') {
     const text = getSubsetText(subsetText, withBasicLatin, trimText);
     codes.push(...stringToCodePoints(text));
   }
-  if (Array.isArray(subsetUnicodeBlockRanges) && subsetUnicodeBlockRanges.length > 0) {
-    codes.push(...getCodePointsForUnicodeBlocks(...subsetUnicodeBlockRanges));
+  if (Array.isArray(subsetUnicodeBlocks) && subsetUnicodeBlocks.length > 0) {
+    codes.push(...getCodePointsForUnicodeBlocks(...subsetUnicodeBlocks));
   }
-  if (Array.isArray(subset) && subset.length > 0) {
-    codes.push(...subset);
+  if (Array.isArray(subsetUnicodeRanges) && subsetUnicodeRanges.length > 0) {
+    codes.push(...rangesToCodePoints(subsetUnicodeRanges));
   }
   if (codes.length > 0) {
     readOptions.subset = arrayUniq(codes);

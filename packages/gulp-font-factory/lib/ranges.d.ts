@@ -1,5 +1,7 @@
+import type { UnicodeBlock, UnicodeRange } from '.';
 import type { UnicodeBlockName } from './types';
-declare type UnicodeRange = [string, string];
+export declare const unicodeBlocks: UnicodeBlock[];
+export declare const getUnicodeBlockByName: (name: UnicodeBlockName) => UnicodeBlock | undefined;
 export declare const getCodePointsForUnicodeBlocks: (...blockName: UnicodeBlockName[]) => number[];
 export declare const getCodePointsForUnicodeBlock: (name: UnicodeBlockName) => number[];
 export declare const getTextForUnicodeBlocks: (...blockName: UnicodeBlockName[]) => string;
@@ -8,4 +10,3 @@ export declare const charCodeRangeToText: (from: number, to: number) => string;
 export declare const rangesToCodePoints: (ranges: UnicodeRange[]) => number[];
 export declare const rangesToText: (ranges: UnicodeRange[]) => string;
 export declare const stringToCodePoints: (str: string, unique?: boolean) => number[];
-export {};
