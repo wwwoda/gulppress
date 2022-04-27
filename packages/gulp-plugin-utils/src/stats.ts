@@ -4,6 +4,7 @@ import PluginError from 'plugin-error';
 import plur from 'plur';
 import type through2 from 'through2';
 import type Vinyl from 'vinyl';
+import yargs from 'yargs/yargs';
 import { extractGlobsFromConfigs } from './config';
 
 export interface Stats {
@@ -94,7 +95,11 @@ export const getFlushFunction = (
   errorOnUnusedConfig: boolean,
   type = 'file',
 ) => (callback: through2.TransformCallback): void => {
-  if (silent) {
+  const { silent: silentArg } = yargs(process.argv.slice(2)).options({
+    silent: { type: 'boolean', default: false },
+  }).parseSync();
+
+  if (silentArg || silent) {
     callback();
     return;
   }

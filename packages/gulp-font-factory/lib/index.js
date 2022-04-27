@@ -61,7 +61,7 @@ exports.default = (configs, customOptions) => {
         const bufferFile = file;
         const matchingConfigs = (0, gulp_plugin_utils_1.filterMatchingConfigs)(this, bufferFile, configs, stats, options);
         if (!Array.isArray(matchingConfigs)) {
-            callback(matchingConfigs);
+            callback();
             return;
         }
         const promises = getPromises(this, bufferFile, matchingConfigs, stats);

@@ -7,7 +7,10 @@ import type { ImageFactoryConfigs, ImageFactoryOptions } from '@gulppress/gulp-i
 import type { BaseConfig } from '@gulppress/utils';
 export interface ImagesConfig extends BaseConfig {
     destPhpPartials?: string | null | undefined;
-    imageMinOptions?: ImageMinOptions;
+    disableCache?: boolean;
+    disableGulpChanged?: boolean;
+    disableImagemin?: boolean;
+    imageminOptions?: ImageMinOptions;
     imageFactoryConfigs?: ImageFactoryConfigs;
     imageFactoryOptions?: ImageFactoryOptions;
 }

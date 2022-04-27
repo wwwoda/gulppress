@@ -4,8 +4,7 @@ import type { FontFormatRead, FontFormatWrite } from '.';
 import type { FontConfig } from './types';
 
 export const getFileFormat = (file: BufferFile): FontFormatRead | null => {
-  const extname = path.extname(file.path);
-  switch (extname) {
+  switch (path.extname(file.path)) {
     case '.ttf':
       return 'ttf';
     case '.woff':

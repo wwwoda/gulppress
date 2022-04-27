@@ -12,11 +12,11 @@ export interface SharpConfig {
     rename: string | rename.Transformer;
 }
 export interface ManifestProperties {
-    background_color: string;
+    background_color?: string;
     categories?: string[];
     description?: string;
     dir?: ManifestDIR;
-    display: ManifestDisplay;
+    display?: ManifestDisplay;
     display_override?: ManifestDisplayOverride[];
     iarc_rating_id?: string;
     icons?: ManifestIcon[];
@@ -30,7 +30,7 @@ export interface ManifestProperties {
     short_name: string;
     shortcuts?: ManifestShortscut[];
     start_url?: string;
-    theme_color: string;
+    theme_color?: string;
 }
 export interface ManifestImage {
     src: string;

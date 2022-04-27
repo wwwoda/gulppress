@@ -27,7 +27,7 @@ const createFontPromise = (file, config, toFormat) => {
 };
 exports.createFontPromise = createFontPromise;
 const createFont = (file, config, fileFormat, toFormat) => {
-    const { compound2simple, hinting, subsetText, subsetUnicodeBlockRanges, subset, } = config;
+    const { compound2simple, hinting, subsetText, subsetUnicodeBlockRanges, subset, withBasicLatin, trimText, } = config;
     const readOptions = {
         type: fileFormat,
         hinting: typeof hinting !== 'undefined' ? hinting : true,
@@ -46,8 +46,9 @@ const createFont = (file, config, fileFormat, toFormat) => {
         writeOptions.deflate = pako_1.default.deflate;
     }
     const codes = [];
-    if (typeof subsetText === 'string' && subsetText !== '') {
-        codes.push(...(0, ranges_1.stringToCodePoints)((0, util_1.getSubsetText)(subsetText)));
+    if (typeof subsetText === 'string') {
+        const text = (0, util_1.getSubsetText)(subsetText, withBasicLatin, trimText);
+        codes.push(...(0, ranges_1.stringToCodePoints)(text));
     }
     if (Array.isArray(subsetUnicodeBlockRanges) && subsetUnicodeBlockRanges.length > 0) {
         codes.push(...(0, ranges_1.getCodePointsForUnicodeBlocks)(...subsetUnicodeBlockRanges));

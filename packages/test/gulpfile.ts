@@ -17,34 +17,47 @@ task('favicon', getFaviconTask({
 }));
 
 task('fonts', getFontsTask({
-  src: './assets/fonts/**/*',
+  src: './assets/fonts/**/Proxima*.ttf',
   dest: './build/fonts',
-  fontFactoryConfigs: {
-    '*.ttf': [{
-      format: ['woff', 'woff2', 'ttf'],
-      subsetUnicodeBlockRanges: ['Latin Alphabet', 'Digits', 'German', 'Punctuation & Symbols Minimal'],
-      rename: {
-        suffix: '-subset',
-      },
-    }, {
-      format: ['woff', 'woff2', 'ttf'],
-      subsetUnicodeBlockRanges: ['Basic Latin', 'Latin-1 Supplement', 'German'],
-    }],
-    '*.woff': {
-      format: ['woff', 'woff2', 'ttf'],
-      subsetUnicodeBlockRanges: ['Basic Latin'],
-      rename: {
-        suffix: '-from-woff',
-      },
-    },
-    '*.woff2': {
-      format: ['woff', 'woff2', 'ttf'],
-      subsetText: 'ABCabc',
-      rename: {
-        suffix: '-from-woff2',
-      },
-    },
-  },
+  fontFactoryConfigs: [{
+    format: ['woff', 'woff2'],
+    subsetUnicodeBlockRanges: [
+      'Basic Latin',
+      'Latin-1 Supplement',
+      'Spacing Modifier Letters',
+      'Combining Diacritical Marks',
+      'General Punctuation',
+      'Number Forms',
+      'German',
+      'Punctuation & Symbols',
+    ],
+  }],
+  // fontFactoryConfigs: {
+  //   '*.ttf': [{
+  //     format: ['woff', 'woff2', 'ttf'],
+  //     subsetUnicodeBlockRanges: ['Latin Alphabet', 'Digits', 'German', 'Punctuation & Symbols Minimal'],
+  //     rename: {
+  //       suffix: '-subset',
+  //     },
+  //   }, {
+  //     format: ['woff', 'woff2', 'ttf'],
+  //     subsetUnicodeBlockRanges: ['Basic Latin', 'Latin-1 Supplement', 'German'],
+  //   }],
+  //   '*.woff': {
+  //     format: ['woff', 'woff2', 'ttf'],
+  //     subsetUnicodeBlockRanges: ['Basic Latin'],
+  //     rename: {
+  //       suffix: '-from-woff',
+  //     },
+  //   },
+  //   '*.woff2': {
+  //     format: ['woff', 'woff2', 'ttf'],
+  //     subsetText: 'ABCabc',
+  //     rename: {
+  //       suffix: '-from-woff2',
+  //     },
+  //   },
+  // },
   fontFactoryOptions: {
     passThroughMatched: false,
     passThroughUnmatched: false,
@@ -76,6 +89,20 @@ task('icons', getImagesTask({
   dest: './build/icons',
   destPhpPartials: './build/partials/icons',
   displayName: 'icons',
+  imageminOptions: {
+    svgo: {
+      plugins: [
+        { removeViewBox: false },
+        { cleanupIDs: false },
+        {
+          removeAttrs: {
+            attrs: '*:(stroke|fill):((?!^none$).)*',
+          },
+        },
+      ],
+    },
+  },
+  disableCache: true,
 }));
 
 task('translate', getTranslationTask({

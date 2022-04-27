@@ -6,8 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getWriteFormats = exports.getFileFormat = void 0;
 const path_1 = __importDefault(require("path"));
 const getFileFormat = (file) => {
-    const extname = path_1.default.extname(file.path);
-    switch (extname) {
+    switch (path_1.default.extname(file.path)) {
         case '.ttf':
             return 'ttf';
         case '.woff':

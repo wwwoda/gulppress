@@ -10,15 +10,21 @@ import { createProcessImagesStream } from '../stream/process-images-stream';
 export const createProcessImagesTask = (
   srcGlobs: Globs,
   destFolder: string,
-  imageMinOptions?: ImageMinOptions,
+  imageminOptions?: ImageMinOptions,
   imageFactoryConfigs?: ImageFactoryConfigs,
   imageFactoryOptions?: ImageFactoryOptions,
+  disableCache?: boolean,
+  disableGulpChanged?: boolean,
+  disableImagemin?: boolean,
   displayName?: string,
 ): TaskFunction => () => createProcessImagesStream(
   srcGlobs,
   destFolder,
-  imageMinOptions,
+  imageminOptions,
   imageFactoryConfigs,
   imageFactoryOptions,
+  disableCache,
+  disableGulpChanged,
+  disableImagemin,
   displayName,
 );

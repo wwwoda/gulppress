@@ -1,36 +1,9 @@
 import arrayUniq from 'array-uniq';
 import { range as _range } from 'lodash';
-import type { UnicodeBlockName } from './types';
+import type { UnicodeBlock, UnicodeBlockName, UnicodeRange } from './types';
+import { unicodeBlocks as generalUnicodeBlocks, customUnicodeBlocks } from './unicodeBlocks';
 
-type UnicodeRange = [string, string];
-
-interface UnicodeBlock {
-  name: UnicodeBlockName;
-  ranges?: UnicodeRange[];
-  text?: string;
-}
-
-const unicodeBlocks: UnicodeBlock[] = [
-  { name: 'Latin Alphabet', ranges: [['\u0041', '\u005A'], ['\u0061', '\u007A']] },
-  { name: 'Digits', ranges: [['\u0030', '\u0039']] },
-  { name: 'Punctuation & Symbols', ranges: [['\u0020', '\u002F'], ['\u003A', '\u0040'], ['\u005B', '\u0060'], ['\u007B', '\u007E']] },
-  { name: 'Basic Latin', ranges: [['\u0020', '\u007F']] },
-  { name: 'Latin-1 Supplement', ranges: [['\u00A0', '\u00FF']] },
-  { name: 'Latin Extended-A', ranges: [['\u0100', '\u017F']] },
-  { name: 'Latin Extended-B', ranges: [['\u0180', '\u024F']] },
-  { name: 'IPA Extensions', ranges: [['\u0250', '\u02AF']] },
-  { name: 'Spacing Modifier Letters', ranges: [['\u02B0', '\u02FF']] },
-  { name: 'Combining Diacritical Marks', ranges: [['\u0300', '\u036F']] },
-  { name: 'Greek and Coptic', ranges: [['\u0370', '\u03FF']] },
-  { name: 'Cyrillic', ranges: [['\u0400', '\u04FF']] },
-  { name: 'Cyrillic Supplement', ranges: [['\u0500', '\u052F']] },
-  { name: 'German', text: '€äöüÄÖÜß‚‘„“' },
-  {
-    name: 'Punctuation & Symbols Minimal',
-    ranges: [['\u0020', '\u002F']],
-    text: ':=?@€',
-  },
-];
+const unicodeBlocks: UnicodeBlock[] = [...generalUnicodeBlocks, ...customUnicodeBlocks];
 
 const getUnicodeBlockByName = (
   name: UnicodeBlockName,

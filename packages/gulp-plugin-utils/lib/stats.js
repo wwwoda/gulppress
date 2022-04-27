@@ -8,6 +8,7 @@ const chalk_1 = __importDefault(require("chalk"));
 const fancy_log_1 = __importDefault(require("fancy-log"));
 const plugin_error_1 = __importDefault(require("plugin-error"));
 const plur_1 = __importDefault(require("plur"));
+const yargs_1 = __importDefault(require("yargs/yargs"));
 const config_1 = require("./config");
 const baseStates = {
     total: 0,
@@ -64,7 +65,10 @@ const createStats = (configs) => ({
 });
 exports.createStats = createStats;
 const getFlushFunction = (stats, prefix, silent, showStats, errorOnUnusedConfig, type = 'file') => (callback) => {
-    if (silent) {
+    const { silent: silentArg } = (0, yargs_1.default)(process.argv.slice(2)).options({
+        silent: { type: 'boolean', default: false },
+    }).parseSync();
+    if (silentArg || silent) {
         callback();
         return;
     }

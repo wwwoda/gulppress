@@ -4,4 +4,5 @@ import { createGenerateSvgPhpPartialStream } from '../stream/generate-svg-php-pa
 export const createGenerateSvgPhpPartialsTask = (
   input: Globs | NodeJS.ReadWriteStream,
   destFolder: string,
-): TaskFunction => () => (createGenerateSvgPhpPartialStream(input, destFolder));
+  disableGulpChanged?: boolean,
+): TaskFunction => () => (createGenerateSvgPhpPartialStream(input, destFolder, disableGulpChanged));
