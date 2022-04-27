@@ -1,6 +1,6 @@
 {
   "name": "@gulppress/images",
-  "version": "0.0.1-5",
+  "version": "0.0.1-6",
   "private": false,
   "homepage": "https://github.com/wwwoda/gulppress",
   "license": "MIT",
@@ -17,8 +17,8 @@
     "lint": "eslint src --ext='.ts,.js'"
   },
   "dependencies": {
-    "@gulppress/gulp-image-factory": "^0.0.1-5",
-    "@gulppress/utils": "^0.0.1-5",
+    "@gulppress/gulp-image-factory": "^0.0.1-6",
+    "@gulppress/utils": "^0.0.1-6",
     "gulp": "^4",
     "gulp-cache": "^1.1.3",
     "gulp-changed": "^4.0.3",

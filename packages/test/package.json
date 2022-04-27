@@ -1,6 +1,6 @@
 {
   "name": "@gulppress/test",
-  "version": "0.0.1-5",
+  "version": "0.0.1-6",
   "private": true,
   "description": "",
   "main": "index.js",
@@ -12,11 +12,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@gulppress/favicon": "^0.0.1-6",
-    "@gulppress/fonts": "^0.0.1-5",
-    "@gulppress/images": "^0.0.1-5",
-    "@gulppress/translate": "^0.0.1-5",
-    "@gulppress/utils": "^0.0.1-5",
+    "@gulppress/favicon": "^0.0.1-7",
+    "@gulppress/fonts": "^0.0.1-6",
+    "@gulppress/images": "^0.0.1-6",
+    "@gulppress/translate": "^0.0.1-6",
+    "@gulppress/utils": "^0.0.1-6",
     "gulp": "^4",
     "laravel-mix": "^6.0.39"
   },
