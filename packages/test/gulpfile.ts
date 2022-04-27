@@ -17,7 +17,7 @@ task('favicon', getFaviconTask({
 }));
 
 task('fonts', getFontsTask({
-  src: './assets/fonts/**/Proxima*.ttf',
+  src: './assets/fonts/**/inter*.ttf',
   dest: './build/fonts',
   fontFactoryConfigs: [{
     format: ['woff', 'woff2'],
@@ -32,32 +32,6 @@ task('fonts', getFontsTask({
       'Punctuation & Symbols',
     ],
   }],
-  // fontFactoryConfigs: {
-  //   '*.ttf': [{
-  //     format: ['woff', 'woff2', 'ttf'],
-  //     subsetUnicodeBlockRanges: ['Latin Alphabet', 'Digits', 'German', 'Punctuation & Symbols Minimal'],
-  //     rename: {
-  //       suffix: '-subset',
-  //     },
-  //   }, {
-  //     format: ['woff', 'woff2', 'ttf'],
-  //     subsetUnicodeBlockRanges: ['Basic Latin', 'Latin-1 Supplement', 'German'],
-  //   }],
-  //   '*.woff': {
-  //     format: ['woff', 'woff2', 'ttf'],
-  //     subsetUnicodeBlockRanges: ['Basic Latin'],
-  //     rename: {
-  //       suffix: '-from-woff',
-  //     },
-  //   },
-  //   '*.woff2': {
-  //     format: ['woff', 'woff2', 'ttf'],
-  //     subsetText: 'ABCabc',
-  //     rename: {
-  //       suffix: '-from-woff2',
-  //     },
-  //   },
-  // },
   fontFactoryOptions: {
     passThroughMatched: false,
     passThroughUnmatched: false,
