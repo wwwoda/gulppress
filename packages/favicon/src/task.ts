@@ -27,11 +27,11 @@ export const getTask = (
     ),
     addDisplayNameToTask(
       `${getDisplayName(config.displayName)}:create html code`,
-      createFaviconHtmlTask(config.dest),
+      createFaviconHtmlTask(config.dest, config.path || '/'),
     ),
     addDisplayNameToTask(
       `${getDisplayName(config.displayName)}:create manifest.json`,
-      createFaviconManifestTask(config.dest, config.manifest),
+      createFaviconManifestTask(config.dest, config.manifest, config.path || '/'),
     ),
   ),
   getSuccessLogger(getDisplayName(config.displayName)),

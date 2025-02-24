@@ -1,1 +1,1 @@
-export declare const createFaviconHtmlStream: (destFolder: string) => NodeJS.ReadWriteStream;
+export declare const createFaviconHtmlStream: (destFolder: string, path: string) => NodeJS.ReadWriteStream;

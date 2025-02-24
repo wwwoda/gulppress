@@ -4,8 +4,7 @@
   "homepage": "https://github.com/wwwoda/gulppress",
   "author": "woda - Software Development GmbH",
   "workspaces": [
-    "packages/*",
-    "!packages/test"
+    "packages/*"
   ],
   "scripts": {
     "dev": "turbo run dev --parallel --no-cache",
@@ -52,5 +51,17 @@
     }
   },
   "respository": "https://github.com/wwwoda/gulppress",
-  "packageManager": "pnpm@10.4.1"
+  "packageManager": "pnpm@10.4.1",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "core-js",
+      "es5-ext",
+      "fsevents",
+      "gifsicle",
+      "mozjpeg",
+      "nx",
+      "optipng-bin",
+      "sharp"
+    ]
+  }
 }

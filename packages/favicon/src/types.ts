@@ -5,6 +5,7 @@ import type { SetOptional } from 'type-fest';
 
 export interface FaviconConfig extends BaseConfig {
   manifest: ManifestProperties;
+  path?: string;
 }
 
 export interface SharpConfig {

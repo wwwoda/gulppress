@@ -5,27 +5,21 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "prod": "yarn build-mix && mix",
-    "build-mix": "tsc webpack.mix.ts --esModuleInterop",
+    "build": "pnpm run clean && pnpm gulp --silent",
     "clean": "rm -rf build"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@gulppress/favicon": "^0.0.1-7",
-    "@gulppress/fonts": "^0.0.1-6",
-    "@gulppress/images": "^0.0.1-6",
-    "@gulppress/translate": "^0.0.1-6",
-    "@gulppress/utils": "^0.0.1-6",
-    "gulp": "^4",
-    "laravel-mix": "^6.0.39"
+    "@gulppress/favicon": "workspace:^0.0.1-7",
+    "@gulppress/fonts": "workspace:^0.0.1-6",
+    "@gulppress/images": "workspace:^0.0.1-6",
+    "@gulppress/translate": "workspace:^0.0.1-6",
+    "@gulppress/utils": "workspace:^0.0.1-6",
+    "gulp": "^4"
   },
   "devDependencies": {
     "@types/gulp": "^4.0.9",
-    "@types/serve-static": "^1.13.10",
-    "@wwwoda/tsconfig": "^1.1.0",
-    "ts-loader": "^9.2.6",
-    "ts-node": "^10.4.0",
-    "typescript": "^4.5.4"
+    "ts-node": "^10.4.0"
   }
 }

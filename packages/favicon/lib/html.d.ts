@@ -1,1 +1,1 @@
-export declare const getHtml: (base?: string) => string;
+export declare const getHtml: (path?: string) => string;

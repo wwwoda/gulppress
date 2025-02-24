@@ -1,42 +1,28 @@
-import type { ManifestIcon, ManifestProperties } from './types';
+import type { ManifestProperties } from './types';
 
 export const getManifestString = (
   manifestProps: ManifestProperties,
-): string => JSON.stringify(getManifestJson(manifestProps), null, 2);
+  path: string,
+): string => JSON.stringify(getManifestJson(manifestProps, path), null, 2);
 
 const getManifestJson = (
   manifestProps: ManifestProperties,
-): ManifestProperties => {
-  const icons: ManifestIcon[] = [
-    ...(manifestProps.disableDefaultIcons
-      ? []
-      : [
-        getIconSrc(manifestProps, 192),
-        getIconSrc(manifestProps, 512),
-      ]
-    ),
-    ...extractIconsFromManifestProperties(manifestProps),
-  ];
-  return {
-    background_color: '#ffffff',
-    theme_color: '#ffffff',
-    ...manifestProps,
-    icons,
-  };
-};
+  path: string,
+): ManifestProperties => ({
+  background_color: '#ffffff',
+  theme_color: '#ffffff',
+  icons: [
+    getIconSrc(path, 192),
+    getIconSrc(path, 512),
+  ],
+  ...manifestProps,
+});
 
 const getIconSrc = (
-  manifestProps: ManifestProperties,
+  path: string,
   size: number,
-) => {
-  const url = (manifestProps.iconsUrl || '').replace(/\/+$/, '');
-  return {
-    src: `${url}/icon-${size}.png`,
-    sizes: `${size}x${size}`,
-    type: 'image/png',
-  };
-};
-
-const extractIconsFromManifestProperties = (
-  manifestProps: Partial<ManifestProperties>,
-): ManifestIcon[] => manifestProps.icons || [];
+) => ({
+  src: `${path.replace(/\/+$/, '')}/icon-${size}.png`,
+  sizes: `${size}x${size}`,
+  type: 'image/png',
+});

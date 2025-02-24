@@ -7,5 +7,6 @@ import { getManifestString } from '../manifest';
 export const createFaviconManifestStream = (
   destFolder: string,
   config: ManifestProperties,
-): NodeJS.ReadWriteStream => createStream('manifest.json', getManifestString(config))
+  path: string,
+): NodeJS.ReadWriteStream => createStream('manifest.json', getManifestString(config, path))
   .pipe(dest(destFolder));

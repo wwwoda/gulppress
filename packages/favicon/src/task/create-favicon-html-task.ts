@@ -4,4 +4,5 @@ import { createFaviconHtmlStream } from '../stream/create-favicon-html-stream';
 
 export const createFaviconHtmlTask = (
   destFolder: string,
-): TaskFunction => () => createFaviconHtmlStream(destFolder);
+  path: string,
+): TaskFunction => () => createFaviconHtmlStream(destFolder, path);

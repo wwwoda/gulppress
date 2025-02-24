@@ -4,4 +4,5 @@ import { createFaviconManifestStream } from '../stream/create-favicon-manifest-s
 export const createFaviconManifestTask = (
   destFolder: string,
   manifest: ManifestProperties,
-) => () => createFaviconManifestStream(destFolder, manifest);
+  path: string,
+) => () => createFaviconManifestStream(destFolder, manifest, path);

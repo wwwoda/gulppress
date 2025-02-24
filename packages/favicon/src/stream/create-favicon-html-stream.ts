@@ -5,5 +5,6 @@ import { getHtml } from '../html';
 
 export const createFaviconHtmlStream = (
   destFolder: string,
-): NodeJS.ReadWriteStream => createStream('favicon.html', getHtml())
+  path: string,
+): NodeJS.ReadWriteStream => createStream('favicon.html', getHtml(path))
   .pipe(dest(destFolder));

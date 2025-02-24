@@ -7,6 +7,7 @@ import getTranslationTask from '@gulppress/translate';
 task('favicon', getFaviconTask({
   src: './assets/images/favicon.svg',
   dest: './build/favicon',
+  path: 'https://www.woda.at/wp-content/assets/',
   manifest: {
     name: 'Test',
     short_name: 'Test',
@@ -66,11 +67,14 @@ task('icons', getImagesTask({
   imageminOptions: {
     svgo: {
       plugins: [
-        { removeViewBox: false },
-        { cleanupIDs: false },
         {
-          removeAttrs: {
-            attrs: '*:(stroke|fill):((?!^none$).)*',
+          name: 'preset-default',
+          params: {
+            overrides: {
+              cleanupIDs: false,
+              removeTitle: false,
+              removeViewBox: false,
+            },
           },
         },
       ],
