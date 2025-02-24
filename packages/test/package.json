@@ -1,6 +1,6 @@
 {
   "name": "@gulppress/test",
-  "version": "0.0.1-6",
+  "version": "0.0.1-7",
   "private": true,
   "description": "",
   "main": "index.js",
@@ -11,11 +11,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@gulppress/favicon": "workspace:^0.0.1-7",
-    "@gulppress/fonts": "workspace:^0.0.1-6",
-    "@gulppress/images": "workspace:^0.0.1-6",
-    "@gulppress/translate": "workspace:^0.0.1-6",
-    "@gulppress/utils": "workspace:^0.0.1-6",
+    "@gulppress/favicon": "workspace:^0.0.1-8",
+    "@gulppress/fonts": "workspace:^0.0.1-7",
+    "@gulppress/images": "workspace:^0.0.1-7",
+    "@gulppress/translate": "workspace:^0.0.1-7",
+    "@gulppress/utils": "workspace:^0.0.1-7",
     "gulp": "^4"
   },
   "devDependencies": {
