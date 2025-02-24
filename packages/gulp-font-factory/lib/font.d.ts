@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import type { BufferFile } from 'vinyl';
 import type { FontConfig, FontFormatWrite } from './types';
 import type { FontFormatRead } from '.';

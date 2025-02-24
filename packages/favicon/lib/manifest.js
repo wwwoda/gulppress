@@ -5,16 +5,12 @@ const getManifestString = (manifestProps) => JSON.stringify(getManifestJson(mani
 exports.getManifestString = getManifestString;
 const getManifestJson = (manifestProps) => {
     const icons = [
-        {
-            src: '/icon-192.png',
-            sizes: '192x192',
-            type: 'image/png',
-        },
-        {
-            src: '/icon-512.png',
-            sizes: '512x512',
-            type: 'image/png',
-        },
+        ...(manifestProps.disableDefaultIcons
+            ? []
+            : [
+                getIconSrc(manifestProps, 192),
+                getIconSrc(manifestProps, 512),
+            ]),
         ...extractIconsFromManifestProperties(manifestProps),
     ];
     return {
@@ -22,6 +18,14 @@ const getManifestJson = (manifestProps) => {
         theme_color: '#ffffff',
         ...manifestProps,
         icons,
+    };
+};
+const getIconSrc = (manifestProps, size) => {
+    const url = (manifestProps.iconsUrl || '').replace(/\/+$/, '');
+    return {
+        src: `${url}/icon-${size}.png`,
+        sizes: `${size}x${size}`,
+        type: 'image/png',
     };
 };
 const extractIconsFromManifestProperties = (manifestProps) => manifestProps.icons || [];

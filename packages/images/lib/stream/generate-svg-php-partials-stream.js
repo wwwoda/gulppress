@@ -10,9 +10,7 @@ const gulp_changed_1 = __importDefault(require("gulp-changed"));
 const gulp_filter_1 = __importDefault(require("gulp-filter"));
 const gulp_if_1 = __importDefault(require("gulp-if"));
 const gulp_rename_1 = __importDefault(require("gulp-rename"));
-const createGenerateSvgPhpPartialStream = (input, destFolder, disableGulpChanged) => (0, utils_1.createStream)(input, {
-    silent: true,
-})
+const createGenerateSvgPhpPartialStream = (input, destFolder, disableGulpChanged) => (0, utils_1.createStream)(input)
     .pipe((0, gulp_filter_1.default)('**/*.svg'))
     .pipe((0, gulp_rename_1.default)({
     extname: '.php',

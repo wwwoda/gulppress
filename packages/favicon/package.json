@@ -11,8 +11,8 @@
     "lib"
   ],
   "scripts": {
-    "build": "yarn clean && tsc -p tsconfig.json",
-    "dev": "yarn clean && tsc -p tsconfig.json --watch",
+    "build": "pnpm clean && tsc -p tsconfig.json",
+    "dev": "pnpm clean && tsc -p tsconfig.json --watch",
     "clean": "rimraf './lib' && rm -f ./tsconfig.tsbuildinfo",
     "lint": "eslint src --ext='.ts,.js'"
   },
@@ -34,6 +34,7 @@
   "devDependencies": {
     "@types/gulp": "^4.0.9",
     "@types/gulp-imagemin": "^7.0.3",
+    "@types/gulp-rename": "^2.0.1",
     "@types/picomatch": "^2.3.0",
     "@types/rename": "^1.0.4",
     "@types/sharp": "^0.29.5",

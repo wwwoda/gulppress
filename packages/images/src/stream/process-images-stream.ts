@@ -31,9 +31,7 @@ export const createProcessImagesStream = (
     ],
     imageminOptions?.options || {},
   );
-  return src(srcGlobs, {
-    silent: true,
-  })
+  return src(srcGlobs)
     .pipe(sharpImages(imageFactoryConfigs || {}, { ...imageFactoryOptions, name: displayName }))
     .pipe(gulpif(
       disableImagemin !== true,

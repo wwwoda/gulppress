@@ -1,6 +1,6 @@
 import type rename from 'rename';
 import type sharp from 'sharp';
-export declare type ImageFactoryConfigs = SharpConfig[] | Record<string, SharpConfig | SharpConfig[]>;
+export type ImageFactoryConfigs = SharpConfig[] | Record<string, SharpConfig | SharpConfig[]>;
 export interface ImageFactoryOptions {
     errorOnUnusedConfig?: boolean;
     errorOnUnmatchedFile?: boolean;
@@ -10,7 +10,7 @@ export interface ImageFactoryOptions {
     stats?: boolean;
     name?: string;
 }
-export declare type ImageFormat = keyof ImageFormatOptions;
+export type ImageFormat = keyof ImageFormatOptions;
 export interface ImageFormatOptions {
     jpeg?: sharp.JpegOptions;
     png?: sharp.PngOptions;
@@ -71,9 +71,9 @@ export interface SharpConfig {
     toColourspace?: Parameters<sharp.Sharp['toColourspace']>[0];
     toColorspace?: Parameters<sharp.Sharp['toColorspace']>[0];
 }
-declare type RotateParams = Parameters<sharp.Sharp['rotate']>;
-declare type SharpenParams = Parameters<sharp.Sharp['sharpen']>;
-declare type ThresholdParams = Parameters<sharp.Sharp['threshold']>;
-declare type BooleanParams = Parameters<sharp.Sharp['boolean']>;
-declare type LinearParams = Parameters<sharp.Sharp['linear']>;
+type RotateParams = Parameters<sharp.Sharp['rotate']>;
+type SharpenParams = Parameters<sharp.Sharp['sharpen']>;
+type ThresholdParams = Parameters<sharp.Sharp['threshold']>;
+type BooleanParams = Parameters<sharp.Sharp['boolean']>;
+type LinearParams = Parameters<sharp.Sharp['linear']>;
 export {};

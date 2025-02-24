@@ -18,9 +18,7 @@ const createProcessImagesStream = (srcGlobs, destFolder, imageminOptions, imageF
         gulp_imagemin_1.default.optipng(imageminOptions?.optipng || {}),
         gulp_imagemin_1.default.svgo(imageminOptions?.svgo || {}),
     ], imageminOptions?.options || {});
-    return (0, gulp_1.src)(srcGlobs, {
-        silent: true,
-    })
+    return (0, gulp_1.src)(srcGlobs)
         .pipe((0, gulp_image_factory_1.default)(imageFactoryConfigs || {}, { ...imageFactoryOptions, name: displayName }))
         .pipe((0, gulp_if_1.default)(disableImagemin !== true, disableCache === true
         ? imageminTransform

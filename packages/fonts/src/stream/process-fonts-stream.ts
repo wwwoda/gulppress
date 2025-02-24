@@ -12,9 +12,7 @@ export const createProcessFontsStream = (
   factoryConfigs?: FontFactoryConfigs,
   factoryOptions?: FontFactoryOptions,
   displayName = 'fonts',
-): NodeJS.ReadWriteStream => src(srcGlobs, {
-  silent: true,
-})
+): NodeJS.ReadWriteStream => src(srcGlobs)
   .pipe(processFonts(factoryConfigs || {}, {
     name: displayName,
     ...factoryOptions,

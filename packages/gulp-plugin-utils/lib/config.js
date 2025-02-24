@@ -63,6 +63,9 @@ const getMatchingConfigsForFile = (file, configs, stats) => {
             return;
         globs.push(glob);
         const config = configs[glob];
+        if (!config) {
+            return;
+        }
         matchedConfigs.push(...(Array.isArray(config) ? config : [config]));
     });
     stats.markGlobsAsMatched(globs);

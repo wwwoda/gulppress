@@ -3,7 +3,7 @@ import PluginError from 'plugin-error';
 import type Vinyl from 'vinyl';
 import type { Stats } from './stats';
 import type { FactoryOptions } from './types';
-export declare const filterMatchingConfigs: <Config>(transform: Transform, file: Vinyl, configs: Config[] | Record<string, Config | Config[]>, stats: Stats, customOptions: FactoryOptions) => PluginError.SimplePluginError | Config[] | null;
+export declare const filterMatchingConfigs: <Config>(transform: Transform, file: Vinyl, configs: Config[] | Record<string, Config | Config[]>, stats: Stats, customOptions: FactoryOptions) => Config[] | PluginError | null;
 export declare const handleUnmatchedFile: (transform: Transform, file: Vinyl, stats: Stats, customOptions: FactoryOptions) => PluginError | null;
 export declare const getMatchingConfigsForFile: <T>(file: Vinyl, configs: T[] | Record<string, T | T[]>, stats: Stats) => T[];
 export declare const isMatch: (file: Vinyl, glob: string) => boolean;

@@ -9,9 +9,7 @@ export const createGenerateSvgPhpPartialStream = (
   input: Globs | NodeJS.ReadWriteStream,
   destFolder: string,
   disableGulpChanged?: boolean,
-): NodeJS.ReadWriteStream => createStream(input, {
-  silent: true,
-})
+): NodeJS.ReadWriteStream => createStream(input)
   .pipe(filter('**/*.svg'))
   .pipe(rename({
     extname: '.php',

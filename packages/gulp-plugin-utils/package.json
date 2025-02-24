@@ -14,8 +14,8 @@
     "lib"
   ],
   "scripts": {
-    "build": "yarn clean && tsc -p tsconfig.json",
-    "dev": "yarn clean && tsc -p tsconfig.json --watch",
+    "build": "pnpm clean && tsc -p tsconfig.json",
+    "dev": "pnpm clean && tsc -p tsconfig.json --watch",
     "clean": "rimraf './lib' && rm -f ./tsconfig.tsbuildinfo",
     "lint": "eslint src --ext='.ts,.js'"
   },

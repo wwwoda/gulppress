@@ -1,2 +1,2 @@
-declare const size: (originalSize: number, neededSize?: string | number | null | undefined) => number | null;
+declare const size: (originalSize: number, neededSize?: string | number | null) => number | null;
 export default size;

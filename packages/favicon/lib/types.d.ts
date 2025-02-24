@@ -20,6 +20,8 @@ export interface ManifestProperties {
     display_override?: ManifestDisplayOverride[];
     iarc_rating_id?: string;
     icons?: ManifestIcon[];
+    iconsUrl?: string;
+    disableDefaultIcons?: boolean;
     lang?: string;
     name: string;
     orientation?: ManifestOrientation;
@@ -56,8 +58,8 @@ export interface ManifestShortscut {
     url: string;
     icons?: SetOptional<ManifestIcon, 'type'>[];
 }
-export declare type ManifestDIR = 'auto' | 'ltr' | 'rtl';
-export declare type ManifestDisplay = 'fullscreen' | 'standalone' | 'minimal-ui' | 'browser';
-export declare type ManifestDisplayOverride = 'fullscreen' | 'standalone' | 'minimal-ui' | 'browser' | 'window-controls-overlay';
-export declare type ManifestOrientation = 'any' | 'natural' | 'landscape' | 'landscape-primary' | 'landscape-secondary' | 'portrait' | 'portrait-primary' | 'portrait-secondary';
-export declare type ManifestScreenshotPlatform = 'wide' | 'narrow' | 'android' | 'chromeos' | 'ios' | 'kaios' | 'macos' | 'windows' | 'xbox' | 'chrome_web_store' | 'play' | 'itunes' | 'microsoft-inbox' | 'microsoft-store';
+export type ManifestDIR = 'auto' | 'ltr' | 'rtl';
+export type ManifestDisplay = 'fullscreen' | 'standalone' | 'minimal-ui' | 'browser';
+export type ManifestDisplayOverride = 'fullscreen' | 'standalone' | 'minimal-ui' | 'browser' | 'window-controls-overlay';
+export type ManifestOrientation = 'any' | 'natural' | 'landscape' | 'landscape-primary' | 'landscape-secondary' | 'portrait' | 'portrait-primary' | 'portrait-secondary';
+export type ManifestScreenshotPlatform = 'wide' | 'narrow' | 'android' | 'chromeos' | 'ios' | 'kaios' | 'macos' | 'windows' | 'xbox' | 'chrome_web_store' | 'play' | 'itunes' | 'microsoft-inbox' | 'microsoft-store';

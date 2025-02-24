@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import Vinyl from 'vinyl';
 import type { BufferFile } from 'vinyl';
 import rename from 'rename';

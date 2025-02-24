@@ -82,6 +82,9 @@ export const getMatchingConfigsForFile = <T>(
     if (!isMatch(file, glob)) return;
     globs.push(glob);
     const config = configs[glob];
+    if (!config) {
+      return;
+    }
     matchedConfigs.push(...(Array.isArray(config) ? config : [config]));
   });
   stats.markGlobsAsMatched(globs);
