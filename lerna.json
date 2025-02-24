@@ -1,9 +1,5 @@
 {
-  "packages": [
-    "packages/*"
-  ],
+  "$schema": "node_modules/lerna/schemas/lerna-schema.json",
   "version": "independent",
-  "npmClient": "yarn",
-  "useWorkspaces": true,
-  "registry": "https://registry.npmjs.org/"
+  "npmClient": "pnpm"
 }
