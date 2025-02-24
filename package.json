@@ -17,7 +17,7 @@
     "type-check": "lerna run type-check"
   },
   "devDependencies": {
-    "@babel/core": "^7.16.0",
+    "@babel/core": "^7.23.2",
     "@types/node": "^22.13.5",
     "@types/through2": "^2.0.41",
     "@types/vinyl": "^2.0.12",

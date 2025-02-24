@@ -2,7 +2,7 @@ import {
   Globs,
   src,
 } from 'gulp';
-import {SrcOptions} from 'vinyl-fs';
+import { SrcOptions } from 'vinyl-fs';
 
 export const createStream = (
   input: Globs | NodeJS.ReadWriteStream,

@@ -11,7 +11,7 @@ const createSharp = (file, config, format) => {
     config.extractBeforeResize && image.extract(config.extractBeforeResize);
     config.resize && image.resize(null, null, config.resize);
     config.extractAfterResize && image.extract(config.extractAfterResize);
-    config.trim && image.trim(config.trim);
+    config.trim && image.trim({ threshold: config.trim });
     config.extend && image.extend(config.extend);
     // Image operations
     config.rotate && image.rotate(config.rotate.angle, config.rotate.options);
