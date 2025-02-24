@@ -78,10 +78,10 @@ importers:
   packages/favicon:
     dependencies:
       '@gulppress/gulp-image-factory':
-        specifier: workspace:^0.0.1-7
+        specifier: workspace:^0.0.1-8
         version: link:../gulp-image-factory
       '@gulppress/utils':
-        specifier: workspace:^0.0.1-7
+        specifier: workspace:^0.0.1-8
         version: link:../utils
       gulp:
         specifier: ^4
@@ -142,10 +142,10 @@ importers:
   packages/fonts:
     dependencies:
       '@gulppress/gulp-font-factory':
-        specifier: workspace:^0.0.1-5
+        specifier: workspace:^0.0.1-6
         version: link:../gulp-font-factory
       '@gulppress/utils':
-        specifier: workspace:^0.0.1-7
+        specifier: workspace:^0.0.1-8
         version: link:../utils
       gulp:
         specifier: ^4
@@ -173,7 +173,7 @@ importers:
   packages/gulp-font-factory:
     dependencies:
       '@gulppress/gulp-plugin-utils':
-        specifier: workspace:^0.0.1-7
+        specifier: workspace:^0.0.1-8
         version: link:../gulp-plugin-utils
       array-uniq:
         specifier: ^2.1.0
@@ -213,7 +213,7 @@ importers:
   packages/gulp-image-factory:
     dependencies:
       '@gulppress/gulp-plugin-utils':
-        specifier: workspace:^0.0.1-7
+        specifier: workspace:^0.0.1-8
         version: link:../gulp-plugin-utils
       chalk:
         specifier: ^4.0.0
@@ -299,10 +299,10 @@ importers:
   packages/images:
     dependencies:
       '@gulppress/gulp-image-factory':
-        specifier: workspace:^0.0.1-7
+        specifier: workspace:^0.0.1-8
         version: link:../gulp-image-factory
       '@gulppress/utils':
-        specifier: workspace:^0.0.1-7
+        specifier: workspace:^0.0.1-8
         version: link:../utils
       gulp:
         specifier: ^4
@@ -397,7 +397,7 @@ importers:
   packages/translate:
     dependencies:
       '@gulppress/utils':
-        specifier: workspace:^0.0.1-7
+        specifier: workspace:^0.0.1-8
         version: link:../utils
       fancy-log:
         specifier: ^2.0.0
