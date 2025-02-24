@@ -25,8 +25,7 @@
     "@types/gulp": "^4.0.9",
     "@types/undertaker": "^1.2.7",
     "@types/vinyl-fs": "^3.0.5",
-    "fancy-log": "^2.0.0",
-    "types": "link:types"
+    "fancy-log": "^2.0.0"
   },
   "engines": {
     "node": ">=12"
