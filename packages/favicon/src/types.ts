@@ -30,6 +30,8 @@ export interface ManifestProperties {
   display_override?: ManifestDisplayOverride[];
   iarc_rating_id?: string;
   icons?: ManifestIcon[];
+  iconsUrl?: string;
+  disableDefaultIcons?: boolean;
   lang?: string;
   name: string;
   orientation?: ManifestOrientation;
