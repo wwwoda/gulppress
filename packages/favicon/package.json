@@ -1,6 +1,6 @@
 {
   "name": "@gulppress/favicon",
-  "version": "0.0.1-9",
+  "version": "0.0.1-10",
   "private": false,
   "homepage": "https://github.com/wwwoda/gulppress",
   "license": "MIT",
@@ -17,8 +17,8 @@
     "lint": "eslint src --ext='.ts,.js'"
   },
   "dependencies": {
-    "@gulppress/gulp-image-factory": "workspace:^0.0.1-8",
-    "@gulppress/utils": "workspace:^0.0.1-8",
+    "@gulppress/gulp-image-factory": "workspace:^0.0.1-9",
+    "@gulppress/utils": "workspace:^0.0.1-9",
     "gulp": "^4",
     "gulp-imagemin": "^7.0.0",
     "gulp-rename": "^2.0.0",
@@ -46,5 +46,5 @@
   "engines": {
     "node": ">=12"
   },
-  "gitHead": "c4c88e80e13443c30edc1ae0e37aef100f0e7ac8"
+  "gitHead": "44e62763ed51fc0fbdc278b98abd6d553b534b32"
 }
