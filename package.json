@@ -4,7 +4,8 @@
   "homepage": "https://github.com/wwwoda/gulppress",
   "author": "woda - Software Development GmbH",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "!packages/test"
   ],
   "scripts": {
     "dev": "turbo run dev --parallel --no-cache",

@@ -2,6 +2,7 @@ _archive
 ## Project specifics ##
 
 # Compiled libraries
+.turbo
 packages/*/ignore
 packages/*/.turbo
 
